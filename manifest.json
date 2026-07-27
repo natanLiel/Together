@@ -1,0 +1,17 @@
+{
+  "name": "Together",
+  "short_name": "Together",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#050D1A",
+  "theme_color": "#050D1A",
+  "icons": [
+    {
+      "src": "app-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
