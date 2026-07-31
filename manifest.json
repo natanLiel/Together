@@ -1,17 +1,24 @@
 {
   "name": "Together",
   "short_name": "Together",
+  "description": "One connection at a time.",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#050D1A",
-  "theme_color": "#050D1A",
+  "background_color": "#14101A",
+  "theme_color": "#14101A",
   "icons": [
     {
       "src": "app-icon.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "app-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }

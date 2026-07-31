@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 504.4 265.6" width="504.4" height="265.6">
+  <defs>
+    <linearGradient id="tgMark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F0A8C2"></stop>
+      <stop offset="0.52" stop-color="#E0759A"></stop>
+      <stop offset="1" stop-color="#B07AC8"></stop>
+    </linearGradient>
+  </defs>
+  <g fill="none" stroke="url(#tgMark)" stroke-width="25.6">
+    <circle cx="182.8" cy="132.8" r="100"></circle>
+    <circle cx="321.6" cy="132.8" r="100"></circle>
+  </g>
+</svg>
