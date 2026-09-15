@@ -418,6 +418,17 @@ var CSS_TEXT = [
 ".tgTab svg{width:24px;height:24px;display:block}",
 "#tgBar.open .tgTab{opacity:1}",
 ".tgTab.on{color:var(--color-text)}",
+/* whatever the thumb is currently over */
+".tgTab.hot{color:var(--color-text)}",
+".tgTab.hot svg{transform:scale(1.22) translateY(-3px)}",
+".tgTab svg{transition:transform .18s cubic-bezier(.34,1.42,.64,1)}",
+"#tgHub.hot{transform:translateX(-50%) translateY(-6px) scale(1.06);",
+"  box-shadow:0 0 0 2px var(--tg-ink-r,#E4485B),0 12px 26px -8px rgba(28,37,54,.4)}",
+/* the hint that appears while holding */
+"#tgHint{position:absolute;left:0;right:0;bottom:112px;text-align:center;font-size:11px;",
+"  letter-spacing:.18em;text-transform:uppercase;color:var(--tg-mute,rgba(28,37,54,.45));",
+"  opacity:0;transition:opacity .2s ease;pointer-events:none}",
+"#tgBar.holding #tgHint{opacity:1}",
 ".tgTab .bdg{position:absolute;top:-5px;right:8px;background:var(--tg-ink-r,#E4485B);",
 "  color:#1C2536;font-size:10px;min-width:16px;height:16px;border-radius:2px;display:flex;",
 "  align-items:center;justify-content:center;padding:0 3px;font-weight:500;line-height:1;",
@@ -450,7 +461,31 @@ var TABS = [
 ];
 var SLOTS = [0.12, 0.31, 0.50, 0.69, 0.88];   // discover, likes, together, prefs, profile
 
-var phone, bar, surf, ind, hub, tabs = [], open = false;
+var phone, bar, surf, ind, hub, hint, tabs = [], open = false;
+var dragging = false, moved = false, held = false, holdT = null, hot = null, startX = 0, startY = 0;
+
+/* which destination is under the thumb; straight up means Together */
+function pick(x, y){
+  if(!open) return null;
+  var hr = hub.getBoundingClientRect();
+  var hx = hr.left + hr.width / 2, hy = hr.top + hr.height / 2;
+  if(y < hy - 34) return "together";
+  if(Math.sqrt((x-hx)*(x-hx) + (y-hy)*(y-hy)) < hr.width / 2) return null;  // still on the mark
+  var best = null, bd = 58;
+  tabs.forEach(function(t){
+    var r = t.getBoundingClientRect();
+    var d = Math.abs(x - (r.left + r.width / 2));
+    if(d < bd){ bd = d; best = t; }
+  });
+  return best;
+}
+function highlight(t){
+  if(t === hot) return;
+  hot = t;
+  tabs.forEach(function(el){ setClass(el, "hot", el === t); });
+  setClass(hub, "hot", t === "together");
+  if(t && navigator.vibrate) try { navigator.vibrate(5); } catch(_){}
+}
 
 /* the app's tab bar is a sibling of the phone under [data-tg-frame], not a
    child of it, so these look document-wide rather than inside the phone */
@@ -487,7 +522,9 @@ function build(){
   bar = document.createElement("div"); bar.id = "tgBar";
   surf = document.createElement("div"); surf.id = "tgSurf";
   ind = document.createElement("div"); ind.id = "tgInd";
-  bar.appendChild(surf); bar.appendChild(ind);
+  hint = document.createElement("div"); hint.id = "tgHint";
+  hint.textContent = "slide to choose · up for together";
+  bar.appendChild(surf); bar.appendChild(ind); bar.appendChild(hint);
 
   TABS.forEach(function(t){
     var el = document.createElement("button");
@@ -510,12 +547,49 @@ function build(){
       '<circle cx="8.9" cy="12" r="5.7" stroke="currentColor"/>' +
       '<circle cx="15.1" cy="12" r="5.7" stroke="#E4485B"/>' +
     '</svg><span class="lbl">together</span><i class="hbdg" style="display:none"></i>';
-  hub.addEventListener("click", function(e){
-    e.stopPropagation();
-    if(!open){ setOpen(true); return; }        // first tap opens the menu
-    var b = tabButtons(); if(b[2]) b[2].click(); // a second tap goes to together
-    setOpen(false);
+  /* Hold the mark and the menu opens under your thumb; slide onto a
+     destination and let go to open it. Sliding straight up picks Together
+     itself, which is the one your thumb is already sitting on. A plain tap
+     just leaves the menu open so it works with a mouse too. */
+  hub.addEventListener("pointerdown", function(e){
+    e.preventDefault(); e.stopPropagation();
+    dragging = true; moved = false;
+    startX = e.clientX; startY = e.clientY;
+    try { hub.setPointerCapture(e.pointerId); } catch(_){}
+    clearTimeout(holdT);
+    holdT = setTimeout(function(){
+      held = true;
+      setOpen(true);
+      bar.classList.add("holding");
+      if(navigator.vibrate) try { navigator.vibrate(10); } catch(_){}
+    }, 190);
   });
+  hub.addEventListener("pointermove", function(e){
+    if(!dragging) return;
+    if(Math.abs(e.clientX - startX) > 6 || Math.abs(e.clientY - startY) > 6) moved = true;
+    if(!open) return;
+    highlight(pick(e.clientX, e.clientY));
+  });
+  function finish(e){
+    if(!dragging) return;
+    dragging = false;
+    clearTimeout(holdT);
+    bar.classList.remove("holding");
+    var target = (held && open) ? pick(e ? e.clientX : startX, e ? e.clientY : startY) : null;
+    highlight(null);
+    if(target){                       // released over something — open it
+      var b = tabButtons();
+      var idx = (target === "together") ? 2 : +target.dataset.idx;
+      if(b[idx]) b[idx].click();
+      setOpen(false);
+    } else if(!held){                 // a quick tap: leave the menu up
+      setOpen(true);
+    }
+    held = false;
+  }
+  hub.addEventListener("pointerup", finish);
+  hub.addEventListener("pointercancel", function(){ dragging = false; held = false;
+    clearTimeout(holdT); bar.classList.remove("holding"); highlight(null); });
   bar.appendChild(hub);
   document.body.appendChild(bar);
 
@@ -557,7 +631,7 @@ function setOpen(v){
   if(open === v) return;
   open = v;
   bar.classList.toggle("open", v);
-  place(); paint();
+  place(); paint(); sync();
 }
 
 function setStyleProp(el, p, val){ if(el.style[p] !== val) el.style[p] = val; }
@@ -588,11 +662,13 @@ function sync(){
     var m = (likes.textContent || "").replace(/likes/i, "").trim();
     if(/^\d+$/.test(m)) txt = m;
   }
-  var show = txt && activeIndex() !== 1;
+  // the likes tab always carries the count; the mark only borrows it while the
+  // bar is shut, because showing both at once reads as two separate counts
+  var show = !!txt && activeIndex() !== 1;
   var big = hub.querySelector(".hbdg"), small = tabs[1] && tabs[1].querySelector(".bdg");
   if(big){
     if(big.textContent !== txt) big.textContent = txt;
-    setStyleProp(big, "display", show ? "flex" : "none");
+    setStyleProp(big, "display", (show && !open) ? "flex" : "none");
   }
   if(small){
     if(small.textContent !== txt) small.textContent = txt;
