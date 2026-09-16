@@ -5,8 +5,8 @@
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#14101A",
-  "theme_color": "#14101A",
+  "background_color": "#E3E1D8",
+  "theme_color": "#E3E1D8",
   "icons": [
     {
       "src": "app-icon.png",
