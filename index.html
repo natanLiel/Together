@@ -397,6 +397,9 @@ if (window.__tgBar) return; window.__tgBar = 1;
 var CSS_TEXT = [
 "[data-tg-tabs]{visibility:hidden !important}",
 /* whatever scrolls always ends above the mark, never under it */
+/* Discover is the one page allowed to run under the mark: the hidden tab bar
+   stops holding its strip of ground there, so the photos reach the bottom */
+"html[data-tg-page=discover] [data-tg-tabs]{position:absolute !important;left:0;right:0;bottom:0}",
 "html[data-tg-dock] .tg-scroll{padding-bottom:var(--tg-dock-clear,112px) !important;scroll-padding-bottom:var(--tg-dock-clear,112px)}",
 /* mounted on <body>, not inside the phone: the component runtime reconciles
    its own children and will drop anything of ours it finds among them */
@@ -711,6 +714,11 @@ function sync(){
   placeRect();
   var haveTabs = !!tabBar();
   setStyleProp(bar, "display", haveTabs ? "block" : "none");
+  var pg = (haveTabs && activeIndex() === 0) ? "discover" : "";
+  if((document.documentElement.getAttribute("data-tg-page") || "") !== pg){
+    if(pg) document.documentElement.setAttribute("data-tg-page", pg);
+    else document.documentElement.removeAttribute("data-tg-page");
+  }
   clearance(haveTabs);
   if(!haveTabs){
     // onboarding, or the chat itself: no bar at all
