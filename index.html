@@ -447,6 +447,16 @@ var CSS_TEXT = [
 "  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
 "#tgConn .mid{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}",
 "#tgConn .dot{width:7px;height:7px;border-radius:50%;background:var(--tg-over,#57304F);flex:none}",
+/* the swipe-up cue: a single hairline chevron that breathes upward, faintly.
+   Only while connected, because only then does up lead to a conversation. */
+"#tgUp{position:absolute;left:50%;bottom:83px;width:14px;height:8px;margin-left:-7px;z-index:5;",
+"  color:var(--tg-over,#57304F);opacity:0;pointer-events:none;transition:opacity .45s ease}",
+"#tgUp svg{display:block;width:14px;height:8px;overflow:visible}",
+"#tgUp.on{animation:tgUpDrift 3.4s ease-in-out infinite}",
+"@keyframes tgUpDrift{0%,100%{transform:translateY(1px);opacity:.22}",
+"  50%{transform:translateY(-3px);opacity:.58}}",
+"#tgBar.holding #tgUp,#tgBar.open #tgUp{animation:none;opacity:0}",
+"@media (prefers-reduced-motion:reduce){#tgUp.on{animation:none;opacity:.38}}",
 /* while you are with someone the mark carries it too */
 "#tgHub.conn{box-shadow:0 0 0 1.5px var(--tg-over,#57304F)}",
 "#tgHub.conn .ring2{stroke:var(--tg-over,#57304F) !important}",
@@ -484,7 +494,7 @@ var TABS = [
 ];
 var SLOTS = [0.12, 0.31, 0.50, 0.69, 0.88];   // discover, likes, together, prefs, profile
 
-var phone, bar, surf, ind, hub, hint, conn, tabs = [], open = false;
+var phone, bar, surf, ind, hub, hint, conn, up, tabs = [], open = false;
 var BAR_H = 96;
 
 function attr(n){ var p = getPhone(); return p ? p.getAttribute(n) : null; }
@@ -568,6 +578,10 @@ function build(){
   hint = document.createElement("div"); hint.id = "tgHint";
   hint.textContent = "slide to choose · up for together";
   bar.appendChild(surf); bar.appendChild(ind); bar.appendChild(hint);
+  up = document.createElement("div"); up.id = "tgUp"; up.setAttribute("aria-hidden", "true");
+  up.innerHTML = '<svg viewBox="0 0 14 8" fill="none" stroke="currentColor" stroke-width="1.4" ' +
+                 'stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 6.5L7 1.8l5.5 4.7"/></svg>';
+  bar.appendChild(up);
 
   TABS.forEach(function(t){
     var el = document.createElement("button");
@@ -721,6 +735,7 @@ function sync(){
     // onboarding, or the chat itself: no bar, and no strip either
     if(open) setOpen(false);
     if(conn){ setClass(conn, "on", false); setClass(conn, "in", false); }
+    if(up) setClass(up, "on", false);
     setClass(hub, "conn", connected());
     return;
   }
@@ -745,6 +760,7 @@ function sync(){
   /* the connection strip: present on every tab screen except the chat itself */
   var isConn = connected(), strip = isConn && !inChat() && haveTabs;
   setClass(hub, "conn", isConn);
+  if(up) setClass(up, "on", isConn && !open);
   if(conn){
     setClass(conn, "on", strip);
     if(strip){
