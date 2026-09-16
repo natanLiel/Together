@@ -1,13 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 504.4 265.6" width="504.4" height="265.6">
+  <!--
+    Together — the mark. Two rings, linked.
+
+    Geometry is fixed, not eyeballed: radius 100, stroke 25.6, centres 138.8
+    apart (a separation-to-radius ratio of 1.388). The rings cross at
+    (252.2, 60.8) and (252.2, 204.8).
+
+    Ink one passes over ink two at the top crossing, and under it at the
+    bottom. Each ring is cut by a mask where the other passes over it, so the
+    mark is transparent and sits correctly on any ground.
+  -->
   <defs>
-    <linearGradient id="tgMark" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#F0A8C2"></stop>
-      <stop offset="0.52" stop-color="#E0759A"></stop>
-      <stop offset="1" stop-color="#B07AC8"></stop>
-    </linearGradient>
+    <mask id="tg-cut-blue" maskUnits="userSpaceOnUse" x="0" y="0" width="504.4" height="265.6">
+      <rect width="504.4" height="265.6" fill="#fff"/>
+      <path d="M274.653 221.095A100 100 0 0 1 234.997 182.8" fill="none" stroke="#000" stroke-width="39.6"/>
+    </mask>
+    <mask id="tg-cut-rose" maskUnits="userSpaceOnUse" x="0" y="0" width="504.4" height="265.6">
+      <rect width="504.4" height="265.6" fill="#fff"/>
+      <path d="M229.747 44.505A100 100 0 0 1 269.403 82.8" fill="none" stroke="#000" stroke-width="39.6"/>
+    </mask>
   </defs>
-  <g fill="none" stroke="url(#tgMark)" stroke-width="25.6">
-    <circle cx="182.8" cy="132.8" r="100"></circle>
-    <circle cx="321.6" cy="132.8" r="100"></circle>
-  </g>
+  <circle cx="182.8" cy="132.8" r="100" fill="none" stroke="#2A3F6E" stroke-width="25.6" mask="url(#tg-cut-blue)"/>
+  <circle cx="321.6" cy="132.8" r="100" fill="none" stroke="#E4485B" stroke-width="25.6" mask="url(#tg-cut-rose)"/>
 </svg>
