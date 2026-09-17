@@ -397,9 +397,9 @@ if (window.__tgBar) return; window.__tgBar = 1;
 var CSS_TEXT = [
 "[data-tg-tabs]{visibility:hidden !important}",
 /* whatever scrolls always ends above the mark, never under it */
-/* Discover is the one page allowed to run under the mark: the hidden tab bar
-   stops holding its strip of ground there, so the photos reach the bottom */
-"html[data-tg-page=discover] [data-tg-tabs]{position:absolute !important;left:0;right:0;bottom:0}",
+/* the hidden tab bar holds no strip of ground: every page runs to the bottom
+   edge, and the scroll padding below keeps the last item clear of the mark */
+"html[data-tg-dock] [data-tg-tabs]{position:absolute !important;left:0;right:0;bottom:0}",
 "html[data-tg-dock] .tg-scroll{padding-bottom:var(--tg-dock-clear,112px) !important;scroll-padding-bottom:var(--tg-dock-clear,112px)}",
 /* mounted on <body>, not inside the phone: the component runtime reconciles
    its own children and will drop anything of ours it finds among them */
