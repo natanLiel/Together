@@ -481,9 +481,9 @@ var CSS_TEXT = [
 "  font-style:normal;text-transform:none;box-shadow:0 0 0 2px var(--color-bg)}",
 "#tgBar.open #tgHub .hbdg{display:none}",
 /* ── depth pass: the bar as a pane of glass, the mark as a domed button ── */
-"#tgSurf{background:linear-gradient(180deg,rgba(243,240,231,.86),rgba(222,218,206,.94)) !important;",
-"  -webkit-backdrop-filter:blur(26px) saturate(1.7);backdrop-filter:blur(26px) saturate(1.7);",
-"  border-top:1px solid rgba(255,255,255,.75) !important;border-radius:22px 22px 0 0;",
+"#tgSurf{background:linear-gradient(180deg,color-mix(in srgb,var(--tg-pl,#EFEDE6) 52%,transparent),color-mix(in srgb,var(--tg-pl,#EFEDE6) 74%,transparent)) !important;",
+"  -webkit-backdrop-filter:blur(30px) saturate(1.9) brightness(1.06);backdrop-filter:blur(30px) saturate(1.9) brightness(1.06);",
+"  border-top:1px solid rgba(255,255,255,.75) !important;border-radius:22px 22px var(--tg-phone-r,44px) var(--tg-phone-r,44px);",
 "  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 -1px 2px rgba(28,37,54,.10),0 -20px 40px -22px rgba(28,37,54,.55)}",
 /* a lit pill behind whichever icon is live */
 ".tgTab::before{content:'';position:absolute;top:-9px;left:50%;width:46px;height:46px;margin-left:-23px;",
@@ -494,7 +494,8 @@ var CSS_TEXT = [
 ".tgTab.on::before,.tgTab.hot::before{opacity:1;transform:none}",
 ".tgTab.on::before{box-shadow:0 1px 2px rgba(28,37,54,.2),0 12px 22px -10px rgba(28,37,54,.65),inset 0 1px 0 rgba(255,255,255,1),0 0 0 1.5px rgba(228,72,91,.45)}",
 ".tgTab.hot::before{transform:scale(1.06);box-shadow:0 2px 5px rgba(28,37,54,.26),0 16px 26px -10px rgba(28,37,54,.7),inset 0 1px 0 rgba(255,255,255,1),0 0 0 2px rgba(228,72,91,.6)}",
-".tgTab svg,.tgTab span,.tgTab .bdg{position:relative;z-index:1}",
+".tgTab svg,.tgTab span{position:relative;z-index:1}",
+".tgTab .bdg{z-index:2}",
 ".tgTab.on,.tgTab.hot{color:#1C2536}",
 /* the rule above the live destination, as a lit pill */
 "#tgInd{height:4px !important;width:40px !important;border-radius:999px;",
@@ -807,6 +808,21 @@ function clearance(on){
   var sc = document.querySelector(".tg-scroll"), ph = getPhone();
   if(!sc || !ph) return;
   var shv = sc.clientHeight + "px";
+  var root2 = document.documentElement, cs = getComputedStyle(ph);
+  var tinted = ph.querySelector(".tgd-root") || ph.querySelector("[style*=\"--pl\"]");
+  var pcs = tinted ? getComputedStyle(tinted) : cs;
+  [["--tg-pl", "--pl"], ["--tg-pv", "--pv"], ["--tg-pd", "--pd"]].forEach(function(pair){
+    var v = (pcs.getPropertyValue(pair[1]) || "").trim();
+    if(v && root2.style.getPropertyValue(pair[0]) !== v) root2.style.setProperty(pair[0], v);
+  });
+  // the phone itself is squared in the app; the curve belongs to its frame
+  var rad = "", node = ph;
+  for(var q = 0; q < 4 && node; q++){
+    var rv = parseFloat(getComputedStyle(node).borderBottomLeftRadius) || 0;
+    if(rv > 4){ rad = Math.max(0, rv - 6) + "px"; break; }
+    node = node.parentElement;
+  }
+  if(rad && root2.style.getPropertyValue("--tg-phone-r") !== rad) root2.style.setProperty("--tg-phone-r", rad);
   if(root.style.getPropertyValue("--tg-sh") !== shv) root.style.setProperty("--tg-sh", shv);
   var markTop = ph.getBoundingClientRect().bottom - 78;      // hub: 58px tall, 20px up
   var need = Math.max(24, Math.ceil(sc.getBoundingClientRect().bottom - markTop + 20)) + "px";
