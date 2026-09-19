@@ -425,7 +425,7 @@ var CSS_TEXT = [
 ".tgTab.on{color:var(--color-text)}",
 /* whatever the thumb is currently over */
 ".tgTab.hot{color:var(--color-text)}",
-".tgTab.hot svg{transform:scale(1.1)}",
+
 ".tgTab svg{transition:transform .18s cubic-bezier(.34,1.42,.64,1)}",
 "#tgHub.hot{transform:translateX(-50%) translateY(-6px) scale(1.06);",
 "  box-shadow:0 0 0 2px var(--tg-ink-r,#E4485B),0 12px 26px -8px rgba(28,37,54,.4)}",
@@ -485,16 +485,17 @@ var CSS_TEXT = [
 "  -webkit-backdrop-filter:blur(30px) saturate(1.9) brightness(1.06);backdrop-filter:blur(30px) saturate(1.9) brightness(1.06);",
 "  border-top:1px solid rgba(255,255,255,.75) !important;border-radius:22px 22px var(--tg-phone-r,44px) var(--tg-phone-r,44px);",
 "  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 -1px 2px rgba(28,37,54,.10),0 -20px 40px -22px rgba(28,37,54,.55)}",
-/* a lit pill behind whichever icon is live */
-".tgTab::before{content:'';position:absolute;top:-6px;left:50%;width:50px;height:34px;margin-left:-25px;",
-"  border-radius:999px;opacity:0;transform:scale(.7);pointer-events:none;",
-"  background:linear-gradient(163deg,#FFFFFF,rgba(240,237,228,.92));",
-"  box-shadow:0 1px 2px rgba(28,37,54,.2),0 12px 22px -10px rgba(28,37,54,.65),inset 0 1px 0 rgba(255,255,255,1);",
+/* the live icon lifts off the glass: it rises, takes the ink, catches a
+   highlight on top and drops a small soft shadow on the pane below it */
+".tgTab::before{content:'';position:absolute;top:27px;left:50%;width:26px;height:7px;margin-left:-13px;",
+"  border-radius:50%;opacity:0;transform:scaleX(.5);pointer-events:none;",
+"  background:radial-gradient(closest-side,rgba(28,37,54,.34),rgba(28,37,54,0));",
 "  transition:opacity .22s ease,transform .3s cubic-bezier(.34,1.42,.64,1)}",
 ".tgTab.on::before,.tgTab.hot::before{opacity:1;transform:none}",
-".tgTab.on::before{box-shadow:0 1px 2px rgba(28,37,54,.2),0 12px 22px -10px rgba(28,37,54,.65),inset 0 1px 0 rgba(255,255,255,1),0 0 0 1.5px rgba(228,72,91,.45)}",
-".tgTab.hot::before{transform:scale(1.06);box-shadow:0 2px 5px rgba(28,37,54,.26),0 16px 26px -10px rgba(28,37,54,.7),inset 0 1px 0 rgba(255,255,255,1),0 0 0 2px rgba(228,72,91,.6)}",
-".tgTab svg,.tgTab span{position:relative;z-index:1}",
+".tgTab.on svg,.tgTab.hot svg{color:#E4485B;transform:translateY(-5px) scale(1.14);",
+"  filter:drop-shadow(0 1px 0 rgba(255,255,255,.95)) drop-shadow(0 4px 3px rgba(228,72,91,.28)) drop-shadow(0 2px 1px rgba(28,37,54,.18))}",
+".tgTab.hot:not(.on) svg{color:#1C2536;filter:drop-shadow(0 1px 0 rgba(255,255,255,.95)) drop-shadow(0 4px 3px rgba(28,37,54,.26))}",
+".tgTab.on span{font-weight:500}",".tgTab svg,.tgTab span{position:relative;z-index:1}",
 ".tgTab .bdg{z-index:2}",
 /* Together chosen: a thicker ring and a glassier dome, no rule above it */
 "#tgBar.open #tgHub.on{background:radial-gradient(120% 120% at 30% 14%,#FFFFFF 0%,#FDFCF8 38%,#EFEAE0 100%) !important;",
