@@ -1,0 +1,67 @@
+<div class="tgd-hero">
+                        <div class="tgd-hero-img tg-tap" style="background:{{ __S__.hero.bg }}" sc-camel-on-click="{{ __S__.hero.open }}"></div>
+                        <div class="tgd-hero-shade"></div>
+                        <span class="tgd-count">{{ __S__.hero.count }}</span>
+                        <div class="tgd-hero-info">
+                          <div style="display:flex;align-items:center;gap:8px">
+                            <h2 class="tgd-name">{{ __S__.hero.name }}</h2>
+                            <sc-if value="{{ __S__.hero.verified }}">
+                              <span class="tgd-check" title="Verified"><svg width="12" height="12" sc-camel-view-box="0 0 24 24" fill="none" stroke="#FBFAF6" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>
+                            </sc-if>
+                          </div>
+                          <div class="tgd-meta">{{ __S__.hero.city }}</div>
+                          <div class="tgd-chips">
+                            <span>{{ __S__.hero.job }}</span>
+                            <span>{{ __S__.hero.intent }}</span>
+                            <span>{{ __S__.hero.dist }}</span>
+                          </div>
+                        </div>
+                        <span class="tgd-heart"><button class="tg-tap" sc-camel-on-click="{{ __S__.hero.like }}" aria-label="Like this photo">__HEART21__</button></span>
+                      </div>
+
+                      <div class="tgm">
+                        <sc-for list="{{ __S__.tiles }}" as="t" hint-placeholder-count="8">
+                          <div class="tgt {{ t.cls }}">
+                            <sc-if value="{{ t.isPhoto }}">
+                              <div class="tgt-img tg-tap" style="background:{{ t.bg }}" sc-camel-on-click="{{ t.open }}"></div>
+                              <button class="tgt-heart tg-tap" sc-camel-on-click="{{ t.like }}" aria-label="Like this photo">__HEART15__</button>
+                            </sc-if>
+                            <sc-if value="{{ t.isPrompt }}">
+                              <div class="tgt-card tg-tap" sc-camel-on-click="{{ t.like }}">
+                                <div class="tgt-q">{{ t.q }}</div>
+                                <p class="tgt-a">{{ t.a }}</p>
+                              </div>
+                              <button class="tgt-heart tg-tap" sc-camel-on-click="{{ t.like }}" aria-label="Like this answer">__HEART15__</button>
+                            </sc-if>
+                            <sc-if value="{{ t.isVideo }}">
+                              <div class="tgt-img tgt-vimg tg-tap" style="background:{{ t.bg }}" sc-camel-on-click="{{ t.play }}"></div>
+                              <span class="tgt-play"><svg width="16" height="16" sc-camel-view-box="0 0 24 24" fill="#FBFAF6"><path d="M8 5.5v13l11-6.5z"></path></svg></span>
+                              <span class="tgt-dur">{{ t.dur }}</span>
+                              <i class="tgt-prog" style="animation-duration:{{ t.secs }}"></i>
+                              <button class="tgt-heart tg-tap" sc-camel-on-click="{{ t.like }}" aria-label="Like this video">__HEART15__</button>
+                            </sc-if>
+                            <sc-if value="{{ t.isVoice }}">
+                              <div class="tgt-vrow">
+                                <button class="tgt-vplay tg-tap" sc-camel-on-click="{{ t.play }}" aria-label="Play voice note"><svg width="15" height="15" sc-camel-view-box="0 0 24 24" fill="#FBFAF6"><path d="M8 5.5v13l11-6.5z"></path></svg></button>
+                                <div class="tgt-vtext">
+                                  <div class="tgt-q">{{ t.q }}</div>
+                                  <div class="tgd-wave tgt-wave">
+                                    <sc-for list="{{ t.bars }}" as="w" hint-placeholder-count="22">
+                                      <i style="height:{{ w.h }};animation-delay:{{ w.d }}"></i>
+                                    </sc-for>
+                                  </div>
+                                </div>
+                                <span class="tgd-vdur">{{ t.dur }}</span>
+                                <button class="tgt-heart tgt-heart-inline tg-tap" sc-camel-on-click="{{ t.like }}" aria-label="Like this voice note">__HEART15__</button>
+                              </div>
+                            </sc-if>
+                            <sc-if value="{{ t.isDetails }}">
+                              <div class="tgt-dtl">
+                                <sc-for list="{{ t.tags }}" as="g" hint-placeholder-count="3">
+                                  <span>{{ g.label }}</span>
+                                </sc-for>
+                              </div>
+                            </sc-if>
+                          </div>
+                        </sc-for>
+                      </div>

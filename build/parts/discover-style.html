@@ -1,0 +1,87 @@
+<style>
+/* ── Discover: each profile takes the colour of its first photo ─────────── */
+.tgd-root{--pv:#E4485B;--pd:#1C2536;--pl:#EFEDE6;min-height:100%;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--pl) 92%,var(--color-bg)) 0,color-mix(in srgb,var(--pl) 55%,var(--color-bg)) 640px,var(--color-bg) 1400px);
+  transition:background .5s ease}
+.tgd-root .tgd-bar{background:color-mix(in srgb,var(--pl) 80%,transparent) !important}
+.tgd-hero{position:relative;margin:0 calc(-1 * var(--space-4));isolation:isolate;overflow:hidden;
+  box-shadow:0 30px 60px -34px color-mix(in srgb,var(--pd) 80%,transparent)}
+.tgd-hero-img{aspect-ratio:3/4.15;width:100%;animation:tgd-settle 1.1s cubic-bezier(.2,.8,.2,1) both}
+@keyframes tgd-settle{from{transform:scale(1.06);filter:saturate(.7)}to{transform:none;filter:none}}
+.tgd-hero-shade{position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(to top,color-mix(in srgb,var(--pd) 94%,transparent) 0%,color-mix(in srgb,var(--pd) 62%,transparent) 22%,transparent 50%),
+             linear-gradient(to bottom,color-mix(in srgb,var(--pl) 55%,transparent) 0%,transparent 16%)}
+.tgd-count{position:absolute;top:14px;inset-inline-end:16px;height:26px;display:inline-flex;align-items:center;padding:0 11px;border-radius:2px;
+  font-size:12.5px;color:#FBFAF6;background:color-mix(in srgb,var(--pd) 55%,transparent);backdrop-filter:blur(8px)}
+.tgd-count:empty{display:none}
+.tgd-hero-info{position:absolute;inset-inline:20px 80px;bottom:22px;color:#FBFAF6;pointer-events:none;animation:tg-rise .6s .15s ease both}
+.tgd-name{font-size:42px;font-weight:600;line-height:1;margin:0;color:#FBFAF6;letter-spacing:-.02em;text-shadow:0 2px 18px color-mix(in srgb,var(--pd) 60%,transparent)}
+.tgd-check{width:22px;height:22px;border-radius:50%;background:var(--pv);display:grid;place-items:center;flex:none;box-shadow:0 0 0 2px rgba(251,250,246,.9)}
+.tgd-meta{font-size:13.5px;margin-top:8px;color:rgba(251,250,246,.84)}
+.tgd-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.tgd-chips > span{padding:6px 11px;border-radius:2px;font-size:12.5px;color:#FBFAF6;background:rgba(251,250,246,.14);
+  border:1px solid rgba(251,250,246,.26);backdrop-filter:blur(12px)}
+.tgd-heart{position:absolute;inset-inline-end:16px;bottom:18px;width:48px;height:48px;border-radius:50%;overflow:hidden;display:block;
+  box-shadow:0 6px 18px color-mix(in srgb,var(--pd) 40%,transparent)}
+.tgd-heart button{width:100%;height:100%;border:0;border-radius:50%;background:#FBFAF6;display:grid;place-items:center;cursor:pointer}
+.tgd-prompt{position:relative;margin-top:14px;padding:20px 20px 76px;border-radius:3px;
+  background:color-mix(in srgb,var(--pl) 62%,#FBFAF6);border:1px solid color-mix(in srgb,var(--pv) 18%,transparent);
+  box-shadow:0 12px 30px -22px color-mix(in srgb,var(--pd) 55%,transparent)}
+.tgd-prompt::before{content:"";position:absolute;inset-block:18px;inset-inline-start:0;width:3px;border-radius:2px;background:var(--pv)}
+.tgd-prompt .tgd-heart{bottom:16px;width:44px;height:44px}
+.tgd-q{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:color-mix(in srgb,var(--pd) 70%,transparent)}
+.tgd-a{font-family:var(--font-heading);font-weight:500;font-size:23px;line-height:1.3;margin:8px 0 0;color:#1C2536;text-wrap:pretty}
+.tgd-strip{margin-top:14px}
+.tgd-label{display:flex;align-items:baseline;justify-content:space-between;margin:0 2px 8px}
+.tgd-label > span{font-family:var(--font-heading);font-size:18px;color:var(--pd)}
+.tgd-label > small{font-size:12px;color:color-mix(in srgb,var(--pd) 60%,transparent)}
+.tgd-thumbs{display:grid;gap:6px}
+.tgd-n1{grid-template-columns:1fr}.tgd-n1 .tgd-thumb{aspect-ratio:16/11}
+.tgd-n2{grid-template-columns:1fr 1fr}
+.tgd-n3{grid-template-columns:1fr 1fr 1fr}
+.tgd-n4{grid-template-columns:1fr 1fr}
+.tgd-thumb{position:relative;aspect-ratio:4/5;border-radius:3px;overflow:hidden;cursor:zoom-in;
+  box-shadow:0 10px 24px -16px color-mix(in srgb,var(--pd) 70%,transparent);transition:transform .2s ease}
+.tgd-thumb::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,color-mix(in srgb,var(--pd) 45%,transparent),transparent 45%);pointer-events:none}
+.tgd-miniheart{position:absolute;inset-inline-end:8px;bottom:8px;z-index:1;width:32px;height:32px;border-radius:50%;border:0;background:#FBFAF6;
+  display:grid;place-items:center;cursor:pointer;box-shadow:0 3px 10px rgba(28,37,54,.25)}
+.tgd-details{margin-top:14px;padding:18px 20px;border-radius:3px;background:color-mix(in srgb,var(--pl) 45%,#FBFAF6);border:1px solid color-mix(in srgb,var(--pv) 14%,transparent)}
+.tgd-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.tgd-tags > span{height:30px;display:inline-flex;align-items:center;padding:0 12px;border-radius:2px;font-size:13px;
+  background:color-mix(in srgb,var(--pv) 14%,#FBFAF6);color:color-mix(in srgb,var(--pd) 90%,#000)}
+
+/* the main photo, enlarged and blurred, behind the whole profile; it stays put
+   while the profile scrolls over it */
+.tgd-backdrop{position:sticky;top:0;height:var(--tg-sh,812px);margin-bottom:calc(-1 * var(--tg-sh,812px));z-index:0;overflow:hidden;pointer-events:none}
+.tgd-backdrop-img{position:absolute;inset:-3%;background-size:cover !important;background-position:center 30% !important;filter:blur(9px) saturate(1.1);transform:scale(1.04);
+  animation:tgd-bd .7s ease both}
+@keyframes tgd-bd{from{opacity:0}to{opacity:1}}
+.tgd-backdrop::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--pd) 18%,transparent) 0%,color-mix(in srgb,var(--pd) 8%,transparent) 40%,color-mix(in srgb,var(--pd) 30%,transparent) 100%)}
+.tgd-root > :not(.tgd-backdrop):not(.tgd-bar):not(.ep-bar):not(.ep-tabs),.ep-view > :not(.tgd-backdrop){position:relative;z-index:1}
+.tgd-root .tgd-bar{background:color-mix(in srgb,var(--pl) 38%,transparent) !important;backdrop-filter:blur(18px) saturate(1.2) !important;z-index:3 !important}
+.ep-view{position:relative}
+.ep-bar,.ep-tabs{z-index:6 !important}
+.ep-view .tgd-backdrop{margin-inline:-16px}
+.tgd-prompt,.tgd-voice,.tgd-details{background:color-mix(in srgb,#FBFAF6 82%,transparent) !important;backdrop-filter:blur(14px)}
+.tgd-root .tgd-label > span,.tgd-root .tgd-label > small{color:#FBFAF6 !important;text-shadow:0 1px 10px rgba(28,37,54,.45)}
+.ep-viewnote{color:#1C2536 !important}
+/* interpolated text keeps the look of the element it sits in */
+.tgd-root .sc-interp,.tgv .sc-interp{font:inherit !important;color:inherit !important;letter-spacing:inherit !important;background:none !important;border:0 !important;padding:0 !important;backdrop-filter:none !important}
+
+/* the photo viewer */
+.tgv{position:absolute;inset:0;z-index:20;background:var(--pd);overflow:hidden;animation:tg-in .22s ease}
+.tgv-blur{position:absolute;inset:-40px;filter:blur(38px) saturate(1.3);opacity:.55}
+.tgv-img{position:absolute;inset:70px 0 110px;animation:tgd-settle .5s cubic-bezier(.2,.8,.2,1) both}
+.tgv-zone{position:absolute;top:70px;bottom:110px;width:40%;border:0;background:transparent;cursor:pointer;z-index:1}
+.tgv-prev{inset-inline-start:0}.tgv-next{inset-inline-end:0}
+.tgv-top{position:absolute;top:calc(env(safe-area-inset-top,0px) + 22px);inset-inline:16px;display:flex;align-items:center;gap:14px;z-index:2}
+.tgv-dots{flex:1;display:flex;gap:4px}
+.tgv-dots i{flex:1;height:3px;border-radius:2px;background:#FBFAF6;transition:opacity .2s ease}
+.tgv-close{width:40px;height:40px;border-radius:50%;border:0;background:rgba(251,250,246,.16);display:grid;place-items:center;cursor:pointer}
+.tgv-bottom{position:absolute;inset-inline:20px;bottom:calc(env(safe-area-inset-bottom,0px) + 30px);display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:2;color:#FBFAF6}
+.tgv-name{font-family:var(--font-heading);font-size:24px;line-height:1.1}
+.tgv-count{font-size:12.5px;opacity:.72;margin-top:3px}
+.tgv-like{display:flex;align-items:center;gap:8px;height:48px;padding:0 18px;border:0;border-radius:2px;background:#E4485B;color:#FBFAF6;font:inherit;font-size:15px;cursor:pointer;
+  box-shadow:0 10px 26px -10px rgba(228,72,91,.7)}
+</style>

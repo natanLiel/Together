@@ -1,0 +1,96 @@
+<sc-if value="{{ at.basics }}">
+            <div class="tgb" style="min-height:730px;display:flex;flex-direction:column;padding:24px 20px 70px;animation:tg-in .3s ease">
+              <div style="display:flex;align-items:center;gap:10px;padding-inline-end:64px">
+                <img src="2e1211b0-91e5-44d2-a0a0-5f552f929418" alt="" style="width:30px;height:auto;display:block">
+                <div class="tgb-steps"><i class="on"></i><i></i><i></i></div>
+              </div>
+              <div class="tgb-kicker">Step 1 of 3</div>
+              <h2 style="font-family:var(--font-heading);font-size:40px;line-height:1.05;margin:4px 0 0">The basics</h2>
+              <p class="tgb-lede">A minute of you. Only your first name and your age are ever shown.</p>
+
+              <div class="tgp-label">You</div>
+              <div class="tgp-card tgb-card">
+                <div style="display:flex;gap:var(--space-3)">
+                  <label class="tgb-field">
+                    <span>First name</span>
+                    <input class="tg-vinput {{ nameHasVal }}" value="{{ form.name }}" sc-camel-on-input="{{ set.name }}" sc-camel-on-focus="{{ nameFocus }}" sc-camel-on-blur="{{ nameBlur }}" placeholder="Daniel">
+                  </label>
+                  <label class="tgb-field">
+                    <span>Last name</span>
+                    <input class="tg-vinput {{ lastHasVal }}" value="{{ form.last }}" sc-camel-on-input="{{ set.last }}" sc-camel-on-focus="{{ lastFocus }}" sc-camel-on-blur="{{ lastBlur }}" placeholder="Rosen">
+                  </label>
+                </div>
+                <label class="tgb-field">
+                  <span>Name tag</span>
+                  <div class="tgb-tag tg-lit-wrap {{ handleHasVal }}">
+                    <b>@</b>
+                    <input value="{{ form.handle }}" sc-camel-on-input="{{ set.handle }}" sc-camel-on-focus="{{ handleFocus }}" sc-camel-on-blur="{{ handleBlur }}" placeholder="danielr">
+                  </div>
+                  <small style="color:{{ handleColor }}">{{ handleNote }}</small>
+                </label>
+              </div>
+
+              <div class="tgp-label" style="display:flex;align-items:center;justify-content:space-between">Birthday <span class="tgb-age">{{ ageLabel }}</span></div>
+              <div class="tgp-card tgb-wheelcard">
+                <div class="tg-glass" style="position:relative;border-radius:3px;overflow:hidden;background:transparent !important;border:0 !important;box-shadow:none !important">
+                  <div class="tgb-sel"></div>
+                  <div style="position:relative;display:grid;grid-template-columns:1fr 1.5fr 1.1fr">
+                    <div class="tg-wheel {{ dayLitCls }}" data-wheel="d" sc-camel-on-scroll="{{ set.bDay }}">
+                      <sc-for list="{{ dayOpts }}" as="o" hint-placeholder-count="31">
+                        <div style="color:{{ o.color }};font-weight:{{ o.weight }}">{{ o.label }}</div>
+                      </sc-for>
+                    </div>
+                    <div class="tg-wheel {{ monthLitCls }}" data-wheel="m" sc-camel-on-scroll="{{ set.bMonth }}">
+                      <sc-for list="{{ monthOpts }}" as="o" hint-placeholder-count="12">
+                        <div style="color:{{ o.color }};font-weight:{{ o.weight }}">{{ o.label }}</div>
+                      </sc-for>
+                    </div>
+                    <div class="tg-wheel {{ yearLitCls }}" data-wheel="y" sc-camel-on-scroll="{{ set.bYear }}">
+                      <sc-for list="{{ yearOpts }}" as="o" hint-placeholder-count="40">
+                        <div style="color:{{ o.color }};font-weight:{{ o.weight }}">{{ o.label }}</div>
+                      </sc-for>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p class="tgb-note">Scroll each column. Your age shows on your profile, never the date.</p>
+
+              <div class="tgp-label">I am</div>
+              <div class="tgb-gender">
+                <sc-for list="{{ bGender }}" as="g" hint-placeholder-count="3">
+                  <button type="button" class="tgp-tile tg-tap" style="border-color:{{ g.bd }};background:{{ g.bg }}" sc-camel-on-click="{{ g.pick }}">
+                    <svg sc-camel-view-box="0 0 40 40" style="width:30px;height:30px;display:block" aria-hidden="true"><circle cx="20" cy="20" r="13" fill="none" stroke="{{ g.ink }}" stroke-width="5"></circle></svg>
+                    <span class="tgp-tiletitle">{{ g.label }}</span>
+                    <span class="tgp-tick" style="opacity:{{ g.on }}"><svg width="12" height="12" sc-camel-view-box="0 0 24 24" fill="none" stroke="#FBFAF6" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>
+                  </button>
+                </sc-for>
+              </div>
+
+              <div class="tgp-label">Show me</div>
+              <div class="tgp-seg">
+                <sc-for list="{{ bSeeking }}" as="s" hint-placeholder-count="3">
+                  <button type="button" class="tg-tap" style="background:{{ s.bg }};color:{{ s.fg }};box-shadow:{{ s.sh }}" sc-camel-on-click="{{ s.pick }}">{{ s.label }}</button>
+                </sc-for>
+              </div>
+
+              <div class="tgp-label">What you are here for</div>
+              <div class="tgp-tiles">
+                <sc-for list="{{ bIntent }}" as="it" hint-placeholder-count="3">
+                  <button type="button" class="tgp-tile tg-tap" style="border-color:{{ it.bd }};background:{{ it.bg }}" sc-camel-on-click="{{ it.pick }}">
+                    <svg sc-camel-view-box="0 0 504.4 265.6" style="width:40px;height:auto;display:block" aria-hidden="true">
+                      <circle cx="182.8" cy="132.8" r="100" fill="none" stroke="#2A3F6E" stroke-width="26" stroke-dasharray="{{ it.dashL }}"></circle>
+                      <circle cx="321.6" cy="132.8" r="100" fill="none" stroke="#E4485B" stroke-width="26" stroke-dasharray="{{ it.dashR }}"></circle>
+                    </svg>
+                    <span class="tgp-tiletitle">{{ it.label }}</span>
+                    <span class="tgp-tilesub">{{ it.sub }}</span>
+                    <span class="tgp-tick" style="opacity:{{ it.on }}"><svg width="12" height="12" sc-camel-view-box="0 0 24 24" fill="none" stroke="#FBFAF6" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>
+                  </button>
+                </sc-for>
+              </div>
+
+              <div style="flex:1;min-height:var(--space-6)"></div>
+              <p style="font-size:13px;color:color-mix(in srgb,var(--color-text) 55%,transparent);margin:20px 0 8px">{{ basicsHint }}</p>
+              <button class="btn {{ basicsContClass }} tg-imgbtn tg-tap tg-cased" style="height:58px;font-family:var(--font-heading);font-size:18.5px" disabled="{{ basicsInvalid }}" sc-camel-on-click="{{ go.photos }}">Continue</button>
+            </div>
+          </sc-if>
+

@@ -1,0 +1,86 @@
+<sc-if value="{{ at.prefs }}">
+            <div class="tgp" style="padding:var(--space-2) var(--space-4) var(--space-8);animation:tg-in .3s ease">
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+                <span style="font-family:var(--font-heading);font-size:22px">Preferences</span>
+                <span class="tgp-state" style="opacity:{{ prefsStateOn }}">{{ prefsState }}</span>
+              </div>
+              <p style="font-size:12.5px;color:color-mix(in srgb,var(--color-text) 55%,transparent);margin:2px 0 0">Matching runs both ways. Only people who fit this will see you.</p>
+
+              <div class="tgp-label">Discovery</div>
+              <div class="tgp-card">
+                <div class="tgp-row tgp-col">
+                  <div class="tgp-head"><span>Maximum distance</span><b>{{ distLabel }}</b></div>
+                  <div class="tgp-range tgp-single" style="--a:0;--b:{{ distB }}">
+                    <div class="tgp-track"><i></i></div>
+                    <input type="range" min="5" max="100" step="5" value="{{ prefs.dist }}" sc-camel-on-input="{{ set.dist }}" aria-label="Maximum distance">
+                  </div>
+                </div>
+                <button class="tgp-row tgp-switchrow" sc-camel-on-click="{{ set.strictDist }}" role="switch" aria-checked="{{ prefs.strictDist }}">
+                  <span class="tgp-txt"><span>Only within this distance</span><small>Otherwise we show a few people just past it when you run out.</small></span>
+                  <span class="tgp-sw" style="background:{{ sw.dist.bg }}"><i style="transform:{{ sw.dist.x }}"></i></span>
+                </button>
+                <div class="tgp-row tgp-col">
+                  <div class="tgp-head"><span>Age range</span><b>{{ prefAgeLabel }}</b></div>
+                  <div class="tgp-range" style="--a:{{ ageA }};--b:{{ ageB }}">
+                    <div class="tgp-track"><i></i></div>
+                    <input type="range" min="18" max="80" value="{{ prefs.ageMin }}" sc-camel-on-input="{{ set.ageMin }}" aria-label="Youngest">
+                    <input type="range" min="18" max="80" value="{{ prefs.ageMax }}" sc-camel-on-input="{{ set.ageMax }}" aria-label="Oldest">
+                  </div>
+                </div>
+                <button class="tgp-row tgp-switchrow" sc-camel-on-click="{{ set.strictAge }}" role="switch" aria-checked="{{ prefs.strictAge }}">
+                  <span class="tgp-txt"><span>Only this age range</span><small>Otherwise a year either side can show up.</small></span>
+                  <span class="tgp-sw" style="background:{{ sw.age.bg }}"><i style="transform:{{ sw.age.x }}"></i></span>
+                </button>
+              </div>
+
+              <div class="tgp-label">Show me</div>
+              <div class="tgp-seg">
+                <sc-for list="{{ seekOpts }}" as="opt" hint-placeholder-count="3">
+                  <button class="tg-tap" style="background:{{ opt.bg }};color:{{ opt.fg }};box-shadow:{{ opt.sh }}" sc-camel-on-click="{{ opt.toggle }}">{{ opt.label }}</button>
+                </sc-for>
+              </div>
+
+              <div class="tgp-label">What they are here for</div>
+              <div class="tgp-tiles">
+                <sc-for list="{{ prefIntentOpts }}" as="it" hint-placeholder-count="3">
+                  <button class="tgp-tile tg-tap" style="border-color:{{ it.bd }};background:{{ it.bg }}" sc-camel-on-click="{{ it.pick }}">
+                    <svg sc-camel-view-box="0 0 504.4 265.6" style="width:40px;height:auto;display:block" aria-hidden="true">
+                      <circle cx="182.8" cy="132.8" r="100" fill="none" stroke="#2A3F6E" stroke-width="26" stroke-dasharray="{{ it.dashL }}"></circle>
+                      <circle cx="321.6" cy="132.8" r="100" fill="none" stroke="#E4485B" stroke-width="26" stroke-dasharray="{{ it.dashR }}" style="opacity:{{ it.op }}"></circle>
+                    </svg>
+                    <span class="tgp-tiletitle">{{ it.label }}</span>
+                    <span class="tgp-tilesub">{{ it.sub }}</span>
+                    <span class="tgp-tick" style="opacity:{{ it.on }}"><svg width="12" height="12" sc-camel-view-box="0 0 24 24" fill="none" stroke="#FBFAF6" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>
+                  </button>
+                </sc-for>
+              </div>
+
+              <div class="tgp-label">Kids</div>
+              <div class="tgp-chips">
+                <sc-for list="{{ kidsOpts }}" as="k" hint-placeholder-count="4">
+                  <button class="tg-tap" style="background:{{ k.bg }};color:{{ k.fg }};border-color:{{ k.bd }}" sc-camel-on-click="{{ k.pick }}">{{ k.label }}</button>
+                </sc-for>
+              </div>
+
+              <div class="tgp-label">Trust</div>
+              <div class="tgp-card">
+                <button class="tgp-row tgp-switchrow" sc-camel-on-click="{{ set.verifiedOnly }}" role="switch" aria-checked="{{ prefs.verifiedOnly }}">
+                  <span class="tgp-txt"><span>Verified profiles only</span><small>People who passed the selfie check.</small></span>
+                  <span class="tgp-sw" style="background:{{ sw.ver.bg }}"><i style="transform:{{ sw.ver.x }}"></i></span>
+                </button>
+              </div>
+
+              <div class="tgp-label" style="display:flex;align-items:center;gap:8px">Finer filters <span class="tgp-badge">Premium</span></div>
+              <div class="tgp-card">
+                <sc-for list="{{ finerOpts }}" as="f" hint-placeholder-count="4">
+                  <button class="tgp-row tgp-linkrow" sc-camel-on-click="{{ f.go }}">
+                    <span>{{ f.label }}</span>
+                    <span class="tgp-val">{{ f.value }}
+                      <svg width="16" height="16" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ f.icon }}"></path></svg>
+                    </span>
+                  </button>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+

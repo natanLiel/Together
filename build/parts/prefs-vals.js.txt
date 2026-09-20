@@ -1,0 +1,64 @@
+prefs: st.prefs, distLabel: he ? (st.prefs.dist >= 100 ? '100 ק״מ או יותר' : st.prefs.dist + ' ק״מ') : (st.prefs.dist >= 100 ? '100 km or more' : st.prefs.dist + ' km'),
+      ...(() => {
+        const P = st.prefs, seek = P.seek || [];
+        const ON = '#E4485B', OFF = 'rgba(28,37,54,.16)';
+        const sw = v => ({ bg: v ? ON : OFF, x: v ? 'translateX(18px)' : 'translateX(0)' });
+        const pickRow = (key, val) => () => this.setPref(key, val);
+        const chip = (on) => ({ bg: on ? '#FBF1F0' : '#FBFAF6', fg: on ? '#B8354A' : '#1C2536', bd: on ? ON : 'rgba(28,37,54,.12)' });
+        const dash = { solid: 'none', open: '34 22' };
+        return {
+          prefAgeLabel: P.ageMax >= 80 ? P.ageMin + (he ? ' עד 80+' : ' to 80+') : P.ageMin + (he ? ' עד ' : ' to ') + P.ageMax,
+          ageA: String((P.ageMin - 18) / 62), ageB: String((P.ageMax - 18) / 62), distB: String((P.dist - 5) / 95),
+          sw: { dist: sw(P.strictDist), age: sw(P.strictAge), ver: sw(P.verifiedOnly) },
+          bGender: [['Man', '#2A3F6E'], ['Woman', '#E4485B'], ['Other', '#57304F']].map(([g, ink]) => {
+            const on = st.form.gender === g;
+            return { label: g, ink, on: on ? '1' : '0', bd: on ? ON : 'rgba(28,37,54,.10)', bg: on ? '#FBF1F0' : '#FBFAF6',
+              pick: () => this.setState({ form: Object.assign({}, st.form, { gender: g }), openField: '' }) };
+          }),
+          bSeeking: ['Women', 'Men', 'Everyone'].map(s => {
+            const on = st.form.seeking === s;
+            return { label: s, bg: on ? '#FBFAF6' : 'transparent', fg: on ? '#1C2536' : 'var(--color-accent-800)',
+              sh: on ? '0 1px 2px rgba(28,37,54,.12), 0 3px 10px rgba(28,37,54,.10)' : 'none',
+              pick: () => this.setState({ form: Object.assign({}, st.form, { seeking: s }), openField: '' }) };
+          }),
+          bIntent: [
+            ['A relationship', 'Something that lasts', dash.solid, dash.solid],
+            ['Open to a relationship', 'Seeing where it goes', dash.solid, dash.open],
+            ['Still working it out', 'No pressure either way', dash.open, dash.open]
+          ].map(([v, sub, dl, dr]) => {
+            const on = st.form.intent === v;
+            return { label: v, sub, dashL: dl, dashR: dr, on: on ? '1' : '0', bd: on ? ON : 'rgba(28,37,54,.10)', bg: on ? '#FBF1F0' : '#FBFAF6',
+              pick: () => this.setState({ form: Object.assign({}, st.form, { intent: v }), openField: '' }) };
+          }),          prefsState: st.prefsDirty ? (he ? 'שומרים…' : 'Saving…') : (st.prefsSaved ? (he ? 'נשמר' : 'Saved') : ''),
+          prefsStateOn: (st.prefsDirty || st.prefsSaved) ? '1' : '0',
+          seekOpts: ['Women', 'Men', 'Everyone'].map(o => {
+            const on = seek.indexOf(o) >= 0;
+            return {
+              label: o, bg: on ? '#FBFAF6' : 'transparent', fg: on ? '#1C2536' : 'var(--color-accent-800)',
+              sh: on ? '0 1px 2px rgba(28,37,54,.12), 0 3px 10px rgba(28,37,54,.10)' : 'none',
+              toggle: () => {
+                if (o === 'Everyone') return this.setPref('seek', ['Everyone']);
+                let s = seek.filter(x => x !== 'Everyone');
+                s = s.indexOf(o) >= 0 ? s.filter(x => x !== o) : s.concat([o]);
+                if (!s.length) return;
+                this.setPref('seek', s.length === 2 ? ['Everyone'] : s);
+              }
+            };
+          }),
+          prefIntentOpts: [
+            ['Any', 'Open to anything', dash.open, dash.open, '1'],
+            ['A relationship', 'Something that lasts', dash.solid, dash.solid, '1'],
+            ['Open to a relationship', 'Seeing where it goes', dash.solid, dash.open, '1']
+          ].map(([v, sub, dl, dr, op]) => {
+            const on = P.intent === v;
+            return { label: v === 'Any' ? 'Any' : v, sub, dashL: dl, dashR: dr, op, on: on ? '1' : '0',
+              bd: on ? ON : 'rgba(28,37,54,.10)', bg: on ? '#FBF1F0' : '#FBFAF6', pick: pickRow('intent', v) };
+          }),
+          kidsOpts: ['Any', 'Has kids', 'Wants kids', 'Does not want kids'].map(v => Object.assign({ label: v, pick: pickRow('kids', v) }, chip(P.kids === v))),
+          finerOpts: [['Height', 'M8 3v18M4 7l4-4 4 4M4 17l4 4 4-4'], ['Education', 'M3 9l9-5 9 5-9 5-9-5zM7 11.5V16c3 2 7 2 10 0v-4.5'], ['Languages', 'M4 5h9M8.5 3v2M6 5c1 4 4 7 7 8M11 5c-1 4-4 7-7 8M14 21l4-9 4 9M15.5 18h5'], ['Drinking and smoking', 'M4 14h13v4H4zM20 14v4M17 9c0-2 2-2 2-4']].map(([label, icon]) => ({
+            label, value: prem ? (he ? 'הכול' : 'Any') : '',
+            icon: prem ? 'M9 6l6 6-6 6' : 'M7 11V8a5 5 0 0 1 10 0v3M5 11h14v10H5z',
+            go: prem ? () => this.toast('Finer filters are in the next pass') : () => this.setState({ overlay: 'upgrade', upgradeCtx: 'generic' })
+          }))
+        };
+      })(),

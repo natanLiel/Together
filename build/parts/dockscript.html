@@ -1,0 +1,489 @@
+<script>
+/* ── Together · the one-mark bar ────────────────────────────────────────────
+   At rest only the mark shows, floating over the content. One tap on it opens
+   the full bar: two destinations unfold to the left, two to the right. Tapping
+   a destination navigates and folds the bar away again.
+
+   The app's own tab bar stays in the DOM and keeps navigation, badge counts,
+   state and the Hebrew translation — it is only made invisible, and the
+   buttons here click it. No app logic is duplicated.                        */
+(function(){
+"use strict";
+if (window.__tgBar) return; window.__tgBar = 1;
+
+var CSS_TEXT = [
+"[data-tg-tabs]{visibility:hidden !important}",
+/* whatever scrolls always ends above the mark, never under it */
+/* the hidden tab bar holds no strip of ground: every page runs to the bottom
+   edge, and the scroll padding below keeps the last item clear of the mark */
+"html[data-tg-dock] [data-tg-tabs]{position:absolute !important;left:0;right:0;bottom:0}",
+"html[data-tg-dock] .tg-scroll{padding-bottom:var(--tg-dock-clear,112px) !important;scroll-padding-bottom:var(--tg-dock-clear,112px)}",
+/* mounted on <body>, not inside the phone: the component runtime reconciles
+   its own children and will drop anything of ours it finds among them */
+"#tgBar{position:fixed;z-index:40;height:96px;",
+"  padding-bottom:env(safe-area-inset-bottom,0px);pointer-events:none;user-select:none}",
+/* the bar surface, only there once opened */
+"#tgSurf{position:absolute;left:0;right:0;bottom:0;top:22px;background:var(--color-bg);",
+"  border-top:1px solid var(--color-divider);opacity:0;transform:translateY(100%);",
+"  transition:opacity .26s cubic-bezier(.2,.85,.25,1),transform .34s cubic-bezier(.2,.85,.25,1)}",
+"#tgBar.open #tgSurf{opacity:1;transform:none}",
+/* the moving rule above the active destination */
+"#tgInd{position:absolute;top:21px;height:3px;width:44px;background:var(--tg-ink-r,#E4485B);",
+"  opacity:0;transition:transform .42s cubic-bezier(.2,.85,.25,1),opacity .24s;z-index:3}",
+"#tgBar.open #tgInd{opacity:1}",
+/* destinations */
+".tgTab{position:absolute;bottom:14px;width:64px;margin-left:-32px;display:flex;",
+"  flex-direction:column;align-items:center;gap:6px;background:none;border:0;padding:0;",
+"  cursor:pointer;font-family:var(--font-body);font-size:11px;letter-spacing:.04em;",
+"  color:var(--tg-mute,rgba(28,37,54,.45));pointer-events:auto;opacity:0;",
+"  transition:transform .40s cubic-bezier(.2,.85,.25,1),opacity .24s ease,color .24s ease}",
+".tgTab svg{width:24px;height:24px;display:block}",
+"#tgBar.open .tgTab{opacity:1}",
+".tgTab.on{color:var(--color-text)}",
+/* whatever the thumb is currently over */
+".tgTab.hot{color:var(--color-text)}",
+
+".tgTab svg{transition:transform .18s cubic-bezier(.34,1.42,.64,1)}",
+"#tgHub.hot{transform:translateX(-50%) translateY(-6px) scale(1.06);",
+"  box-shadow:0 0 0 2px var(--tg-ink-r,#E4485B),0 12px 26px -8px rgba(28,37,54,.4)}",
+/* the hint that appears while holding, when there is no one to open */
+"#tgHint{position:absolute;left:0;right:0;bottom:112px;text-align:center;font-size:11px;",
+"  letter-spacing:.18em;text-transform:uppercase;color:var(--tg-mute,rgba(28,37,54,.45));",
+"  opacity:0;transition:opacity .2s ease;pointer-events:none}",
+"#tgBar.holding:not(.conn) #tgHint{opacity:1}",
+/* ── swipe up to open the chat ──────────────────────────────────────────
+   Only while the mark is held, and only while you are with someone: three
+   chevrons rise in turn above it, under a small label in the same ink.    */
+"#tgUp{position:absolute;left:50%;bottom:84px;width:96px;margin-left:-48px;z-index:5;",
+"  display:flex;flex-direction:column-reverse;align-items:center;gap:1px;",
+"  color:var(--tg-over,#57304F);opacity:0;pointer-events:none;transition:opacity .2s ease}",
+"#tgUp svg{display:block;width:16px;height:9px;overflow:visible;opacity:0}",
+/* the label sits over whatever the deck is showing, so it gets a quiet
+   ground of its own — squared, like every surface that is not a ring */
+"#tgUp .lbl{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;",
+"  margin-bottom:5px;white-space:nowrap;padding:4px 9px;border-radius:2px;",
+"  background:var(--color-bg);box-shadow:0 0 0 1px var(--color-divider),0 6px 16px -10px rgba(28,37,54,.45)}",
+"#tgBar.holding.conn #tgUp{opacity:1}",
+"#tgBar.holding.conn #tgUp svg{animation:tgRise 1.15s ease-in-out infinite}",
+"#tgBar.holding.conn #tgUp svg:nth-of-type(2){animation-delay:.16s}",
+"#tgBar.holding.conn #tgUp svg:nth-of-type(3){animation-delay:.32s}",
+"@keyframes tgRise{0%{opacity:0;transform:translateY(6px)}40%{opacity:1}",
+"  100%{opacity:0;transform:translateY(-6px)}}",
+/* once the thumb slides up into it, the cue stops and holds, fully inked */
+"#tgBar.holding.conn.uphot #tgUp svg{animation:none;opacity:1;transform:none}",
+"@media (prefers-reduced-motion:reduce){#tgBar.holding.conn #tgUp svg{animation:none;opacity:.8}}",
+/* while you are with someone the mark carries it too */
+"#tgHub.conn{box-shadow:0 0 0 1.5px var(--tg-over,#57304F)}",
+"#tgHub.conn .ring2{stroke:var(--tg-over,#57304F) !important}",
+".tgTab .bdg{position:absolute;top:-5px;right:8px;background:var(--tg-ink-r,#E4485B);",
+"  color:#1C2536;font-size:10px;min-width:16px;height:16px;border-radius:2px;display:flex;",
+"  align-items:center;justify-content:center;padding:0 3px;font-weight:500;line-height:1;",
+"  font-style:normal;text-transform:none}",
+/* the mark itself — always visible, always in the same place */
+"#tgHub{position:absolute;left:50%;bottom:20px;transform:translateX(-50%);z-index:4;",
+"  width:58px;height:58px;border-radius:50%;border:0;padding:0;cursor:pointer;",
+"  display:flex;align-items:center;justify-content:center;pointer-events:auto;",
+"  background:var(--color-bg);box-shadow:0 0 0 1.5px var(--tg-ink-r,#E4485B);",
+"  transition:transform .42s cubic-bezier(.34,1.42,.64,1),box-shadow .3s ease}",
+"#tgHub:active{transform:translateX(-50%) scale(.93)}",
+"#tgBar:not(.open) #tgHub{box-shadow:0 0 0 1.5px var(--tg-ink-r,#E4485B),",
+"  0 2px 6px rgba(28,37,54,.10),0 14px 30px -10px rgba(28,37,54,.34)}",
+"#tgHub .lbl{position:absolute;bottom:-17px;font-size:11px;letter-spacing:.04em;",
+"  color:var(--tg-mute,rgba(28,37,54,.45));opacity:0;transition:opacity .24s ease .06s}",
+"#tgBar.open #tgHub .lbl{opacity:1}",
+"#tgBar.open #tgHub.on .lbl{color:var(--color-text)}",
+"#tgHub .hbdg{position:absolute;top:1px;right:1px;background:var(--tg-ink-r,#E4485B);",
+"  color:#1C2536;font-size:10px;min-width:16px;height:16px;border-radius:2px;display:flex;",
+"  align-items:center;justify-content:center;padding:0 3px;font-weight:500;line-height:1;",
+"  font-style:normal;text-transform:none;box-shadow:0 0 0 2px var(--color-bg)}",
+"#tgBar.open #tgHub .hbdg{display:none}",
+/* ── depth pass: the bar as a pane of glass, the mark as a domed button ── */
+"#tgSurf{background:linear-gradient(180deg,color-mix(in srgb,var(--tg-pl,#EFEDE6) 52%,transparent),color-mix(in srgb,var(--tg-pl,#EFEDE6) 74%,transparent)) !important;",
+"  -webkit-backdrop-filter:blur(30px) saturate(1.9) brightness(1.06);backdrop-filter:blur(30px) saturate(1.9) brightness(1.06);",
+"  border-top:1px solid rgba(255,255,255,.75) !important;border-radius:22px 22px var(--tg-phone-r,44px) var(--tg-phone-r,44px);",
+"  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 -1px 2px rgba(28,37,54,.10),0 -20px 40px -22px rgba(28,37,54,.55)}",
+/* the live icon lifts off the glass: it rises, takes the ink, catches a
+   highlight on top and drops a small soft shadow on the pane below it */
+".tgTab::before{content:'';position:absolute;top:27px;left:50%;width:26px;height:7px;margin-left:-13px;",
+"  border-radius:50%;opacity:0;transform:scaleX(.5);pointer-events:none;",
+"  background:radial-gradient(closest-side,rgba(28,37,54,.34),rgba(28,37,54,0));",
+"  transition:opacity .22s ease,transform .3s cubic-bezier(.34,1.42,.64,1)}",
+".tgTab.on::before,.tgTab.hot::before{opacity:1;transform:none}",
+".tgTab.on svg,.tgTab.hot svg{color:#E4485B;transform:translateY(-5px) scale(1.14);",
+"  filter:drop-shadow(0 1px 0 rgba(255,255,255,.95)) drop-shadow(0 4px 3px rgba(228,72,91,.28)) drop-shadow(0 2px 1px rgba(28,37,54,.18))}",
+".tgTab.hot:not(.on) svg{color:#1C2536;filter:drop-shadow(0 1px 0 rgba(255,255,255,.95)) drop-shadow(0 4px 3px rgba(28,37,54,.26))}",
+".tgTab.on span{font-weight:500}",".tgTab svg,.tgTab span{position:relative;z-index:1}",
+".tgTab .bdg{z-index:2}",
+/* Together chosen: a thicker ring and a glassier dome, no rule above it */
+"#tgBar.open #tgHub.on{background:radial-gradient(120% 120% at 30% 14%,#FFFFFF 0%,#FDFCF8 38%,#EFEAE0 100%) !important;",
+"  box-shadow:0 0 0 3px var(--tg-ink-r,#E4485B),0 0 0 5px rgba(255,255,255,.55),inset 0 2px 0 rgba(255,255,255,1),",
+"  inset 0 -4px 8px rgba(28,37,54,.12),0 4px 8px rgba(28,37,54,.2),0 18px 30px -12px rgba(228,72,91,.55) !important}",
+".tgTab.on,.tgTab.hot{color:#1C2536}",
+/* the rule above the live destination, as a lit pill */
+"#tgInd{height:4px !important;width:44px !important;border-radius:999px;",
+"  background:linear-gradient(90deg,#F06A79,#E4485B) !important;",
+"  box-shadow:0 2px 10px rgba(228,72,91,.65),inset 0 1px 0 rgba(255,255,255,.5)}",
+/* the mark: lit from above, seated on its own shadow */
+"#tgHub{background:radial-gradient(118% 118% at 32% 16%,#FFFFFF 0%,#FBFAF6 42%,#F1EDE4 100%) !important}",
+"#tgBar:not(.open) #tgHub{box-shadow:0 0 0 1.5px var(--tg-ink-r,#E4485B),inset 0 1.5px 0 rgba(255,255,255,.95),",
+"  inset 0 -3px 6px rgba(28,37,54,.10),0 3px 6px rgba(28,37,54,.18),0 18px 32px -12px rgba(28,37,54,.6) !important}",
+"#tgBar.open #tgHub{box-shadow:0 0 0 1.5px var(--tg-ink-r,#E4485B),inset 0 1.5px 0 rgba(255,255,255,.95),",
+"  0 2px 5px rgba(28,37,54,.16),0 14px 26px -12px rgba(28,37,54,.5) !important}",
+"#tgHub.hot{box-shadow:0 0 0 2px var(--tg-ink-r,#E4485B),inset 0 1.5px 0 rgba(255,255,255,.95),",
+"  0 4px 10px rgba(28,37,54,.22),0 22px 36px -12px rgba(28,37,54,.65) !important}",
+"#tgHub.conn{box-shadow:0 0 0 1.5px var(--tg-over,#57304F),inset 0 1.5px 0 rgba(255,255,255,.95),",
+"  0 3px 6px rgba(28,37,54,.18),0 18px 32px -12px rgba(28,37,54,.6) !important}",
+/* counts and the hint read as small lozenges */
+".tgTab .bdg,#tgHub .hbdg{border-radius:999px !important;box-shadow:0 2px 6px rgba(228,72,91,.5),inset 0 1px 0 rgba(255,255,255,.5)}",
+"#tgUp .lbl{border-radius:999px !important;background:linear-gradient(170deg,rgba(255,255,255,.96),rgba(239,237,230,.92)) !important;",
+"  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);",
+"  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 2px 4px rgba(28,37,54,.12),0 10px 20px -12px rgba(28,37,54,.5) !important}",
+"#tgHint{padding:5px 12px;border-radius:999px;width:fit-content;margin:0 auto;left:0;right:0;",
+"  background:rgba(251,250,246,.72);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);",
+"  box-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 8px 18px -12px rgba(28,37,54,.5)}"
+].join("\n");
+
+var TABS = [
+  { i:0, label:"discover", icon:'<circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L20.5 20.5"/>' },
+  { i:1, label:"likes",    icon:'<path d="M12 20.5L4.2 12.7a4.6 4.6 0 016.5-6.5l1.3 1.3 1.3-1.3a4.6 4.6 0 016.5 6.5z"/>' },
+  { i:3, label:"prefs",    icon:'<path d="M3.5 8.5h17M3.5 15.5h17"/><rect x="7.5" y="6" width="5" height="5"/><rect x="13" y="13" width="5" height="5"/>' },
+  { i:4, label:"profile",  icon:'<circle cx="12" cy="8.5" r="3.8"/><path d="M4.8 20c1.4-3.4 4.2-5 7.2-5s5.8 1.6 7.2 5"/>' }
+];
+var SLOTS = [0.12, 0.31, 0.50, 0.69, 0.88];   // discover, likes, together, prefs, profile
+
+var phone, bar, surf, ind, hub, hint, up, tabs = [], open = false;
+
+function attr(n){ var p = getPhone(); return p ? p.getAttribute(n) : null; }
+function connected(){ return attr("data-tg-conn") === "true"; }
+/* navigation stays the app's: this clicks a hidden button bound to go.chat */
+function openChat(){
+  var b = document.getElementById("tg-open-chat");
+  if(b) b.click();
+  setOpen(false);
+}
+/* Together means the thread while the slot is full, and the slot list when it
+   is not — so the mark always lands on whatever "together" currently is */
+function goTogether(){
+  if(connected()){ openChat(); return; }
+  var b = tabButtons();
+  if(b[2]) b[2].click();
+  setOpen(false);
+}
+var dragging = false, moved = false, held = false, wasOpen = false,
+    holdT = null, hot = null, startX = 0, startY = 0;
+
+/* which destination is under the thumb; straight up means Together */
+function pick(x, y){
+  if(!open) return null;
+  var hr = hub.getBoundingClientRect();
+  var hx = hr.left + hr.width / 2, hy = hr.top + hr.height / 2;
+  if(y < hy - 34) return "together";
+  if(Math.sqrt((x-hx)*(x-hx) + (y-hy)*(y-hy)) < hr.width / 2) return null;  // still on the mark
+  var best = null, bd = 58;
+  tabs.forEach(function(t){
+    var r = t.getBoundingClientRect();
+    var d = Math.abs(x - (r.left + r.width / 2));
+    if(d < bd){ bd = d; best = t; }
+  });
+  return best;
+}
+function highlight(t){
+  if(t === hot) return;
+  hot = t;
+  tabs.forEach(function(el){ setClass(el, "hot", el === t); });
+  setClass(hub, "hot", t === "together");
+  setClass(bar, "uphot", t === "together");
+  if(t && navigator.vibrate) try { navigator.vibrate(5); } catch(_){}
+}
+
+/* the app's tab bar is a sibling of the phone under [data-tg-frame], not a
+   child of it, so these look document-wide rather than inside the phone */
+function tabBar(){ return document.querySelector("[data-tg-tabs]"); }
+/* the runtime re-creates the phone element on some renders, so a cached
+   reference goes detached and measures zero — always take a live one */
+function getPhone(){
+  if(!phone || !phone.isConnected) phone = document.querySelector("[data-tg-phone]");
+  return phone;
+}
+function tabButtons(){
+  var b = tabBar();
+  return b ? Array.prototype.slice.call(b.querySelectorAll("button")) : [];
+}
+function activeIndex(){
+  var b = tabButtons(), i;
+  for(i=0;i<b.length;i++){
+    var sp = b[i].querySelector("span");
+    if(!sp) continue;
+    var bg = getComputedStyle(sp).backgroundColor;
+    if(bg && !/rgba\(0, 0, 0, 0\)|transparent/.test(bg)) return i;
+  }
+  return -1;
+}
+function svg(inner){
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" '+
+         'stroke-linecap="square">' + inner + '</svg>';
+}
+
+function build(){
+  var st = document.createElement("style"); st.textContent = CSS_TEXT;
+  document.head.appendChild(st);
+
+  bar = document.createElement("div"); bar.id = "tgBar";
+  surf = document.createElement("div"); surf.id = "tgSurf";
+  ind = document.createElement("div"); ind.id = "tgInd";
+  hint = document.createElement("div"); hint.id = "tgHint";
+  hint.textContent = "slide to choose · up for together";
+  bar.appendChild(surf); bar.appendChild(ind); bar.appendChild(hint);
+  up = document.createElement("div"); up.id = "tgUp"; up.setAttribute("aria-hidden", "true");
+  var chev = '<svg viewBox="0 0 16 9" fill="none" stroke="currentColor" stroke-width="1.6" ' +
+             'stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 7.5L8 2l6.5 5.5"/></svg>';
+  up.innerHTML = chev + chev + chev + '<span class="lbl">open chat</span>';
+  bar.appendChild(up);
+
+  TABS.forEach(function(t){
+    var el = document.createElement("button");
+    el.type = "button"; el.className = "tgTab"; el.dataset.idx = t.i;
+    el.innerHTML = svg(t.icon) + '<span>' + t.label + '</span>' +
+                   (t.i === 1 ? '<i class="bdg" style="display:none"></i>' : '');
+    el.addEventListener("click", function(e){
+      e.stopPropagation();
+      var b = tabButtons(); if(b[t.i]) b[t.i].click();
+      setOpen(false);
+    });
+    bar.appendChild(el); tabs.push(el);
+  });
+
+  hub = document.createElement("button");
+  hub.id = "tgHub"; hub.type = "button";
+  hub.setAttribute("aria-label", "together — tap to open the menu");
+  hub.innerHTML =
+    '<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke-width="1.9">' +
+      '<circle cx="8.9" cy="12" r="5.7" stroke="currentColor"/>' +
+      '<circle class="ring2" cx="15.1" cy="12" r="5.7" stroke="#E4485B"/>' +
+    '</svg><span class="lbl">together</span><i class="hbdg" style="display:none"></i>';
+  /* Hold the mark and the menu opens under your thumb; slide onto a
+     destination and let go to open it. Sliding straight up picks Together
+     itself, which is the one your thumb is already sitting on. A plain tap
+     just leaves the menu open so it works with a mouse too. */
+  hub.addEventListener("pointerdown", function(e){
+    e.preventDefault(); e.stopPropagation();
+    dragging = true; moved = false; wasOpen = open;
+    startX = e.clientX; startY = e.clientY;
+    try { hub.setPointerCapture(e.pointerId); } catch(_){}
+    clearTimeout(holdT);
+    holdT = setTimeout(function(){
+      held = true;
+      setOpen(true);
+      bar.classList.add("holding");
+      if(navigator.vibrate) try { navigator.vibrate(10); } catch(_){}
+    }, 190);
+  });
+  hub.addEventListener("pointermove", function(e){
+    if(!dragging) return;
+    if(Math.abs(e.clientX - startX) > 6 || Math.abs(e.clientY - startY) > 6) moved = true;
+    if(!open) return;
+    highlight(pick(e.clientX, e.clientY));
+  });
+  function finish(e){
+    if(!dragging) return;
+    dragging = false;
+    clearTimeout(holdT);
+    bar.classList.remove("holding");
+    var target = (held && open) ? pick(e ? e.clientX : startX, e ? e.clientY : startY) : null;
+    highlight(null);
+    if(target === "together"){
+      goTogether();                   // the thread, or the slot list if free
+    } else if(target){                // released over something — open it
+      var b = tabButtons();
+      if(b[+target.dataset.idx]) b[+target.dataset.idx].click();
+      setOpen(false);
+    } else if(!held){
+      // a quick tap: the first one raises the menu, a second one on the mark
+      // goes where Together goes — the thread while you are with someone
+      if(wasOpen) goTogether();
+      else setOpen(true);
+    }
+    held = false;
+  }
+  hub.addEventListener("pointerup", finish);
+  hub.addEventListener("pointercancel", function(){ dragging = false; held = false;
+    clearTimeout(holdT); bar.classList.remove("holding"); highlight(null); });
+  bar.appendChild(hub);
+  document.body.appendChild(bar);
+
+  placeRect(); place();
+  // tapping anywhere else closes it again
+  document.addEventListener("pointerdown", function(e){
+    if(open && !bar.contains(e.target)) setOpen(false);
+  }, true);
+  window.addEventListener("resize", function(){ placeRect(); place(); paint(); });
+  window.addEventListener("scroll", placeRect, true);
+  setInterval(sync, 500);   // placeRect runs inside sync; also a safety net
+}
+
+/* keep the bar sitting exactly over the phone, wherever the layout puts it */
+function placeRect(){
+  var ph = getPhone();
+  if(!ph || !bar) return;
+  var r = ph.getBoundingClientRect();
+  if(!r.width) return;
+  var base = window.innerHeight - r.bottom;
+  var L = r.left + "px", W = r.width + "px", B = base + "px";
+  if(bar.style.left !== L) bar.style.left = L;
+  if(bar.style.width !== W) bar.style.width = W;
+  if(bar.style.bottom !== B) bar.style.bottom = B;
+}
+
+/* the four destinations rest under the mark and unfold outwards from it */
+function place(){
+  var ph = getPhone(); if(!ph) return;
+  var w = ph.clientWidth || bar.clientWidth, mid = w * 0.5;
+  tabs.forEach(function(el, k){
+    var slot = (k < 2) ? SLOTS[k] : SLOTS[k + 1];
+    el._x = w * slot;
+    el.style.left = el._x + "px";
+    el.style.transform = open ? "translateX(0)" : "translateX(" + (mid - el._x) + "px)";
+    el.style.transitionDelay = (open ? (k < 2 ? (1 - k) : (k - 2)) * 45 : 0) + "ms";
+  });
+}
+function setOpen(v){
+  if(open === v) return;
+  open = v;
+  bar.classList.toggle("open", v);
+  place(); paint(); sync();
+}
+
+function setStyleProp(el, p, val){ if(el.style[p] !== val) el.style[p] = val; }
+function setClass(el, n, want){ if(el.classList.contains(n) !== want) el.classList.toggle(n, want); }
+
+function paint(){
+  var act = activeIndex();
+  tabs.forEach(function(el){ setClass(el, "on", +el.dataset.idx === act); });
+  setClass(hub, "on", act === 2);
+  var target = null;
+  var pw = (getPhone() && getPhone().clientWidth) || bar.clientWidth;
+  if(act === 2) target = pw * 0.5;
+  else { tabs.forEach(function(el){ if(+el.dataset.idx === act) target = el._x; }); }
+  if(target != null) ind.style.transform = "translateX(" + (target - 22) + "px)";
+  ind.style.opacity = (open && target != null && act !== 2) ? "1" : "0";
+}
+
+/* every write below is guarded: this runs inside its own MutationObserver,
+   so an unguarded write would re-trigger it forever */
+function sync(){
+  if(!getPhone() || !hub) return;
+  placeRect();
+  var ph0 = getPhone();
+  // the full-screen photo viewer owns the whole phone, the mark included
+  var haveTabs = !!tabBar() && !(ph0 && (ph0.getAttribute("data-tg-viewer") === "true" || ph0.getAttribute("data-tg-ov") === "true"));
+  setStyleProp(bar, "display", haveTabs ? "block" : "none");
+  var pg = (haveTabs && activeIndex() === 0) ? "discover" : "";
+  if((document.documentElement.getAttribute("data-tg-page") || "") !== pg){
+    if(pg) document.documentElement.setAttribute("data-tg-page", pg);
+    else document.documentElement.removeAttribute("data-tg-page");
+  }
+  clearance(haveTabs);
+  if(!haveTabs){
+    // onboarding, or the chat itself: no bar at all
+    if(open) setOpen(false);
+    setClass(hub, "conn", connected());
+    setClass(bar, "conn", connected());
+    return;
+  }
+  var b = tabButtons(), likes = b[1], txt = "";
+  if(likes){
+    var m = (likes.textContent || "").replace(/likes/i, "").trim();
+    if(/^\d+$/.test(m)) txt = m;
+  }
+  // the likes tab always carries the count; the mark only borrows it while the
+  // bar is shut, because showing both at once reads as two separate counts
+  var show = !!txt && activeIndex() !== 1;
+  var big = hub.querySelector(".hbdg"), small = tabs[1] && tabs[1].querySelector(".bdg");
+  if(big){
+    if(big.textContent !== txt) big.textContent = txt;
+    setStyleProp(big, "display", (show && !open) ? "flex" : "none");
+  }
+  if(small){
+    if(small.textContent !== txt) small.textContent = txt;
+    setStyleProp(small, "display", show ? "flex" : "none");
+  }
+
+  // with someone: the mark takes the overprint, and holding it shows the
+  // swipe-up cue (the cue itself is driven by CSS off these classes)
+  var isConn = connected();
+  setClass(hub, "conn", isConn);
+  setClass(bar, "conn", isConn);
+  paint();
+}
+
+/* room at the foot of the scroll area: from the top of the mark (plus a
+   breath of space) down to wherever the scroll area actually ends */
+function clearance(on){
+  var root = document.documentElement;
+  if(!on){
+    if(root.hasAttribute("data-tg-dock")) root.removeAttribute("data-tg-dock");
+    var sc0 = document.querySelector(".tg-scroll");
+    if(sc0 && sc0.clientHeight){ var h0 = sc0.clientHeight + "px"; if(root.style.getPropertyValue("--tg-sh") !== h0) root.style.setProperty("--tg-sh", h0); }
+    return;
+  }
+  if(!root.hasAttribute("data-tg-dock")) root.setAttribute("data-tg-dock", "");
+  var sc = document.querySelector(".tg-scroll"), ph = getPhone();
+  if(!sc || !ph) return;
+  var shv = sc.clientHeight + "px";
+  var root2 = document.documentElement, cs = getComputedStyle(ph);
+  var tinted = ph.querySelector(".tgd-root") || ph.querySelector("[style*=\"--pl\"]");
+  var pcs = tinted ? getComputedStyle(tinted) : cs;
+  [["--tg-pl", "--pl"], ["--tg-pv", "--pv"], ["--tg-pd", "--pd"]].forEach(function(pair){
+    var v = (pcs.getPropertyValue(pair[1]) || "").trim();
+    if(v && root2.style.getPropertyValue(pair[0]) !== v) root2.style.setProperty(pair[0], v);
+  });
+  // the phone itself is squared in the app; the curve belongs to its frame
+  var rad = "", node = ph;
+  for(var q = 0; q < 4 && node; q++){
+    var rv = parseFloat(getComputedStyle(node).borderBottomLeftRadius) || 0;
+    if(rv > 4){ rad = Math.max(0, rv - 6) + "px"; break; }
+    node = node.parentElement;
+  }
+  if(rad && root2.style.getPropertyValue("--tg-phone-r") !== rad) root2.style.setProperty("--tg-phone-r", rad);
+  if(root.style.getPropertyValue("--tg-sh") !== shv) root.style.setProperty("--tg-sh", shv);
+  var markTop = ph.getBoundingClientRect().bottom - 78;      // hub: 58px tall, 20px up
+  var need = Math.max(24, Math.ceil(sc.getBoundingClientRect().bottom - markTop + 20)) + "px";
+  if(root.style.getPropertyValue("--tg-dock-clear") !== need) root.style.setProperty("--tg-dock-clear", need);
+}
+
+/* capitals as you type: names get one per word, free text one to start.
+   Runs in the capture phase, before the app reads the value. */
+document.addEventListener("input", function(e){
+  var el = e.target, mode = el && el.getAttribute && el.getAttribute("data-tg-cap");
+  if(!mode || typeof el.value !== "string") return;
+  var v = el.value, next = mode === "words"
+    ? v.replace(/(^|[\s\-'])(\p{Ll})/gu, function(_, a, b){ return a + b.toUpperCase(); })
+    : v.replace(/^(\s*)(\p{Ll})/u, function(_, a, b){ return a + b.toUpperCase(); });
+  if(next === v) return;
+  var s = el.selectionStart, en = el.selectionEnd;
+  el.value = next;
+  try { el.setSelectionRange(s, en); } catch(_){}
+}, true);
+
+var queued = false;
+function schedule(){
+  if(queued) return;
+  queued = true;
+  requestAnimationFrame(function(){ queued = false; sync(); });
+}
+
+var boot = setInterval(function(){
+  phone = document.querySelector("[data-tg-phone]");
+  if(!phone) return;
+  clearInterval(boot);
+  build(); sync();
+  var root = document.querySelector("[data-tg-shell]") || document.body;
+  // attributes matter as much as children here: the connection state arrives
+  // as data-tg-conn / data-tg-chat on the phone root, with no child change
+  new MutationObserver(schedule).observe(root, {
+    childList: true, subtree: true, attributes: true,
+    attributeFilter: ["data-tg-conn", "data-tg-chat", "data-tg-last"]
+  });
+}, 150);
+})();
+</script>

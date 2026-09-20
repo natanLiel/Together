@@ -1,0 +1,154 @@
+    // ——— Discover, built around the first photo ———
+    const dv = (() => {
+      const ovOpen = !!st.overlay;
+      const key = person ? person.name.toLowerCase() : '';
+      const pal = Component.PALETTE[key] || { v: '#E4485B', d: '#1C2536', l: '#EFEDE6' };
+      const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+      const halt = e => { if (e && e.stopPropagation) e.stopPropagation(); };
+      if (!person) return { pal, hero: {}, blocks: [], tiles: [], viewerOpen: false, viewer: {}, ovOpen };
+      const openAt = i => { if (this._justDragged) return; this.setState({ viewer: i }); };
+      const built = this.buildBlocks(this.personItems(person), {
+        moreLabel: (he ? 'עוד של ' : 'More of ') + person.name, hint: he ? 'הקישו לפתיחה' : 'Tap to open',
+        detailsLabel: (he ? 'על ' : 'About ') + person.name, tags: person.tags.slice(2).map(t => ({ label: t })),
+        playing: st.playing, open: openAt,
+        likePhoto: k => this.openLike('photo', k), likePrompt: it => this.openLike('prompt', it.qi), likeMedia: it => it.kind === 'video'
+          ? this.openLike('photo', 0, { src: it.src })
+          : this.openLike('prompt', 0, { kicker: it.q, text: (he ? 'הקלטה · ' : 'Voice note · ') + it.dur })
+      });
+      const n = built.photos.length;
+      const vi = (st.viewer == null || st.viewer >= n) ? null : st.viewer;
+      const go = d => e => { halt(e); this.setState({ viewer: (vi + d + n) % n }); };
+      const shotK = k => built.shotOf(built.photos[k].src);
+      return {
+        pal, first: person.name, ovOpen,
+        hero: {
+          bg: shotK(0), open: e => { halt(e); openAt(0); }, like: e => { halt(e); this.openLike('photo', 0); },
+          name: person.name + ', ' + person.age, verified: !!person.v, city: person.city + ' · ' + person.dist + ' km away',
+          job: person.tags[1] || person.tags[0], intent: cap(person.intent), dist: person.tags[0],
+          count: n > 1 ? (he ? n + ' תמונות' : n + ' photos') : ''
+        },
+        blocks: built.blocks, tiles: built.tiles,
+        viewerOpen: vi != null,
+        viewer: vi == null ? {} : {
+          bg: shotK(vi).replace('/cover', '/contain'), cover: shotK(vi),
+          count: (vi + 1) + ' / ' + n,
+          dots: Array.from({ length: n }, (_, k) => ({ op: k === vi ? '1' : '.38' })),
+          prev: go(-1), next: go(1),
+          close: e => { halt(e); this.setState({ viewer: null }); },
+          like: e => { halt(e); this.setState({ viewer: null }); this.openLike('photo', vi); }
+        }
+      };
+    })();
+
+    // ——— the profile editor ———
+    const ep = (() => {
+      const me = st.me, items = me.items;
+      const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+      const shotOf = src => 'center/cover no-repeat url("' + src + '")';
+      const L = Component.ME_LIMITS;
+      const cnt = k => items.filter(i => i.kind === k).length;
+      const NAME = he ? { photo: 'תמונות', video: 'סרטונים', prompt: 'שאלות', voice: 'הקלטה' } : { photo: 'Photos', video: 'Videos', prompt: 'Prompts', voice: 'Voice note' };
+      const ONE = he ? { photo: 'תמונה', video: 'סרטון', prompt: 'שאלה', voice: 'הקלטה' } : { photo: 'Photo', video: 'Video', prompt: 'Prompt', voice: 'Voice note' };
+      const ICON = {
+        photo: 'M4 7h3l2-2.5h6L17 7h3v12H4zM12 16.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z',
+        video: 'M3.5 6.5h12v11h-12zM15.5 10.5l5-3v9l-5-3z',
+        prompt: 'M4 5h16v11H9l-5 4zM8 9.5h8M8 12.5h5',
+        voice: 'M12 3.5a3 3 0 0 1 3 3v5a3 3 0 0 1-6 0v-5a3 3 0 0 1 3-3zM6 11a6 6 0 0 0 12 0M12 17v3.5'
+      };
+      const kinds = ['photo', 'video', 'prompt', 'voice'];
+      const list = items.map((it, idx) => ({
+        id: it.id,
+        isPhoto: it.kind === 'photo', isVideo: it.kind === 'video', isPrompt: it.kind === 'prompt', isVoice: it.kind === 'voice',
+        cls: 'ep-' + it.kind + (idx === 0 ? ' ep-first' : '') + (st.epFlash === it.id ? ' ep-flash' : ''),
+        bg: it.src ? shotOf(it.src) : 'none', q: it.q || '', a: cap(it.a || ''), dur: it.dur || '',
+        bars: it.kind === 'voice' ? this.waveBars(it.id) : [],
+        badge: idx === 0 ? (he ? 'התמונה הראשית' : 'Main photo') : ONE[it.kind],
+        pos: String(idx + 1),
+        down: e => this.epDown(e, it.id)
+      }));
+      const counters = kinds.map(k => ({ label: NAME[k], count: cnt(k) + '/' + L[k], cls: cnt(k) >= L[k] ? 'ep-full' : '' }));
+      const adds = kinds.map(k => ({
+        label: (he ? 'הוספת ' : 'Add ') + ONE[k].toLowerCase(), left: cnt(k) >= L[k] ? (he ? 'מלא' : 'Full') : (L[k] - cnt(k)) + (he ? ' נותרו' : ' left'),
+        cls: cnt(k) >= L[k] ? 'ep-add-off' : '', icon: ICON[k], go: () => this.epAdd(k)
+      }));
+
+      // the sheet for one item
+      const sh = st.epSheet;
+      const cur = sh && !sh.isNew ? items.find(i => i.id === sh.id) : null;
+      const sk = sh ? sh.kind : '';
+      const bank = sk === 'voice' ? Component.VOICE_QS : Component.PROMPT_QS;
+      const takenQ = items.filter(i => i.kind === sk && (!cur || i.id !== cur.id)).map(i => i.q);
+      const sheet = !sh ? { open: false } : {
+        open: true,
+        title: (sh.isNew ? (he ? 'חדש: ' : 'New ') : (he ? 'עריכת ' : 'Edit ')) + ONE[sk].toLowerCase(),
+        isPhoto: sk === 'photo', isVideo: sk === 'video', isPrompt: sk === 'prompt', isVoice: sk === 'voice',
+        isMedia: sk === 'photo' || sk === 'video', hasText: sk === 'prompt' || sk === 'voice',
+        bg: cur && cur.src ? shotOf(cur.src) : 'none', dur: cur ? cur.dur : '',
+        canFirst: !!cur && sk === 'photo' && items.indexOf(cur) > 0,
+        canRemove: !sh.isNew && !(sk === 'photo' && cnt('photo') <= 1),
+        removeLabel: sh.isNew ? (he ? 'ביטול' : 'Cancel') : (he ? 'הסרה' : 'Remove'),
+        replaceLabel: sk === 'video' ? (he ? 'החלפת סרטון' : 'Replace video') : (he ? 'החלפת תמונה' : 'Replace photo'),
+        questions: bank.map(q => {
+          const on = st.epQ === q, taken = takenQ.indexOf(q) >= 0;
+          return { label: q, cls: on ? 'on' : (taken ? 'taken' : ''), pick: () => { if (!taken) this.setState({ epQ: q }); } };
+        }),
+        q: st.epQ, a: st.epA, count: (st.epA || '').length + ' / 150',
+        rec: st.epRec, recLabel: st.epRec === 'rec' ? (he ? 'מקליטים…' : 'Recording…') : st.epRec === 'done' ? (he ? 'להקליט שוב' : 'Record again') : (sh.isNew ? (he ? 'לחצו כדי להקליט' : 'Tap to record') : (he ? 'להקליט מחדש' : 'Record again')),
+        recCls: st.epRec === 'rec' ? 'is-rec' : '', recDur: '0:' + String(st.epSecs || 12).padStart(2, '0'),
+        recBars: this.waveBars('rec' + (st.epSecs || 12)),
+        showWave: st.epRec === 'done' || !sh.isNew,
+        hasSize: !!cur && (sk === 'photo' || sk === 'prompt' || sk === 'video') && items.indexOf(cur) > 0,
+        sizes: [['', he ? 'אוטומטי' : 'Auto'], ['small', he ? 'קטן' : 'Small'], ['wide', he ? 'רחב' : 'Wide']].map(([k, label]) => ({
+          label, cls: ((cur && cur.size) || '') === k ? 'on' : '', pick: () => this.epSize(k)
+        })),
+        close: () => this.epClose(), save: () => this.epSave(), remove: () => this.epRemove(),
+        replace: () => this.epReplace(), first: () => this.epMakeFirst(), record: () => this.epRecord(),
+        setA: e => this.setState({ epA: e.target.value.slice(0, 150) })
+      };
+
+      // how it reads to everyone else
+      const photos = items.filter(i => i.kind === 'photo');
+      const built = this.buildBlocks(items, {
+        moreLabel: '', hint: '', detailsLabel: '', tags: [], playing: st.playing,
+        open: () => {}, likePhoto: () => this.toast(he ? 'ככה אחרים רואים את זה' : 'This is how others see it'),
+        likePrompt: () => this.toast(he ? 'ככה אחרים רואים את זה' : 'This is how others see it'),
+        likeMedia: () => this.toast(he ? 'ככה אחרים רואים את זה' : 'This is how others see it')
+      });
+      const posOf = id => String(items.findIndex(i => i.id === id) + 1);
+      const KIND = he ? { photo: 'תמונה', video: 'סרטון', prompt: 'שאלה', voice: 'הקלטה' } : { photo: 'Photo', video: 'Video', prompt: 'Prompt', voice: 'Voice note' };
+      const editTiles = built.tiles.filter(t => t.id).map(t => Object.assign({}, t, {
+        cls: t.cls + ' ep-tile' + (st.epFlash === t.id ? ' ep-flash' : ''),
+        pos: posOf(t.id), badge: KIND[t.kind], down: e => this.epDown(e, t.id)
+      }));
+      const heroItem = items[0];
+      const editHero = {
+        id: heroItem.id, bg: shotOf(heroItem.src), down: e => this.epDown(e, heroItem.id),
+        cls: 'ep-tile ep-hero' + (st.epFlash === heroItem.id ? ' ep-flash' : '')
+      };
+      const nm = st.form.name || 'Daniel';
+      const vitals = [
+        [he ? 'שם' : 'Name', (st.form.name || 'Daniel') + ' ' + (st.form.last || 'Rosen')],
+        [he ? 'גיל' : 'Age', '31'],
+        [he ? 'עבודה' : 'Work', me.work],
+        [he ? 'גובה' : 'Height', me.height],
+        [he ? 'מגורים' : 'Home', me.home],
+        [he ? 'מחפש' : 'Looking for', st.form.intent || 'A relationship']
+      ].map(([k, v]) => ({ k, v, go: () => this.nav('basics') }));
+      return {
+        isEdit: st.epMode !== 'view', isView: st.epMode === 'view',
+        segEdit: st.epMode !== 'view' ? 'on' : '', segView: st.epMode === 'view' ? 'on' : '',
+        toEdit: () => this.setState({ epMode: 'edit', playing: null }), toView: () => this.setState({ epMode: 'view', playing: null, epSheet: null }),
+        back: () => { this.epCancel(); this.setState({ epSheet: null, epMode: 'edit', playing: null }); this.nav('profile', { tab: 'profile' }); },
+        list, counters, adds, sheet, vitals, editTiles, editHero,
+        pal: Component.PALETTE.daniel || { v: '#2A3F6E', d: '#1C2536', l: '#E3E1D8' },
+        view: {
+          blocks: built.blocks, tiles: built.tiles,
+          hero: {
+            bg: photos[0] ? shotOf(photos[0].src) : 'none', open: () => {}, like: () => this.toast(he ? 'ככה אחרים רואים את זה' : 'This is how others see it'),
+            name: nm + ', 31', verified: false, city: me.home,
+            job: me.work, intent: cap(st.form.intent || 'A relationship'), dist: me.height,
+            count: photos.length > 1 ? photos.length + (he ? ' תמונות' : ' photos') : ''
+          }
+        }
+      };
+    })();

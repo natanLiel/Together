@@ -1,0 +1,194 @@
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700;900&family=Heebo:wght@300;400;500;700&display=swap">
+<style>
+/* ══ TWO INKS ════════════════════════════════════════════════════════════════
+   Stock ground, two inks, and the plum they make where they overlap.
+
+   The ramps run 100 = palest … 900 = deepest, which is the reverse of the
+   plum-black build. That single flip does most of the work: every
+   `color:var(--color-accent-800)` that used to be light rose on black is now
+   deep ink on stock, and every `background:var(--color-accent-100)` that used
+   to be a near-black tint is now a pale wash. The screens did not have to
+   change — only what the steps mean.
+
+   One deliberate impurity: --color-accent-800 is the app's secondary body
+   copy (some sixty uses), so it is a muted ink rather than a true deep rose.
+   Rose at that size, everywhere, would shout.                               */
+:root{
+  /* Both faces carry Latin AND Hebrew, so the mirrored build is the same
+     design rather than a fallback. Frank Ruhl Libre is the classic Hebrew
+     newspaper serif — editorial, and native to the app's own market; Heebo
+     covers both scripts for interface and body. */
+  --font-heading:'Frank Ruhl Libre',Georgia,'Times New Roman',serif;
+  --font-heading-weight:700;
+  --font-body:'Heebo','Archivo',system-ui,sans-serif;
+  --font-meta:'Heebo','Archivo',system-ui,sans-serif;
+
+  /* the three inks */
+  --tg-stock:#E3E1D8; --tg-stock-2:#D8D5CA;
+  --tg-ink-b:#2A3F6E;        /* ink one — structure   */
+  --tg-ink-r:#E4485B;        /* ink two — intent      */
+  --tg-over:#57304F;         /* overprint — connection */
+
+  --color-bg:#E3E1D8;
+  --color-surface:#EFEDE6;
+  --color-text:#1C2536;
+  --color-divider:rgba(28,37,54,.17);
+  --color-accent:#E4485B; --color-accent-2:#57304F;
+
+  /* rose — tints 100-300, marks 400-700, then ink for copy */
+  --color-accent-100:#FAECEE; --color-accent-200:#F4D8DC; --color-accent-300:#EBB6BE;
+  --color-accent-400:#E58F9B; --color-accent-500:#E4485B; --color-accent-600:#C93C4E;
+  --color-accent-700:#A22E3D; --color-accent-800:#5C6472; --color-accent-900:#1C2536;
+
+  /* plum — the overprint, reserved for connection and insight */
+  --color-accent-2-100:#F1EAEF; --color-accent-2-200:#E2D3DF; --color-accent-2-300:#C7ADC0;
+  --color-accent-2-400:#A4849C; --color-accent-2-500:#7E5675; --color-accent-2-600:#6A4362;
+  --color-accent-2-700:#57304F; --color-accent-2-800:#40233A; --color-accent-2-900:#2A1726;
+
+  /* neutrals, biased toward ink one so nothing reads as flat grey */
+  --color-neutral-100:#F4F2EC; --color-neutral-200:#E9E7DF; --color-neutral-300:#D5D2C6;
+  --color-neutral-400:#ADB2BC; --color-neutral-500:#828A99; --color-neutral-600:#5C6472;
+  --color-neutral-700:#3D4657; --color-neutral-800:#2A3241; --color-neutral-900:#1C2536;
+
+  --tg-clay:#E4485B; --tg-clay-tint:#F4D8DC;
+  --tg-deep:#57304F; --tg-deep-ink:#E3E1D8; --tg-deep-sub:#D9C6D4; --tg-deep-2:#40233A;
+  --tg-glow:#D9D5C9;                       /* a vignette on stock, not a glow */
+  --tg-btn-a:#E4485B; --tg-btn-b:#E4485B;
+  --tg-grad:none;                          /* the gradient is retired        */
+  --tg-glass:rgba(28,37,54,.05); --tg-glass-line:rgba(28,37,54,.17);
+  --tg-sub:rgba(28,37,54,.62); --tg-mute:rgba(28,37,54,.45);
+
+  --shadow-sm:0 1px 2px rgba(28,37,54,.07);
+  --shadow-md:0 6px 18px -8px rgba(28,37,54,.24);
+  --shadow-lg:0 22px 48px -26px rgba(28,37,54,.42);
+  color-scheme:light;
+}
+/* both switch positions still land on one ground, as before */
+[data-tg-theme="light"],[data-tg-theme="dark"]{
+  --color-bg:#E3E1D8; --color-surface:#EFEDE6; --color-text:#1C2536;
+  --color-divider:rgba(28,37,54,.17);
+  --tg-btn-a:#E4485B; --tg-btn-b:#E4485B; --tg-glow:#D9D5C9;
+  --tg-deep:#57304F; --tg-deep-ink:#E3E1D8; --tg-deep-sub:#D9C6D4; --tg-deep-2:#40233A;
+  color-scheme:light;
+}
+[data-tg-theme] .tg-logo-light,[data-tg-theme] .tg-icon-light{display:block !important}
+[data-tg-theme] .tg-logo-dark,[data-tg-theme] .tg-icon-dark{display:none !important}
+
+body{background:#CBC7B9}
+/* the type rules, applied once so no screen can drift */
+[data-tg-phone] *{text-transform:lowercase !important}
+[data-tg-phone] input,[data-tg-phone] textarea{text-transform:none !important}
+[data-tg-phone] .card-kicker{font-style:italic;letter-spacing:0 !important;font-size:13.5px !important;color:var(--tg-sub) !important}
+h1,h2,h3,h4{font-family:var(--font-heading);font-weight:700;letter-spacing:-.018em;text-transform:lowercase}
+[dir="rtl"] h1,[dir="rtl"] h2,[dir="rtl"] h3,[dir="rtl"] h4{letter-spacing:0}
+[data-tg-phone] [style*="tabular"],.tg-wheel > div{font-variant-numeric:tabular-nums}
+p,span,div,label,button,input,textarea,select{font-family:var(--font-body);font-weight:300}
+
+/* ── surfaces ─────────────────────────────────────────────────────────────
+   No glass, no 30px blur. A printed panel: flat stock and a hairline.     */
+.card{
+  background:rgba(255,255,255,.42);
+  border:1px solid var(--tg-glass-line);
+  border-radius:3px !important;
+  backdrop-filter:none;
+  box-shadow:none;
+  color:var(--color-text);
+}
+
+/* ── controls ─────────────────────────────────────────────────────────────
+   Everything squares off to 2px. Circles are given back to the ring.      */
+/* Organic ships .btn as a 999px pill. Overriding it WITHOUT !important is
+   deliberate: a bare .btn squares off, while a control that sets its own
+   inline radius — the ring, the like — stays a circle, because inline still
+   wins. Circles remain reserved for rings. */
+.btn{text-transform:lowercase;font-family:var(--font-body);letter-spacing:0;border-radius:2px}
+.btn-primary{
+  color:#1C2536 !important;
+  background-image:none !important;
+  background:var(--tg-ink-r) !important;
+  border:0 !important; border-radius:2px !important;
+  font-size:18px !important; font-weight:400 !important;
+  box-shadow:none !important;
+}
+.btn-primary:active{transform:translateY(1px)}
+.btn-primary[disabled],.btn-primary:disabled{
+  background:rgba(28,37,54,.07) !important;
+  color:rgba(28,37,54,.40) !important; font-style:italic;
+  border:1px solid rgba(28,37,54,.12) !important; box-shadow:none !important;
+}
+.btn-secondary{
+  background:transparent !important; color:var(--color-text) !important;
+  border:1px solid var(--tg-glass-line) !important; border-radius:2px !important;
+  font-size:16.5px !important; box-shadow:none !important;
+}
+.btn-ghost{
+  background:transparent !important; color:var(--tg-sub) !important;
+  border:0 !important; font-style:italic; box-shadow:none !important;
+}
+.btn-ghost:hover{color:var(--tg-ink-r) !important}
+.input,select.input,textarea.input{
+  background:rgba(255,255,255,.5) !important; color:var(--color-text) !important;
+  border:1px solid var(--tg-glass-line) !important; border-radius:2px !important;
+  font-family:var(--font-body) !important; font-size:16.5px !important;
+}
+textarea.input{border-radius:3px !important}
+.input::placeholder,textarea.input::placeholder{color:var(--tg-mute);font-style:italic}
+.input:focus,textarea.input:focus{outline:none;border-color:var(--tg-ink-r) !important}
+.field label{color:var(--tg-sub) !important;font-style:italic;font-weight:400 !important;font-size:14px !important}
+label{color:var(--tg-sub);font-style:italic;font-weight:400 !important}
+.tag{
+  background:transparent; color:var(--tg-sub);
+  border:1px solid var(--tg-glass-line) !important; border-radius:2px !important;
+  font-family:var(--font-body) !important; font-size:13.5px !important; font-weight:400 !important;
+  backdrop-filter:none;
+}
+.tag-accent{background:var(--color-accent-100) !important;color:var(--color-accent-700) !important;border-color:var(--color-accent-300) !important}
+.tag-accent-2{background:var(--color-accent-2-100) !important;color:var(--color-accent-2-700) !important;border-color:var(--color-accent-2-300) !important}
+.seg{background:transparent !important;border:1px solid var(--tg-glass-line) !important;border-radius:2px !important;padding:3px}
+.seg-opt{border-radius:2px !important;color:var(--tg-sub);font-family:var(--font-body) !important;text-transform:lowercase}
+.seg-opt:has(input:checked){background:var(--tg-ink-b) !important;color:var(--tg-stock) !important}
+.elev-sm,.elev-md,.elev-lg{box-shadow:var(--shadow-md) !important}
+.washed{background:rgba(28,37,54,.04)}
+
+@keyframes tg-up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes tg-in{from{opacity:0}to{opacity:1}}
+@keyframes tg-fadeout{from{opacity:1}to{opacity:0}}
+@keyframes tg-pop{0%{opacity:0;transform:scale(.94)}60%{transform:scale(1.01)}100%{opacity:1;transform:scale(1)}}
+@keyframes tg-draw{from{stroke-dashoffset:120}to{stroke-dashoffset:0}}
+@keyframes tg-breathe{0%,100%{transform:scale(1);opacity:.55}50%{transform:scale(1.16);opacity:.2}}
+@keyframes tg-dot{0%,60%,100%{opacity:.25;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+@keyframes tg-mark{0%{opacity:0;transform:scale(.82)}55%{opacity:1;transform:scale(1.04)}100%{opacity:1;transform:scale(1)}}
+@keyframes tg-word{from{opacity:0;transform:translateY(14px);letter-spacing:.14em}to{opacity:1;transform:none;letter-spacing:0}}
+@keyframes tg-halo{0%,100%{opacity:.28;transform:scale(.9)}50%{opacity:.6;transform:scale(1.12)}}
+@keyframes tg-drawL{from{stroke-dashoffset:-628.32}to{stroke-dashoffset:0}}
+@keyframes tg-drawR{from{stroke-dashoffset:628.32}to{stroke-dashoffset:0}}
+@keyframes tg-closeL{from{transform:translateX(-50px)}to{transform:none}}
+@keyframes tg-closeR{from{transform:translateX(50px)}to{transform:none}}
+@keyframes tg-weight{from{stroke-width:7.5}to{stroke-width:25.6}}
+@keyframes tg-lift{from{transform:scale(1.58) translateY(26px)}to{transform:none}}
+@keyframes tg-wordrise{from{opacity:0;transform:translateY(46%)}to{opacity:1;transform:none}}
+@keyframes tg-rise{from{opacity:0;transform:translateY(13px)}to{opacity:1;transform:none}}
+@keyframes tg-line{from{stroke-dashoffset:120;opacity:0}to{stroke-dashoffset:0;opacity:1}}
+@media (max-width:900px),(display-mode:standalone),(display-mode:fullscreen){
+  [data-tg-shell]{padding:0 !important;gap:0 !important;min-height:100dvh !important;align-items:stretch !important}
+  [data-tg-col]{gap:0 !important;flex:1 !important}
+  [data-tg-rail]{display:none !important}
+  [data-tg-caption]{display:none !important}
+  [data-tg-frame]{width:100vw !important;height:100dvh !important;border-radius:0 !important;padding:0 !important;box-shadow:none !important}
+  [data-tg-phone]{border-radius:0 !important;padding-top:env(safe-area-inset-top) !important;padding-bottom:env(safe-area-inset-bottom) !important}
+}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;transition-duration:.01ms !important}}
+.tg-scroll::-webkit-scrollbar{width:0;height:0}
+[data-tg-phone],[data-tg-phone] *{scrollbar-width:none;-ms-overflow-style:none}
+[data-tg-phone]::-webkit-scrollbar,[data-tg-phone] *::-webkit-scrollbar{width:0 !important;height:0 !important;display:none}
+.tg-wheel{height:132px;overflow-y:auto;scroll-snap-type:y mandatory;padding:44px 0;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.tg-wheel::-webkit-scrollbar{width:0}
+.tg-wheel > div{height:44px;scroll-snap-align:center;display:grid;place-items:center;font-size:16px;font-variant-numeric:tabular-nums;transition:color .15s ease}
+.tg-row:hover{background:rgba(28,37,54,.045)}
+.tg-tap{cursor:pointer;transition:transform .18s ease, background .18s ease}
+.tg-tap:active{transform:scale(.985)}
+.tg-railbtn{display:block;width:100%;text-align:left;font:400 12.5px/1.35 var(--font-body);color:var(--tg-sub);background:transparent;border:0;padding:6px 10px;border-radius:2px;cursor:pointer}
+.tg-railbtn:hover{background:var(--color-accent-100)}
+.tg-railbtn[data-on="1"]{background:var(--tg-ink-r);color:#1C2536}
+</style>

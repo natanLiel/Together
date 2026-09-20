@@ -1,0 +1,99 @@
+<sc-if value="{{ at.editprofile }}">
+            <div class="ep tgd-root" style="--pv:{{ ep.pal.v }};--pd:{{ ep.pal.d }};--pl:{{ ep.pal.l }};animation:tg-in .3s ease">
+              <div class="ep-bar">
+                <button class="btn btn-icon tg-tap" sc-camel-on-click="{{ ep.back }}" aria-label="Back"><svg width="19" height="19" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></button>
+                <span class="ep-title">Edit profile</span>
+                <button class="ep-done tg-tap" sc-camel-on-click="{{ ep.back }}">Done</button>
+              </div>
+              <div class="ep-tabs">
+                <button class="tg-tap {{ ep.segEdit }}" sc-camel-on-click="{{ ep.toEdit }}">Edit</button>
+                <button class="tg-tap {{ ep.segView }}" sc-camel-on-click="{{ ep.toView }}">View</button>
+              </div>
+
+              <sc-if value="{{ ep.isEdit }}">
+                <div class="ep-body">
+                  <div class="ep-counters">
+                    <sc-for list="{{ ep.counters }}" as="c" hint-placeholder-count="4">
+                      <span class="{{ c.cls }}"><b>{{ c.count }}</b>{{ c.label }}</span>
+                    </sc-for>
+                  </div>
+                  <div class="ep-hint"><svg width="14" height="14" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 5h.01M15 5h.01M9 12h.01M15 12h.01M9 19h.01M15 19h.01"></path></svg><span>Tap to edit · Hold and drag to move</span></div>
+
+                  <div class="ep-stage">
+                    <div class="tgd-backdrop" aria-hidden="true"><div class="tgd-backdrop-img" style="background:{{ ep.editHero.bg }}"></div></div>
+                    <div class="{{ ep.editHero.cls }}" data-ep-id="{{ ep.editHero.id }}" sc-camel-on-pointer-down="{{ ep.editHero.down }}">
+                      <div class="ep-hero-img" style="background:{{ ep.editHero.bg }}"></div>
+                      <span class="ep-badge"><i>1</i>Main photo · drop a photo here to swap</span>
+                      <span class="ep-grip" aria-hidden="true"><svg width="14" height="14" sc-camel-view-box="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.6"></circle><circle cx="15" cy="6" r="1.6"></circle><circle cx="9" cy="12" r="1.6"></circle><circle cx="15" cy="12" r="1.6"></circle><circle cx="9" cy="18" r="1.6"></circle><circle cx="15" cy="18" r="1.6"></circle></svg></span>
+                    </div>
+                    <div class="tgm ep-mosaic">
+                      <sc-for list="{{ ep.editTiles }}" as="t" hint-placeholder-count="7">
+                        <div class="tgt {{ t.cls }}" data-ep-id="{{ t.id }}" sc-camel-on-pointer-down="{{ t.down }}">
+                          <sc-if value="{{ t.isPhoto }}">
+                            <div class="tgt-img" style="background:{{ t.bg }}"></div>
+                          </sc-if>
+                          <sc-if value="{{ t.isPrompt }}">
+                            <div class="tgt-card">
+                              <div class="tgt-q">{{ t.q }}</div>
+                              <p class="tgt-a">{{ t.a }}</p>
+                            </div>
+                          </sc-if>
+                          <sc-if value="{{ t.isVideo }}">
+                            <div class="tgt-img" style="background:{{ t.bg }}"></div>
+                            <span class="tgt-play"><svg width="16" height="16" sc-camel-view-box="0 0 24 24" fill="#FBFAF6"><path d="M8 5.5v13l11-6.5z"></path></svg></span>
+                            <span class="tgt-dur">{{ t.dur }}</span>
+                          </sc-if>
+                          <sc-if value="{{ t.isVoice }}">
+                            <div class="tgt-vrow">
+                              <span class="tgt-vplay"><svg width="15" height="15" sc-camel-view-box="0 0 24 24" fill="#FBFAF6"><path d="M8 5.5v13l11-6.5z"></path></svg></span>
+                              <div class="tgt-vtext">
+                                <div class="tgt-q">{{ t.q }}</div>
+                                <div class="tgd-wave tgt-wave">
+                                  <sc-for list="{{ t.bars }}" as="w" hint-placeholder-count="22">
+                                    <i style="height:{{ w.h }}"></i>
+                                  </sc-for>
+                                </div>
+                              </div>
+                              <span class="tgd-vdur">{{ t.dur }}</span>
+                            </div>
+                          </sc-if>
+                          <span class="ep-badge"><i>{{ t.pos }}</i>{{ t.badge }}</span>
+                          <span class="ep-grip" aria-hidden="true"><svg width="14" height="14" sc-camel-view-box="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.6"></circle><circle cx="15" cy="6" r="1.6"></circle><circle cx="9" cy="12" r="1.6"></circle><circle cx="15" cy="12" r="1.6"></circle><circle cx="9" cy="18" r="1.6"></circle><circle cx="15" cy="18" r="1.6"></circle></svg></span>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </div>
+
+                  <div class="tgp-label">Add to your profile</div>
+                  <div class="ep-adds">
+                    <sc-for list="{{ ep.adds }}" as="a" hint-placeholder-count="4">
+                      <button class="ep-add tg-tap {{ a.cls }}" sc-camel-on-click="{{ a.go }}">
+                        <span class="ep-plus"><svg width="20" height="20" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ a.icon }}"></path></svg></span>
+                        <span class="ep-addlabel">{{ a.label }}</span>
+                        <small>{{ a.left }}</small>
+                      </button>
+                    </sc-for>
+                  </div>
+
+                  <div class="tgp-label">My vitals</div>
+                  <div class="tgp-card">
+                    <sc-for list="{{ ep.vitals }}" as="v" hint-placeholder-count="6">
+                      <button class="tgp-row tgp-linkrow" sc-camel-on-click="{{ v.go }}">
+                        <span>{{ v.k }}</span>
+                        <span class="tgp-val">{{ v.v }}<svg width="16" height="16" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></span>
+                      </button>
+                    </sc-for>
+                  </div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ ep.isView }}">
+                <div class="ep-view">
+                  <div class="tgd-backdrop" aria-hidden="true"><div class="tgd-backdrop-img" style="background:{{ ep.view.hero.bg }}"></div></div>
+                  <p class="ep-viewnote">This is exactly how people see you in Discover.</p>
+                  __VIEW_BLOCKS__
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+

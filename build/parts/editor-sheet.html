@@ -1,0 +1,74 @@
+<sc-if value="{{ ep.sheet.open }}" hint-placeholder-val="{{ false }}">
+          <div class="eps-scrim" sc-camel-on-click="{{ ep.sheet.close }}"></div>
+          <div class="eps">
+            <div class="eps-grab"></div>
+            <div class="eps-head">
+              <span class="eps-title">{{ ep.sheet.title }}</span>
+              <button class="tgv-close eps-x tg-tap" sc-camel-on-click="{{ ep.sheet.close }}" aria-label="Close"><svg width="16" height="16" sc-camel-view-box="0 0 24 24" fill="none" stroke="#1C2536" stroke-width="2.4" stroke-linecap="round"><path d="M6 6 18 18"></path><path d="M18 6 6 18"></path></svg></button>
+            </div>
+
+            <sc-if value="{{ ep.sheet.isMedia }}">
+              <div class="eps-media" style="background:{{ ep.sheet.bg }}">
+                <sc-if value="{{ ep.sheet.isVideo }}">
+                  <span class="ep-playbadge"><svg width="18" height="18" sc-camel-view-box="0 0 24 24" fill="#FBFAF6"><path d="M8 5.5v13l11-6.5z"></path></svg>{{ ep.sheet.dur }}</span>
+                </sc-if>
+              </div>
+              <div class="eps-actions">
+                <button class="eps-btn tg-tap" sc-camel-on-click="{{ ep.sheet.replace }}"><svg width="18" height="18" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 14-5.3L20 9M20 4v5h-5M20 12a8 8 0 0 1-14 5.3L4 15M4 20v-5h5"></path></svg>{{ ep.sheet.replaceLabel }}</button>
+                <sc-if value="{{ ep.sheet.canFirst }}">
+                  <button class="eps-btn tg-tap" sc-camel-on-click="{{ ep.sheet.first }}"><svg width="18" height="18" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"></path></svg>Make it the main photo</button>
+                </sc-if>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ ep.sheet.hasText }}">
+              <div class="eps-label">Pick a question</div>
+              <div class="eps-qs">
+                <sc-for list="{{ ep.sheet.questions }}" as="q" hint-placeholder-count="6">
+                  <button class="eps-q tg-tap {{ q.cls }}" sc-camel-on-click="{{ q.pick }}">{{ q.label }}</button>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ ep.sheet.isPrompt }}">
+              <div class="eps-label" style="display:flex;justify-content:space-between"><span>Your answer</span><span>{{ ep.sheet.count }}</span></div>
+              <textarea class="eps-text" data-tg-cap="first" autocapitalize="sentences" maxlength="150" value="{{ ep.sheet.a }}" sc-camel-on-input="{{ ep.sheet.setA }}" placeholder="Keep it short and specific"></textarea>
+            </sc-if>
+
+            <sc-if value="{{ ep.sheet.isVoice }}">
+              <div class="eps-rec {{ ep.sheet.recCls }}">
+                <button class="eps-recbtn tg-tap" sc-camel-on-click="{{ ep.sheet.record }}" aria-label="Record"><svg width="22" height="22" sc-camel-view-box="0 0 24 24" fill="none" stroke="#FBFAF6" stroke-width="2" stroke-linecap="round"><path d="M12 3.5a3 3 0 0 1 3 3v5a3 3 0 0 1-6 0v-5a3 3 0 0 1 3-3zM6 11a6 6 0 0 0 12 0M12 17v3.5"></path></svg></button>
+                <div style="flex:1;min-width:0">
+                  <div class="eps-reclabel">{{ ep.sheet.recLabel }}</div>
+                  <sc-if value="{{ ep.sheet.showWave }}">
+                    <div class="tgd-wave eps-wave">
+                      <sc-for list="{{ ep.sheet.recBars }}" as="w" hint-placeholder-count="30">
+                        <i style="height:{{ w.h }};animation-delay:{{ w.d }}"></i>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+                </div>
+                <span class="tgd-vdur">{{ ep.sheet.recDur }}</span>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ ep.sheet.hasSize }}">
+              <div class="eps-label">Size on your profile</div>
+              <div class="tgp-seg eps-size">
+                <sc-for list="{{ ep.sheet.sizes }}" as="z" hint-placeholder-count="3">
+                  <button class="tg-tap {{ z.cls }}" sc-camel-on-click="{{ z.pick }}">{{ z.label }}</button>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <div class="eps-foot">
+              <sc-if value="{{ ep.sheet.canRemove }}">
+                <button class="eps-remove tg-tap" sc-camel-on-click="{{ ep.sheet.remove }}">{{ ep.sheet.removeLabel }}</button>
+              </sc-if>
+              <sc-if value="{{ ep.sheet.hasText }}">
+                <button class="eps-save tg-tap" sc-camel-on-click="{{ ep.sheet.save }}">Save</button>
+              </sc-if>
+            </div>
+          </div>
+        </sc-if>
+

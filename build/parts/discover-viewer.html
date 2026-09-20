@@ -1,0 +1,24 @@
+<sc-if value="{{ dv.viewerOpen }}" hint-placeholder-val="{{ false }}">
+          <div class="tgv" style="--pv:{{ dv.pal.v }};--pd:{{ dv.pal.d }};--pl:{{ dv.pal.l }}">
+            <div class="tgv-blur" style="background:{{ dv.viewer.cover }}"></div>
+            <div class="tgv-img" style="background:{{ dv.viewer.bg }}"></div>
+            <button class="tgv-zone tgv-prev" sc-camel-on-click="{{ dv.viewer.prev }}" aria-label="Previous photo"></button>
+            <button class="tgv-zone tgv-next" sc-camel-on-click="{{ dv.viewer.next }}" aria-label="Next photo"></button>
+            <div class="tgv-top">
+              <div class="tgv-dots">
+                <sc-for list="{{ dv.viewer.dots }}" as="d" hint-placeholder-count="4">
+                  <i style="opacity:{{ d.op }}"></i>
+                </sc-for>
+              </div>
+              <button class="tgv-close tg-tap" sc-camel-on-click="{{ dv.viewer.close }}" aria-label="Close"><svg width="18" height="18" sc-camel-view-box="0 0 24 24" fill="none" stroke="#FBFAF6" stroke-width="2.4" stroke-linecap="round"><path d="M6 6 18 18"></path><path d="M18 6 6 18"></path></svg></button>
+            </div>
+            <div class="tgv-bottom">
+              <div>
+                <div class="tgv-name">{{ dv.hero.name }}</div>
+                <div class="tgv-count">{{ dv.viewer.count }}</div>
+              </div>
+              <button class="tgv-like tg-tap" sc-camel-on-click="{{ dv.viewer.like }}"><svg width="19" height="19" sc-camel-view-box="0 0 24 24" fill="none" stroke="#FBFAF6" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 5.6a5.2 5.2 0 0 0-7.4 0L12 7l-1.4-1.4a5.2 5.2 0 1 0-7.4 7.4L12 21.5l8.8-8.5a5.2 5.2 0 0 0 0-7.4z"></path></svg><span>Like this photo</span></button>
+            </div>
+          </div>
+        </sc-if>
+

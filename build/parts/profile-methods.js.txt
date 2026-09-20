@@ -1,0 +1,340 @@
+  // ——— profiles as an ordered list of photos, videos, prompts and a voice note ———
+  static ME_PHOTOS = ['assets/people/daniel-1.jpg', 'assets/people/daniel-2.jpg', 'assets/people/daniel-3.jpg', 'assets/people/daniel-4.jpg', 'assets/people/daniel-7.jpg', 'assets/people/daniel-8.jpg'];
+  static ME_VIDEOS = [{ src: 'assets/people/daniel-5.jpg', dur: '0:09', secs: 9 }, { src: 'assets/people/daniel-6.jpg', dur: '0:14', secs: 14 }];
+  static ME_LIMITS = { photo: 6, video: 2, prompt: 6, voice: 2 };
+  static PROMPT_QS = ['A perfect Sunday', 'I am looking for', 'The way to win me over is', 'My simple pleasure', 'Together we could', 'I geek out on', 'Typical Friday night', 'The key to my heart is', 'I will fall for you if', 'Two truths and a lie'];
+  static VOICE_QS = ['My go-to karaoke song', 'A story I tell too often', 'How I sound when I am excited', 'My most irrational fear'];
+
+  personItems(p) {
+    const n = p.pics ? p.pics.length : 0;
+    const items = [{ id: 'p0', kind: 'photo', src: p.pics[0] }];
+    let pi = 1, qi = 0, vi = 0, ai = 0, det = false;
+    const V = p.videos || [], A = p.voices || [];
+    const pushP = () => { items.push({ id: 'p' + pi, kind: 'photo', src: p.pics[pi] }); pi++; };
+    const pushQ = () => { items.push({ id: 'q' + qi, kind: 'prompt', q: p.prompts[qi][0], a: p.prompts[qi][1], qi }); qi++; };
+    const pushV = () => { items.push(Object.assign({ id: p.name + '-v' + vi, kind: 'video' }, V[vi])); vi++; };
+    const pushA = () => { items.push(Object.assign({ id: p.name + '-a' + ai, kind: 'voice' }, A[ai])); ai++; };
+    (p.layout || []).forEach(t => {
+      if (t === 'p' && pi < n) pushP();
+      else if (t === 'q' && qi < p.prompts.length) pushQ();
+      else if (t === 'v' && vi < V.length) pushV();
+      else if (t === 'a' && ai < A.length) pushA();
+      else if (t === 'd' && !det) { items.push({ id: 'd', kind: 'details' }); det = true; }
+    });
+    while (pi < n || qi < p.prompts.length || vi < V.length || ai < A.length) {
+      if (qi < p.prompts.length) pushQ(); if (pi < n) pushP(); if (vi < V.length) pushV(); if (ai < A.length) pushA();
+    }
+    if (!det) items.push({ id: 'd', kind: 'details' });
+    return items;
+  }
+
+  waveBars(seed) {
+    let h = 7;
+    for (const c of String(seed)) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+    const out = [];
+    for (let i = 0; i < 30; i++) {
+      h = (Math.imul(h, 1103515245) + 12345) >>> 0;
+      const v = 0.22 + ((h >>> 16) % 1000) / 1000 * 0.78;
+      out.push({ h: Math.round(v * 100) + '%', d: (i * 0.05).toFixed(2) + 's' });
+    }
+    return out;
+  }
+
+  buildBlocks(items, o) {
+    const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+    const halt = e => { if (e && e.stopPropagation) e.stopPropagation(); };
+    const shotOf = src => 'center/cover no-repeat url("' + src + '")';
+    const photos = items.filter(i => i.kind === 'photo');
+    const first = photos[0];
+    const blocks = [];
+    let group = null, labelled = false;
+    items.forEach(it => {
+      if (it === first) return;
+      if (it.kind === 'photo') {
+        if (!group) { group = { isPhotos: true, photos: [], label: labelled ? '' : o.moreLabel, hint: labelled ? '' : o.hint }; labelled = true; blocks.push(group); }
+        const k = photos.indexOf(it);
+        group.photos.push({ bg: shotOf(it.src), open: e => { halt(e); o.open(k); }, like: e => { halt(e); o.likePhoto(k); } });
+        return;
+      }
+      group = null;
+      if (it.kind === 'prompt') blocks.push({ isPrompt: true, q: it.q, a: cap(it.a), like: e => { halt(e); o.likePrompt(it); } });
+      else if (it.kind === 'video' || it.kind === 'voice') {
+        const b = {
+          dur: it.dur, secs: (it.secs || 10) + 's', playCls: o.playing === it.id ? 'is-playing' : '',
+          play: e => { halt(e); this.playMedia(it); }, like: e => { halt(e); o.likeMedia(it); }
+        };
+        if (it.kind === 'video') Object.assign(b, { isVideo: true, bg: shotOf(it.src) });
+        else Object.assign(b, { isVoice: true, q: it.q, bars: this.waveBars(it.id) });
+        blocks.push(b);
+      } else if (it.kind === 'details') blocks.push({ isDetails: true, label: o.detailsLabel, tags: o.tags });
+    });
+    blocks.forEach(b => { if (b.isPhotos) b.cls = b.photos.length === 1 ? 'tgd-solo' : 'tgd-n' + Math.min(b.photos.length, 4); });
+
+    // the condensed mosaic: every item its own tile, sized by what it is
+    const tiles = [];
+    let photoN = 0, promptN = 0;
+    const blank = { isPhoto: false, isPrompt: false, isVideo: false, isVoice: false, isDetails: false };
+    items.forEach(it => {
+      if (it === first) return;
+      if (it.kind === 'photo') {
+        const k = photos.indexOf(it);
+        const wide = it.size ? it.size === 'wide' : photoN % 3 === 2;
+        photoN++;
+        tiles.push(Object.assign({}, blank, { id: it.id, kind: 'photo', isPhoto: true, cls: wide ? 'tgt-photo tgt-full tgt-r2' : 'tgt-photo tgt-r2', bg: shotOf(it.src),
+          open: e => { halt(e); o.open(k); }, like: e => { halt(e); o.likePhoto(k); } }));
+      } else if (it.kind === 'prompt') {
+        const a = cap(it.a), long = it.size ? it.size === 'wide' : a.length > 78;
+        tiles.push(Object.assign({}, blank, { id: it.id, kind: 'prompt', isPrompt: true, q: it.q, a,
+          cls: 'tgt-prompt ' + (long ? 'tgt-full' : 'tgt-r2') + (promptN++ % 2 ? ' tgt-tone' : ''),
+          like: e => { halt(e); o.likePrompt(it); } }));
+      } else if (it.kind === 'video') {
+        tiles.push(Object.assign({}, blank, { id: it.id, kind: 'video', isVideo: true, cls: 'tgt-video tgt-r3' + (it.size === 'wide' ? ' tgt-full' : '') + (o.playing === it.id ? ' is-playing' : ''), bg: shotOf(it.src),
+          dur: it.dur, secs: (it.secs || 10) + 's', play: e => { halt(e); this.playMedia(it); }, like: e => { halt(e); o.likeMedia(it); } }));
+      } else if (it.kind === 'voice') {
+        tiles.push(Object.assign({}, blank, { id: it.id, kind: 'voice', isVoice: true, cls: 'tgt-voice tgt-full' + (o.playing === it.id ? ' is-playing' : ''), q: it.q, dur: it.dur,
+          secs: (it.secs || 10) + 's', bars: this.waveBars(it.id).slice(0, 22), play: e => { halt(e); this.playMedia(it); }, like: e => { halt(e); o.likeMedia(it); } }));
+      } else if (it.kind === 'details' && o.tags && o.tags.length) {
+        tiles.push(Object.assign({}, blank, { isDetails: true, cls: 'tgt-details tgt-full', label: o.detailsLabel, tags: o.tags }));
+      }
+    });
+    return { blocks, tiles, photos, first, shotOf };
+  }
+
+  playMedia(it) {
+    clearTimeout(this._playT);
+    if (this.state.playing === it.id) { this.setState({ playing: null }); return; }
+    this.setState({ playing: it.id });
+    this._playT = setTimeout(() => this.setState({ playing: null }), (it.secs || 10) * 1000);
+  }
+
+  // ——— the profile editor ———
+  meItems() { return this.state.me.items; }
+  setItems(items) { this.setState({ me: Object.assign({}, this.state.me, { items }) }); }
+  countOf(kind, items) { return (items || this.meItems()).filter(i => i.kind === kind).length; }
+  fixFirst(items) {
+    if (items.length && items[0].kind !== 'photo') {
+      const k = items.findIndex(i => i.kind === 'photo');
+      if (k > 0) { const p = items.splice(k, 1)[0]; items.unshift(p); }
+    }
+    return items;
+  }
+
+  epAdd(kind) {
+    const items = this.meItems();
+    if (this.countOf(kind) >= Component.ME_LIMITS[kind]) { this.toast('That is the most you can add'); return; }
+    const id = kind.charAt(0) + Date.now().toString(36);
+    if (kind === 'photo') {
+      const used = items.filter(i => i.kind === 'photo').map(i => i.src);
+      const src = Component.ME_PHOTOS.find(s => used.indexOf(s) < 0) || Component.ME_PHOTOS[0];
+      this.setItems(items.concat([{ id, kind, src }]));
+      this.setState({ epFlash: id });
+      return;
+    }
+    if (kind === 'video') {
+      const used = items.filter(i => i.kind === 'video').map(i => i.src);
+      const v = Component.ME_VIDEOS.find(x => used.indexOf(x.src) < 0) || Component.ME_VIDEOS[0];
+      this.setItems(items.concat([{ id, kind, src: v.src, dur: v.dur, secs: v.secs }]));
+      this.setState({ epFlash: id });
+      return;
+    }
+    const bank = kind === 'prompt' ? Component.PROMPT_QS : Component.VOICE_QS;
+    const usedQ = items.filter(i => i.kind === kind).map(i => i.q);
+    this.setState({ epSheet: { kind, isNew: true }, epQ: bank.find(q => usedQ.indexOf(q) < 0) || bank[0], epA: '', epRec: 'idle', epSecs: 12 });
+  }
+
+  epOpen(id) {
+    const it = this.meItems().find(i => i.id === id);
+    if (!it) return;
+    this.setState({ epSheet: { id, kind: it.kind }, epQ: it.q || '', epA: it.a || '', epRec: 'idle', epSecs: it.secs || 12 });
+  }
+  epClose() { clearTimeout(this._recT); this.setState({ epSheet: null, epRec: 'idle' }); }
+
+  epSave() {
+    const sh = this.state.epSheet;
+    if (!sh) return;
+    const items = this.meItems().slice();
+    if (sh.kind === 'prompt' && !this.state.epA.trim()) { this.toast('Write an answer first'); return; }
+    if (sh.kind === 'voice' && sh.isNew && this.state.epRec !== 'done') { this.toast('Record your voice note first'); return; }
+    const secs = this.state.epSecs;
+    const patch = sh.kind === 'prompt' ? { q: this.state.epQ, a: this.state.epA.trim() } : { q: this.state.epQ, secs, dur: '0:' + String(secs).padStart(2, '0') };
+    if (sh.isNew) items.push(Object.assign({ id: sh.kind.charAt(0) + Date.now().toString(36), kind: sh.kind }, patch));
+    else { const k = items.findIndex(i => i.id === sh.id); if (k >= 0) items[k] = Object.assign({}, items[k], patch); }
+    this.setItems(items);
+    this.epClose();
+  }
+
+  epRemove() {
+    const sh = this.state.epSheet;
+    if (!sh || sh.isNew) { this.epClose(); return; }
+    const it = this.meItems().find(i => i.id === sh.id);
+    if (it && it.kind === 'photo' && this.countOf('photo') <= 1) { this.toast('Keep at least one photo'); return; }
+    this.setItems(this.fixFirst(this.meItems().filter(i => i.id !== sh.id)));
+    this.epClose();
+  }
+
+  epReplace() {
+    const sh = this.state.epSheet;
+    const items = this.meItems().slice();
+    const k = items.findIndex(i => i.id === (sh && sh.id));
+    if (k < 0) return;
+    const it = items[k];
+    if (it.kind === 'photo') {
+      const pool = Component.ME_PHOTOS, used = items.filter(i => i.kind === 'photo').map(i => i.src);
+      const j = pool.indexOf(it.src);
+      let next = null;
+      for (let s = 1; s < pool.length && !next; s++) { const c = pool[(j + s) % pool.length]; if (used.indexOf(c) < 0) next = c; }
+      if (!next) {
+        // every photo is already on the profile: trade places with the next one
+        next = pool[(j + 1) % pool.length];
+        const o = items.findIndex(i => i.kind === 'photo' && i.src === next);
+        if (o >= 0) items[o] = Object.assign({}, items[o], { src: it.src });
+      }
+      items[k] = Object.assign({}, it, { src: next });
+    } else if (it.kind === 'video') {
+      const pool = Component.ME_VIDEOS, j = pool.findIndex(v => v.src === it.src);
+      const v = pool[(j + 1) % pool.length];
+      items[k] = Object.assign({}, it, { src: v.src, dur: v.dur, secs: v.secs });
+    }
+    this.setItems(items);
+    this.toast(it.kind === 'photo' ? 'Photo replaced' : 'Video replaced');
+  }
+
+  epMakeFirst() {
+    const sh = this.state.epSheet;
+    const items = this.meItems().slice();
+    const k = items.findIndex(i => i.id === (sh && sh.id));
+    if (k <= 0) return;
+    items.unshift(items.splice(k, 1)[0]);
+    this.setItems(items);
+    this.epClose();
+  }
+
+  epSize(size) {
+    const sh = this.state.epSheet;
+    const items = this.meItems().slice();
+    const k = items.findIndex(i => i.id === (sh && sh.id));
+    if (k < 0) return;
+    items[k] = Object.assign({}, items[k], { size: size || undefined });
+    this.setItems(items);
+  }
+
+  epRecord() {
+    clearTimeout(this._recT);
+    this.setState({ epRec: 'rec' });
+    this._recT = setTimeout(() => this.setState({ epRec: 'done', epSecs: 9 + Math.floor(Math.random() * 18) }), 2400);
+  }
+
+  // hold to lift, drag to place, quick tap to edit
+  epDown(e, id) {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    const el = e.currentTarget;
+    const sc = document.querySelector('.tg-scroll');
+    this.epCancel();
+    this._ep = { id, el, sc, x0: e.clientX, y0: e.clientY, x: e.clientX, y: e.clientY, t0: Date.now(), active: false, moved: false };
+    this._epT = setTimeout(() => this.epLift(), 320);
+    if (!this._epMove) {
+      this._epMove = ev => this.epMove(ev);
+      this._epUp = ev => this.epUp(ev);
+      this._epTouch = ev => { if (this._ep && this._ep.active && ev.cancelable) ev.preventDefault(); };
+      document.addEventListener('touchmove', this._epTouch, { passive: false });
+    }
+    window.addEventListener('pointermove', this._epMove);
+    window.addEventListener('pointerup', this._epUp);
+    window.addEventListener('pointercancel', this._epUp);
+  }
+
+  epLift() {
+    const d = this._ep;
+    if (!d || d.moved) return;
+    const nodes = [...document.querySelectorAll('[data-ep-id]')];
+    const order = nodes.map(n => n.getAttribute('data-ep-id'));
+    const di = order.indexOf(d.id);
+    if (di < 0) return;
+    const rects = nodes.map(n => n.getBoundingClientRect());
+    Object.assign(d, { active: true, nodes, order, di, ni: -1, rects, scroll0: d.sc ? d.sc.scrollTop : 0, gap: 12 });
+    d.el.classList.add('ep-lift');
+    document.querySelector('.ep-list') && document.querySelector('.ep-list').classList.add('ep-dragging');
+    try { navigator.vibrate && navigator.vibrate(12); } catch (_) {}
+    const tick = () => {
+      if (!this._ep || !this._ep.active) return;
+      const s = d.sc; if (s) {
+        const r = s.getBoundingClientRect();
+        if (d.y < r.top + 70) s.scrollTop -= Math.ceil((r.top + 70 - d.y) / 6);
+        else if (d.y > r.bottom - 90) s.scrollTop += Math.ceil((d.y - (r.bottom - 90)) / 6);
+      }
+      this.epPlace();
+      d.raf = requestAnimationFrame(tick);
+    };
+    d.raf = requestAnimationFrame(tick);
+  }
+
+  epPlace() {
+    const d = this._ep;
+    const scrolled = (d.sc ? d.sc.scrollTop : 0) - d.scroll0;
+    const dx = d.x - d.x0, dy = d.y - d.y0 + scrolled;
+    d.el.style.transform = 'translate3d(' + dx + 'px,' + dy + 'px,0) scale(.94)';
+    const px = d.x, py = d.y + scrolled;
+    let ti = -1, best = Infinity;
+    d.rects.forEach((r, k) => {
+      if (k === d.di) return;
+      const inside = px >= r.left && px <= r.right && py >= r.top && py <= r.bottom;
+      const dist = inside ? -1 : Math.hypot(px - (r.left + r.width / 2), py - (r.top + r.height / 2));
+      if (dist < best) { best = dist; ti = k; }
+    });
+    if (best > 160) ti = -1;
+    const kind = (this.meItems().find(i => i.id === d.id) || {}).kind;
+    const bad = ti === 0 && kind !== 'photo';
+    d.hitBad = bad;
+    d.ni = bad ? -1 : ti;
+    d.nodes.forEach((n, k) => {
+      n.classList.toggle('ep-target', k === ti && !bad);
+      n.classList.toggle('ep-target-no', k === ti && bad);
+    });
+  }
+  epMove(ev) {
+    const d = this._ep;
+    if (!d) return;
+    d.x = ev.clientX;
+    d.y = ev.clientY;
+    if (!d.active) {
+      if (Math.abs(ev.clientX - d.x0) > 8 || Math.abs(ev.clientY - d.y0) > 8) { d.moved = true; clearTimeout(this._epT); }
+      return;
+    }
+    if (ev.cancelable) ev.preventDefault();
+  }
+
+  epUp() {
+    const d = this._ep;
+    window.removeEventListener('pointermove', this._epMove);
+    window.removeEventListener('pointerup', this._epUp);
+    window.removeEventListener('pointercancel', this._epUp);
+    clearTimeout(this._epT);
+    if (!d) return;
+    this._ep = null;
+    if (!d.active) {
+      if (!d.moved && Date.now() - d.t0 < 320) this.epOpen(d.id);
+      return;
+    }
+    cancelAnimationFrame(d.raf);
+    d.nodes.forEach(n => { n.style.transition = 'none'; n.style.transform = ''; n.classList.remove('ep-target', 'ep-target-no'); });
+    d.el.classList.remove('ep-lift');
+    const list = document.querySelector('.ep-list'); if (list) list.classList.remove('ep-dragging');
+    requestAnimationFrame(() => d.nodes.forEach(n => { n.style.transition = ''; }));
+    if (d.ni == null || d.ni < 0 || d.ni === d.di) { if (d.ni === -1 && d.hitBad) this.toast('Your profile always starts with a photo'); return; }
+    const items = this.meItems().slice();
+    const moved = items.splice(d.di, 1)[0];
+    items.splice(d.ni, 0, moved);
+    if (items[0].kind !== 'photo') { this.toast('Your profile always starts with a photo'); return; }
+    this.setItems(items);
+    this.setState({ epFlash: moved.id });
+  }
+
+  epCancel() {
+    const d = this._ep;
+    if (!d) return;
+    cancelAnimationFrame(d.raf);
+    if (d.nodes) d.nodes.forEach(n => { n.style.transform = ''; });
+    if (d.el) d.el.classList.remove('ep-lift');
+    this._ep = null;
+  }
+

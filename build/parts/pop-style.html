@@ -1,0 +1,52 @@
+<style>
+/* ── depth pass: soft glass, rounder corners, layered shadows ──────────────
+   Restrained — nothing is tilted, and text keeps its crisp edges.          */
+:root{--tg-rad:14px;--tg-rad-sm:12px;--tg-rim:inset 0 1px 0 rgba(255,255,255,.75);
+  --tg-lift:0 1px 2px rgba(28,37,54,.14), 0 14px 26px -16px rgba(28,37,54,.55);
+  --tg-lift-lg:0 2px 4px rgba(28,37,54,.16), 0 26px 44px -22px rgba(28,37,54,.6)}
+
+/* the mosaic tiles */
+.tgt{border-radius:var(--tg-rad) !important;box-shadow:var(--tg-lift)}
+.tgt-photo,.tgt-video{box-shadow:var(--tg-lift-lg)}
+.tgt::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;border-radius:inherit;
+  background:linear-gradient(156deg,rgba(255,255,255,.30) 0%,rgba(255,255,255,.06) 34%,rgba(255,255,255,0) 52%)}
+.tgt-card,.tgt-voice{border:1px solid rgba(255,255,255,.7) !important;box-shadow:var(--tg-rim)}
+.tgt-details{box-shadow:none}
+.tgt-details::before{display:none}
+
+/* the main photo and the frame around it */
+.tgd-hero{border-end-start-radius:20px;border-end-end-radius:20px;
+  box-shadow:0 26px 44px -28px color-mix(in srgb,var(--pd) 90%,transparent)}
+.tgd-chips > span{border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,.45)}
+.tgd-prompt,.tgd-voice,.tgd-details,.tgd-video,.tgd-thumb,.tgd-strip .tgd-thumbs > *{border-radius:var(--tg-rad) !important}
+.tgd-prompt,.tgd-voice{box-shadow:var(--tg-lift),var(--tg-rim)}
+
+/* every round button gets a dome: bright at the top, seated at the bottom */
+.tgd-heart button,.tgt-heart,.tgd-miniheart,.tgt-vplay,.tgd-voice-play,.ep-mic{
+  background-image:linear-gradient(162deg,rgba(255,255,255,.9),rgba(255,255,255,0) 62%)}
+.tgd-heart,.tgt-heart,.tgd-miniheart{box-shadow:0 2px 4px rgba(28,37,54,.2),0 12px 22px -12px rgba(28,37,54,.65),inset 0 1px 0 rgba(255,255,255,.95)}
+.tgt-vplay,.tgd-voice-play{box-shadow:0 6px 14px -6px color-mix(in srgb,var(--pv) 85%,transparent),inset 0 1px 0 rgba(255,255,255,.55)}
+
+/* cards and rows elsewhere in the app */
+.tgp-card,.tgb-card,.ep-card,.tgp-tile,.tgb-gender .tgp-tile,.card{border-radius:var(--tg-rad-sm) !important}
+.tgp-card,.ep-card{box-shadow:0 1px 2px rgba(28,37,54,.09),0 12px 24px -18px rgba(28,37,54,.5),var(--tg-rim)}
+.tgp-seg,.tgp-chips button,.eps-q,.tgp-sw{border-radius:999px !important}
+.tgp-seg button{border-radius:999px !important}
+.tgp-sw i{border-radius:999px !important}
+.tgp-tick,.tgb-age,.tgp-badge,.ep-badge,.ep-badge i,.tgt-dur,.tgd-count,.tgd-dur{border-radius:999px !important}
+.tgb-field input.tg-vinput,.tgb-tag,.eps-text,.ep-add,.eps-btn,.eps-media,.tgp-range .tgp-track,.tgp-range .tgp-track i{border-radius:10px !important}
+.tgp-range input::-webkit-slider-thumb{box-shadow:0 0 0 1px rgba(28,37,54,.08),0 3px 8px rgba(28,37,54,.28),inset 0 1px 0 rgba(255,255,255,.9)}
+
+/* buttons: a little dome, a little lift */
+.btn{border-radius:12px !important}
+.btn-primary,.eps-save,.tgv-like{background-image:linear-gradient(168deg,rgba(255,255,255,.26),rgba(255,255,255,0) 58%);
+  box-shadow:0 2px 4px rgba(228,72,91,.28),0 14px 26px -14px rgba(228,72,91,.75),inset 0 1px 0 rgba(255,255,255,.4)}
+.eps-save,.eps-remove,.eps-btn,.ep-add{border-radius:12px !important}
+
+/* sheets and overlays */
+.eps{border-start-start-radius:20px;border-start-end-radius:20px}
+.eps-media{box-shadow:var(--tg-lift-lg)}
+.ep-hero{border-radius:var(--tg-rad) !important;box-shadow:var(--tg-lift-lg)}
+.ep-tile.ep-target{box-shadow:0 0 0 6px rgba(228,72,91,.2),var(--tg-lift-lg)}
+
+</style>

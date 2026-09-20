@@ -1,0 +1,15 @@
+static PALETTE = {
+  adam: { v:'#5489AB', d:'#1D2F3A', l:'#DDE7EE' },
+  avigail: { v:'#AB6D54', d:'#3A251D', l:'#EEE2DD' },
+  daniel: { v:'#B16A4E', d:'#3C241A', l:'#EFE1DC' },
+  eitan: { v:'#70AD52', d:'#263B1C', l:'#E2EFDC' },
+  itai: { v:'#BF8C40', d:'#3F2F18', l:'#F2E8D9' },
+  maya: { v:'#548EAB', d:'#1D303A', l:'#DDE8EE' },
+  noa: { v:'#79AB54', d:'#293A1D', l:'#E4EEDD' },
+  omer: { v:'#CB7D34', d:'#3F2B18', l:'#F4E5D7' },
+  roi: { v:'#C27E3D', d:'#3F2B18', l:'#F3E5D8' },
+  roni: { v:'#BB7544', d:'#3F2818', l:'#F1E3DA' },
+  shira: { v:'#5F4AB5', d:'#20193E', l:'#DFDBF0' },
+  tamar: { v:'#54AB9A', d:'#1D3A34', l:'#DDEEEB' },
+  yonatan: { v:'#54ABA6', d:'#1D3A39', l:'#DDEEED' }
+};
