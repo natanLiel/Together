@@ -655,6 +655,14 @@ $lkCss = '<style>.lk-head{position:relative;display:flex;align-items:center;just
 $hs6 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs6) + $lkCss + $doc.Substring($hs6)
 if (-not $doc.Contains('"Back to":')) { $doc = $doc.Replace('    "Preferences saved": ', '    "Back to": "חזרה אל",' + "`n" + '    "Preferences saved": ') }
+# ── 5aa. no cross on Discover: swiping left is how you move on ────────────────
+$px = $doc.IndexOf('aria-label="Not for me"')
+if ($px -lt 0) { throw "pass button not found" }
+$ps0 = $doc.LastIndexOf('<sc-if value="{{ showDock }}"', $px)
+$pe0 = $doc.IndexOf('</sc-if>', $px) + '</sc-if>'.Length
+if ($ps0 -lt 0 -or $px - $ps0 -gt 900) { throw "pass button block not found" }
+$doc = $doc.Substring(0, $ps0) + $doc.Substring($pe0)
+$doc = $doc.Replace('Swipe left, or tap the cross, to move on. The heart is how you like.', 'Swipe left to move on. The heart is how you like.')
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }

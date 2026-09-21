@@ -1600,7 +1600,7 @@ label{color:var(--tg-sub);font-style:italic;font-weight:400 !important}
                         </sc-for>
                       </div>
                       <div style="text-align:center;padding:var(--space-4) 0 0;color:color-mix(in srgb,var(--color-text) 46%,transparent);font-size:12.5px">
-                        <p style="margin:0">Swipe left, or tap the cross, to move on. The heart is how you like.</p>
+                        <p style="margin:0">Swipe left to move on. The heart is how you like.</p>
                         <button class="btn btn-ghost tg-tap" style="font-size:13px;margin-top:6px" sc-camel-on-click="{{ openReportDiscover }}">{{ reportLabel }}</button>
                       </div>
                     </div>
@@ -2339,11 +2339,7 @@ label{color:var(--tg-sub);font-style:italic;font-weight:400 !important}
           </div>
                   </sc-if>
 
-        <sc-if value="{{ showDock }}" hint-placeholder-val="{{ false }}">
-          <div style="position:absolute;inset-inline-start:45px;bottom:114px;z-index:13">
-            <span style="width:44px;height:44px;border-radius:999px;overflow:hidden;display:block;box-shadow:0 4px 14px rgba(28,37,54,.2)"><button class="tg-tap" style="width:100%;height:100%;border-radius:999px;border:0;background:#FBFAF6;box-shadow:inset 0 0 0 1px rgba(28,37,54,.06);display:grid;place-items:center;cursor:pointer" sc-camel-on-click="{{ passPerson }}" aria-label="Not for me"><svg width="19" height="19" sc-camel-view-box="0 0 24 24" fill="none" stroke="#1C2536" stroke-width="2.2" stroke-linecap="round"><path d="M6 6 18 18"/><path d="M18 6 6 18"/></svg></button></span>
-          </div>
-        </sc-if>
+        
 
         <sc-if value="{{ at.pickq }}">
           <div style="position:absolute;inset-inline:0;bottom:0;z-index:13;background:color-mix(in srgb,var(--color-surface) 94%,transparent);backdrop-filter:blur(12px);border-top:1px solid var(--color-divider);padding:12px var(--space-4) 16px;display:flex;flex-direction:column;gap:9px">
