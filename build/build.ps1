@@ -848,6 +848,63 @@ $css9 = '<style>' +
   '</style>'
 $hs10 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs10) + $css9 + $doc.Substring($hs10)
+# ── 5af. the squares fold into a stack; hold to fan them out and pick ────────
+#  On the main photo the squares sit folded, overlapping. A finger on the
+#  stack fans it out; sliding picks whatever sits under the finger, and the
+#  one it rests on when it lifts stays as the main photo. A quick tap fans it
+#  out and leaves it open for a second tap.
+$doc = $doc.Replace('<div class="tgs-strip" style="display:{{ dv.stripShow }}">', '<div class="tgs-strip tgs-stack {{ dv.stackCls }}" style="display:{{ dv.stripShow }}" sc-camel-on-pointer-down="{{ dv.stackDown }}">')
+$doc = $doc.Replace('<div class="tgs-strip" style="display:{{ ep.view.stripShow }}">', '<div class="tgs-strip tgs-stack {{ ep.view.stackCls }}" style="display:{{ ep.view.stripShow }}" sc-camel-on-pointer-down="{{ ep.view.stackDown }}">')
+$doc = $doc.Replace('<button class="tgs-thumb tg-tap {{ h.cls }}" style="background:{{ h.bg }}" sc-camel-on-click="{{ h.pick }}" aria-label="Show this photo"></button>', '<button class="tgs-thumb {{ h.cls }}" style="background:{{ h.bg }}" aria-label="Show this photo"></button>')
+if (-not $doc.Contains('{{ dv.stackDown }}') -or -not $doc.Contains('{{ ep.view.stackDown }}')) { throw "stack markup not applied" }
+Once8 "heroThumbs, stripShow: media.length > 1 ? 'flex' : 'none'," "heroThumbs, stripShow: media.length > 1 ? 'flex' : 'none', stackCls: st.stackOpen ? 'open' : '', stackDown: e => this.stackDown(e, k => this.setState({ heroIdx: k, playing: null }))," 'discover stack'
+Once8 "heroThumbs: viewThumbs, stripShow: media.length > 1 ? 'flex' : 'none'," "heroThumbs: viewThumbs, stripShow: media.length > 1 ? 'flex' : 'none', stackCls: st.stackOpen ? 'open' : '', stackDown: e => this.stackDown(e, k => this.setState({ epViewIdx: k, playing: null }))," 'view stack'
+Once8 '  passPerson() {' (@"
+  stackDown(e, pick) {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    if (e.stopPropagation) e.stopPropagation();
+    const wasOpen = !!this.state.stackOpen, t0 = Date.now();
+    if (!wasOpen) this.setState({ stackOpen: true });
+    const at = y => {
+      let best = -1, bd = Infinity;
+      [...document.querySelectorAll('.tgs-stack .tgs-thumb')].forEach((t, k) => { const r = t.getBoundingClientRect(), d = Math.abs(y - (r.top + r.height / 2)); if (d < bd) { bd = d; best = k; } });
+      return best;
+    };
+    let last = -1, moved = false;
+    const move = ev => {
+      if (Math.abs(ev.clientY - e.clientY) > 6) moved = true;
+      if (!moved) return;
+      if (ev.cancelable) ev.preventDefault();
+      const k = at(ev.clientY); if (k >= 0 && k !== last) { last = k; pick(k); }
+    };
+    const up = ev => {
+      window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up);
+      if (!wasOpen && !moved && Date.now() - t0 < 260) {
+        // a quick tap leaves the stack fanned out; the next touch anywhere else folds it
+        const away = ev2 => { if (!ev2.target.closest || !ev2.target.closest('.tgs-stack')) { window.removeEventListener('pointerdown', away, true); this.setState({ stackOpen: false }); } };
+        setTimeout(() => window.addEventListener('pointerdown', away, true), 0);
+        return;
+      }
+      if (ev.type === 'pointerup') { const k = at(ev.clientY); if (k >= 0 && k !== last) pick(k); }
+      this.setState({ stackOpen: false });
+    };
+    window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up);
+  }
+
+  passPerson() {
+"@) 'stack method'
+$doc = $doc.Replace("this.setState({ personIdx: this.state.personIdx + 1, viewer: null, heroIdx: 0 }", "this.setState({ personIdx: this.state.personIdx + 1, viewer: null, heroIdx: 0, stackOpen: false }")
+$zs = ''; for ($z = 1; $z -le 8; $z++) { $zs += '.tgs-stack .tgs-thumb:nth-child(' + $z + '){z-index:' + (10 - $z) + '}' }
+$css10 = '<style>' +
+  '.tgs-strip.tgs-stack{gap:0 !important;touch-action:none;-webkit-user-select:none;user-select:none;padding:6px;margin:-6px}' +
+  '.tgs-stack .tgs-thumb{position:relative;touch-action:none;transition:margin .3s cubic-bezier(.3,1.25,.5,1),transform .25s cubic-bezier(.34,1.42,.64,1),opacity .2s ease,filter .2s ease,border-color .2s ease}' +
+  '.tgs-stack .tgs-thumb + .tgs-thumb{margin-top:-35px}' +
+  '.tgs-stack.open .tgs-thumb + .tgs-thumb{margin-top:7px}' + $zs +
+  '.tgs-stack .tgs-thumb.on{z-index:12}' +
+  '.tgs-stack.open .tgs-thumb.on{transform:scale(1.14) translateX(-4px)}' +
+  '</style>'
+$hs11 = $doc.IndexOf('</helmet>')
+$doc = $doc.Substring(0, $hs11) + $css10 + $doc.Substring($hs11)
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }
