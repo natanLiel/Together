@@ -914,6 +914,73 @@ $css10 = '<style>' +
   '</style>'
 $hs11 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs11) + $css10 + $doc.Substring($hs11)
+# ── 5ag. tags, one way for everyone ───────────────────────────────────────────
+#  Every profile's tags come from the same set: kids, drinking, smoking, food,
+#  pets, rhythm, faith and languages, plus a line in your own words. People
+#  pick them in The basics (optional) and any time in Edit profile, from the
+#  same picker. Every tag is the same pill with an icon, on the photo or under it.
+Once8 '  passPerson() {' ([System.IO.File]::ReadAllText("$discScratch\about.js.txt", [System.Text.Encoding]::UTF8).TrimEnd() + "`n`n  passPerson() {") 'about methods'
+Once8 "me: { work: 'Product designer'," "me: { about: { kids: 'Wants kids', drink: 'Social drinker', pets: 'Has a dog', langs: ['Hebrew', 'English'], own: 'Makes pasta from scratch' }, work: 'Product designer'," 'my tags'
+$abJs = @"
+    // ——— about you: the tag picker ———
+    const ab = (() => {
+      const a = st.me.about || {}, tr = s => he ? (Component.ABOUT_HE[s] || s) : s;
+      const cats = Component.ABOUT.map(c => ({
+        title: he ? c.he : c.title, icon: c.icon, hint: c.multi ? (he ? 'אפשר כמה' : 'Pick any') : '',
+        opts: c.opts.map(o => { const on = c.multi ? (a[c.k] || []).indexOf(o) >= 0 : a[c.k] === o; return { label: tr(o), cls: on ? 'on' : '', pick: () => this.setAbout(c.k, o) }; })
+      }));
+      const own = a.own || '';
+      return {
+        cats, own, ownIcon: Component.ABOUT_OWN_ICON, ownCount: own.length + ' / 28',
+        note: he ? 'הכול רשות. מה שבוחרים מופיע בפרופיל כתגיות, אותו דבר לכולם.' : 'All optional. What you pick shows on your profile as tags, the same way for everyone.',
+        ownTitle: he ? 'במילים שלך' : 'In your own words', ownHint: he ? 'למשל: רץ בשש בבוקר' : 'Like: Runs at 6am',
+        setOwn: e => { const v = e.target.value.slice(0, 28); this.setAbout('own', v ? v.charAt(0).toUpperCase() + v.slice(1) : v); }
+      };
+    })();
+
+"@
+Once8 '    // ——— the profile editor ———' ($abJs + '    // ——— the profile editor ———') 'picker values'
+Once8 'noPerson: !person, feed, dv,' 'noPerson: !person, feed, dv, ab,' 'picker binding'
+Once8 "tags: person.tags.slice(2).map(t => ({ label: t }))," "tags: this.aboutTags(Component.ABOUT_PEOPLE[key], he)," 'their tags'
+Once8 "moreLabel: '', hint: '', detailsLabel: '', tags: []," "moreLabel: '', hint: '', detailsLabel: '', tags: this.aboutTags(me.about, he)," 'my tags shown'
+Once8 '      const built = this.buildBlocks(items, {' "      const built = this.buildBlocks(items.some(i => i.kind === 'details') ? items : items.concat([{ id: 'd', kind: 'details' }]), {" 'my details tile'
+
+$tagSvg = '<svg width="14" height="14" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="__D__"></path></svg>'
+$nT = ([regex]::Matches($doc, [regex]::Escape('<span>{{ g.label }}</span>'))).Count
+if ($nT -lt 2) { throw "detail tags: found $nT" }
+$doc = $doc.Replace('<span>{{ g.label }}</span>', '<span class="tg-tag">' + $tagSvg.Replace('__D__', '{{ g.icon }}') + '{{ g.label }}</span>')
+$heroIcons = @{ job = 'M4 8h16v11H4zM9 8V5.5h6V8M4 13h16'; intent = 'M9 7a5 5 0 1 1 0 10a5 5 0 1 1 0-10zM15 7a5 5 0 1 1 0 10a5 5 0 1 1 0-10z'; dist = 'M12 3v18M8.5 6.5L12 3l3.5 3.5M8.5 17.5L12 21l3.5-3.5' }
+foreach ($pre in @('dv.hero', 'ep.view.hero')) { foreach ($k in @('job', 'intent', 'dist')) {
+  $from = '<span>{{ ' + $pre + '.' + $k + ' }}</span>'
+  if (-not $doc.Contains($from)) { throw "hero chip not found: $from" }
+  $doc = $doc.Replace($from, '<span class="tg-tag">' + $tagSvg.Replace('__D__', $heroIcons[$k]) + '{{ ' + $pre + '.' + $k + ' }}</span>')
+} }
+
+$picker = [System.IO.File]::ReadAllText("$discScratch\about-picker.html", [System.Text.Encoding]::UTF8).TrimEnd()
+Once8 '<div class="tgp-label">My vitals</div>' ($picker.Replace('__TITLE__', 'About you') + "`n`n                  " + '<div class="tgp-label">My vitals</div>') 'picker in edit'
+$bs2 = $doc.IndexOf('<sc-if value="{{ at.basics }}">')
+$bf = $doc.IndexOf('<div style="flex:1;min-height:var(--space-6)"></div>', $bs2)
+if ($bs2 -lt 0 -or $bf -lt 0) { throw "basics end not found" }
+$doc = $doc.Substring(0, $bf) + $picker.Replace('__TITLE__', 'A little more about you') + "`n`n              " + $doc.Substring($bf)
+
+$css11 = '<style>' +
+  '.tg-tag{display:inline-flex !important;align-items:center;gap:6px;height:30px;padding:0 12px 0 10px !important;border-radius:999px !important;font-size:12.5px;line-height:1;white-space:nowrap}' +
+  '.tg-tag svg{flex:none;opacity:.8}' +
+  '.tgd-chips > .tg-tag{color:#FBFAF6;background:rgba(18,20,28,.28) !important;border:1px solid rgba(255,255,255,.3) !important;-webkit-backdrop-filter:blur(12px) saturate(1.2);backdrop-filter:blur(12px) saturate(1.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}' +
+  '.tgd-root .tgt-dtl > .tg-tag{height:30px}' +
+  '.ep-stage{clip-path:inset(0)}' +
+  '.tga{padding:2px 14px 12px}' +
+  '.tga-note{font-size:13px;line-height:1.45;color:color-mix(in srgb,var(--color-text) 60%,transparent);margin:-2px 2px 10px}' +
+  '.tga-cat{padding:13px 0 5px;border-top:1px solid rgba(28,37,54,.07)}.tga-cat:first-child{border-top:0}' +
+  '.tga-head{display:flex;align-items:center;gap:7px;font-size:13.5px;color:#1C2536;margin-bottom:9px}' +
+  '.tga-head small{margin-inline-start:auto;font-size:11.5px;color:color-mix(in srgb,var(--color-text) 50%,transparent)}' +
+  '.tga-opts{display:flex;flex-wrap:wrap;gap:7px}' +
+  '.tga-opt{height:32px;padding:0 13px;border-radius:999px;border:1px solid rgba(28,37,54,.13);background:#FBFAF6;color:#1C2536;font-size:13px;cursor:pointer;transition:background .2s ease,border-color .2s ease,box-shadow .2s ease}' +
+  '.tga-opt.on{background:#FBF1F0;border-color:#E4485B;box-shadow:inset 0 0 0 1px #E4485B}' +
+  '.tga-own{display:block;width:100%;box-sizing:border-box;height:40px;border-radius:3px;border:1px solid rgba(28,37,54,.13);background:#FBFAF6;padding:0 12px;font:inherit;font-size:14px;color:#1C2536;margin-bottom:6px}' +
+  '</style>'
+$hs12 = $doc.IndexOf('</helmet>')
+$doc = $doc.Substring(0, $hs12) + $css11 + $doc.Substring($hs12)
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }

@@ -1,0 +1,18 @@
+<div class="tgp-label">__TITLE__</div>
+              <p class="tga-note">{{ ab.note }}</p>
+              <div class="tgp-card tga">
+                <sc-for list="{{ ab.cats }}" as="c" hint-placeholder-count="8">
+                  <div class="tga-cat">
+                    <div class="tga-head"><svg width="16" height="16" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ c.icon }}"></path></svg><span>{{ c.title }}</span><small>{{ c.hint }}</small></div>
+                    <div class="tga-opts">
+                      <sc-for list="{{ c.opts }}" as="o" hint-placeholder-count="4">
+                        <button type="button" class="tga-opt tg-tap {{ o.cls }}" sc-camel-on-click="{{ o.pick }}">{{ o.label }}</button>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-for>
+                <div class="tga-cat">
+                  <div class="tga-head"><svg width="16" height="16" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ ab.ownIcon }}"></path></svg><span>{{ ab.ownTitle }}</span><small>{{ ab.ownCount }}</small></div>
+                  <input class="tga-own" value="{{ ab.own }}" sc-camel-on-input="{{ ab.setOwn }}" placeholder="{{ ab.ownHint }}" maxlength="28">
+                </div>
+              </div>
