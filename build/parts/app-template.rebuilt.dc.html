@@ -1302,12 +1302,12 @@ label{color:var(--tg-sub);font-style:italic;font-weight:400 !important}
                 <div class="tg-glass" style="position:relative;border-radius:3px;overflow:hidden;background:transparent !important;border:0 !important;box-shadow:none !important">
                   <div class="tgb-sel"></div>
                   <div style="position:relative;display:grid;grid-template-columns:1fr 1.5fr 1.1fr">
-                    <div class="tg-wheel {{ dayLitCls }}" data-wheel="d" sc-camel-on-scroll="{{ set.bDay }}">
+                    <div class="tg-wheel {{ dayLitCls }}" data-wheel="d" data-len="{{ dayLen }}" sc-camel-on-scroll="{{ set.bDay }}">
                       <sc-for list="{{ dayOpts }}" as="o" hint-placeholder-count="31">
                         <div style="color:{{ o.color }};font-weight:{{ o.weight }}">{{ o.label }}</div>
                       </sc-for>
                     </div>
-                    <div class="tg-wheel {{ monthLitCls }}" data-wheel="m" sc-camel-on-scroll="{{ set.bMonth }}">
+                    <div class="tg-wheel {{ monthLitCls }}" data-wheel="m" data-len="12" sc-camel-on-scroll="{{ set.bMonth }}">
                       <sc-for list="{{ monthOpts }}" as="o" hint-placeholder-count="12">
                         <div style="color:{{ o.color }};font-weight:{{ o.weight }}">{{ o.label }}</div>
                       </sc-for>
@@ -3535,8 +3535,9 @@ static PEOPLE_AWAITING_PHOTOS = [
     if (!el.__initUntil || Date.now() > el.__initUntil) this.litOn('wheel_' + key);
     clearTimeout(el.__t);
     el.__t = setTimeout(() => {
-      const i = Math.round(el.scrollTop / 36);
-      const v = base + i;
+      const i = Math.round(el.scrollTop / 36), len = +el.dataset.len || 0;
+      const v = base + (len ? i % len : i);
+      if (len && (i < len * 2 || i >= len * 7)) { el.__initUntil = Date.now() + 300; el.scrollTop = (len * 4 + i % len) * 36; }
       if (this.state.form[key] !== v) {
         const form = Object.assign({}, this.state.form, { [key]: v });
         if (key !== 'bd') {
@@ -3549,11 +3550,14 @@ static PEOPLE_AWAITING_PHOTOS = [
   }
 
   applyWheels() {
-    const idx = { d: this.state.form.bd - 1, m: this.state.form.bm, y: this.state.form.by - 1966 };
+    const f = this.state.form;
     document.querySelectorAll('[data-wheel]').forEach(el => {
-      if (el.dataset.init === '1') return;
+      if (el.dataset.init === '1' && el.dataset.placed === (el.dataset.len || '')) return;
+      el.dataset.placed = el.dataset.len || '';
+      const len = +el.dataset.len || 0, w = el.dataset.wheel;
+      const at = w === 'd' ? len * 4 + Math.min(f.bd, len) - 1 : w === 'm' ? 48 + f.bm : f.by - (new Date().getFullYear() - 90);
       el.__initUntil = Date.now() + 500;
-      const target = idx[el.dataset.wheel] * 36;
+      const target = at * 36;
       let tries = 0;
       const place = () => {
         el.scrollTop = target;
@@ -3621,7 +3625,7 @@ static PEOPLE_AWAITING_PHOTOS = [
       handle: e => this.setState({ form: Object.assign({}, st.form, { handle: e.target.value.replace(/[^a-z0-9_.]/gi, '').toLowerCase() }) }),
       bDay: e => this.wheel(e, 'bd', 1),
       bMonth: e => this.wheel(e, 'bm', 0),
-      bYear: e => this.wheel(e, 'by', 1966),
+      bYear: e => this.wheel(e, 'by', new Date().getFullYear() - 90),
       age: e => this.setState({ form: Object.assign({}, st.form, { age: e.target.value }) }),
       gender: e => this.setState({ form: Object.assign({}, st.form, { gender: e.target.value }) }),
       seeking: e => this.setState({ form: Object.assign({}, st.form, { seeking: e.target.value }) }),
@@ -3652,9 +3656,9 @@ static PEOPLE_AWAITING_PHOTOS = [
     const wheelOpt = (label, on) => ({ label: String(label), color: on ? 'var(--color-accent-600)' : 'color-mix(in srgb,var(--color-text) 45%,transparent)', weight: '400' });
     const daysIn = new Date(st.form.by, st.form.bm + 1, 0).getDate();
     const dayOpts = [], monthOpts = [], yearOpts = [];
-    for (let d = 1; d <= daysIn; d++) dayOpts.push(wheelOpt(d, d === st.form.bd));
-    MONTHS.forEach((m, i) => monthOpts.push(wheelOpt(m, i === st.form.bm)));
-    for (let y = 1966; y <= today.getFullYear() - 18; y++) yearOpts.push(wheelOpt(y, y === st.form.by));
+    for (let c = 0; c < 9; c++) for (let d = 1; d <= daysIn; d++) dayOpts.push(wheelOpt(d, d === st.form.bd));
+    for (let c = 0; c < 9; c++) MONTHS.forEach((m, i) => monthOpts.push(wheelOpt(m, i === st.form.bm)));
+    for (let y = today.getFullYear() - 90; y <= today.getFullYear() - 18; y++) yearOpts.push(wheelOpt(y, y === st.form.by));
     const handleTaken = false;
     const about = (st.form.about || '').toLowerCase();
     const words = about.trim() ? about.trim().split(/\s+/).length : 0;
@@ -4105,7 +4109,7 @@ static PEOPLE_AWAITING_PHOTOS = [
       form: st.form,
       basicsInvalid: missing.length > 0 || handleTaken || age < 18,
       basicsContClass: (missing.length > 0 || handleTaken || age < 18) ? 'btn-secondary tg-imgbtn-secondary' : 'btn-primary tg-imgbtn-primary',
-      dayOpts, monthOpts, yearOpts,
+      dayOpts, monthOpts, yearOpts, dayLen: String(daysIn),
       ageLabel: age >= 18 ? age + ' years old' : 'You must be 18 or over',
       handleNote: '',
       handleColor: handleTaken ? 'var(--color-accent-700)' : 'color-mix(in srgb,var(--color-text) 50%,transparent)',

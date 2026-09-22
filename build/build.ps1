@@ -1114,6 +1114,27 @@ $css15 = '<style>' +
   '</style>'
 $hs15 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs15) + $css15 + $doc.Substring($hs15)
+# ── 5al. the birthday wheel: day and month loop, years reach back 90 ─────────
+#  Day and month are drawn as nine copies of their list; the wheel reads the
+#  value modulo the list and, once it settles near either end, slips back to
+#  the middle copy without a jump, so it scrolls forever. Years start 90
+#  years back so the oldest person can be 80 and over.
+Once8 '    for (let d = 1; d <= daysIn; d++) dayOpts.push(wheelOpt(d, d === st.form.bd));' '    for (let c = 0; c < 9; c++) for (let d = 1; d <= daysIn; d++) dayOpts.push(wheelOpt(d, d === st.form.bd));' 'day loop'
+Once8 '    MONTHS.forEach((m, i) => monthOpts.push(wheelOpt(m, i === st.form.bm)));' '    for (let c = 0; c < 9; c++) MONTHS.forEach((m, i) => monthOpts.push(wheelOpt(m, i === st.form.bm)));' 'month loop'
+Once8 '    for (let y = 1966; y <= today.getFullYear() - 18; y++)' '    for (let y = today.getFullYear() - 90; y <= today.getFullYear() - 18; y++)' 'years back 90'
+Once8 'dayOpts, monthOpts, yearOpts,' 'dayOpts, monthOpts, yearOpts, dayLen: String(daysIn),' 'day length'
+Once8 '<div class="tg-wheel {{ dayLitCls }}" data-wheel="d"' '<div class="tg-wheel {{ dayLitCls }}" data-wheel="d" data-len="{{ dayLen }}"' 'day wheel length'
+Once8 '<div class="tg-wheel {{ monthLitCls }}" data-wheel="m"' '<div class="tg-wheel {{ monthLitCls }}" data-wheel="m" data-len="12"' 'month wheel length'
+Once8 "bYear: e => this.wheel(e, 'by', 1966)," "bYear: e => this.wheel(e, 'by', new Date().getFullYear() - 90)," 'year base'
+Once8 "      const i = Math.round(el.scrollTop / 36);`n      const v = base + i;" ("      const i = Math.round(el.scrollTop / 36), len = +el.dataset.len || 0;`n" +
+  "      const v = base + (len ? i % len : i);`n" +
+  "      if (len && (i < len * 2 || i >= len * 7)) { el.__initUntil = Date.now() + 300; el.scrollTop = (len * 4 + i % len) * 36; }") 'wheel reads the loop'
+Once8 "    const idx = { d: this.state.form.bd - 1, m: this.state.form.bm, y: this.state.form.by - 1966 };" "    const f = this.state.form;" 'wheel places'
+Once8 "      if (el.dataset.init === '1') return;" ("      if (el.dataset.init === '1' && el.dataset.placed === (el.dataset.len || '')) return;`n" +
+  "      el.dataset.placed = el.dataset.len || '';`n" +
+  "      const len = +el.dataset.len || 0, w = el.dataset.wheel;`n" +
+  "      const at = w === 'd' ? len * 4 + Math.min(f.bd, len) - 1 : w === 'm' ? 48 + f.bm : f.by - (new Date().getFullYear() - 90);") 'wheel place per list'
+Once8 "      const target = idx[el.dataset.wheel] * 36;" "      const target = at * 36;" 'wheel target'
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }
