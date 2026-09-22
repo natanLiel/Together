@@ -1083,6 +1083,37 @@ foreach ($pre in @('dv.hero', 'ep.view.hero')) {
 }
 $hs14 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs14) + '<style>.tgd-meta:empty,.tgd-meta:has(> .sc-interp:only-child:empty){display:none}</style>' + $doc.Substring($hs14)
+# ── 5aj. the handle is optional, and it is for social media ──────────────────
+#  The old "name tag" was a required, app-unique name. It is now an optional
+#  social media handle, so it no longer blocks Continue or checks if taken.
+Once8 "const missing = ['name','last','handle','gender','seeking','intent']" "const missing = ['name','last','gender','seeking','intent']" 'handle optional'
+Once8 "const handleTaken = st.form.handle === 'daniel' || st.form.handle === 'admin';" "const handleTaken = false;" 'no taken check'
+Once8 "handleNote: !st.form.handle ? 'Your tag is how people mention you in chat.' : handleTaken ? 'That tag is taken. Try another.' : 'together.app/@' + st.form.handle + ' is free.'," "handleNote: ''," 'handle note'
+$bs4 = $doc.IndexOf('<sc-if value="{{ at.basics }}">')
+$nt = $doc.IndexOf('<span>Name tag</span>', $bs4)
+if ($nt -lt 0) { throw "name tag label not found" }
+$doc = $doc.Substring(0, $nt) + '<span>Social handle · optional</span>' + $doc.Substring($nt + '<span>Name tag</span>'.Length)
+Once8 '    "Name tag": "תג שם",' ('    "Name tag": "תג שם",' + "`n" + '    "Social handle · optional": "שם ברשתות · רשות",') 'handle label he'
+# ── 5ak. The basics, condensed ───────────────────────────────────────────────
+#  Shorter fields and wheel, less air between sections and inside cards,
+#  shorter notes. The wheel's row height lives in its logic too.
+Once8 '      const i = Math.round(el.scrollTop / 44);' '      const i = Math.round(el.scrollTop / 36);' 'wheel rows'
+Once8 '      const target = idx[el.dataset.wheel] * 44;' '      const target = idx[el.dataset.wheel] * 36;' 'wheel placement'
+$doc = $doc.Replace('Scroll each column. Your age shows on your profile, never the date.', 'Only your age shows, never the date.')
+$css15 = '<style>' +
+  '.tgb .tgp-label{margin:18px 2px 7px !important}' +
+  '.tgb .tgb-card{padding:12px !important;gap:10px !important}' +
+  '.tgb .tgb-field{gap:4px !important}.tgb .tgb-field > span{font-size:11.5px}' +
+  '.tgb .tgb-field small:empty,.tgb .tgb-field small:has(> .sc-interp:only-child:empty){display:none}' +
+  '.tgb .tgb-field input.tg-vinput,.tgb .tgb-tag{height:40px !important;min-height:0 !important;font-size:15px !important}.tgb .tgb-tag input{font-size:15px !important}' +
+  '.tgb .tg-wheel{height:108px !important;padding:36px 0 !important}.tgb .tg-wheel > div{height:36px !important;font-size:15px !important}' +
+  '.tgb .tgb-sel{top:36px !important;height:36px !important}' +
+  '.tgb .tgb-note{margin-top:6px !important}' +
+  '.tgb .tgv-hrow{margin-top:2px !important;padding-top:8px !important}.tgb .tgv-step{width:30px !important;height:30px !important}' +
+  '.tgb .tgb-gender .tgp-tile{padding:12px 8px 10px !important}' +
+  '</style>'
+$hs15 = $doc.IndexOf('</helmet>')
+$doc = $doc.Substring(0, $hs15) + $css15 + $doc.Substring($hs15)
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }
