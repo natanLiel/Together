@@ -18,13 +18,14 @@ $doc = $idx -join "`n"
 
 # the unpacking thumbnail shows the new mark on the stock ground
 $thumb = '<div id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">' +
-  '<rect width="400" height="400" fill="#E3E1D8"></rect>' +
+  '<rect width="400" height="400" fill="#F9F1E9"></rect>' +
   '<g transform="translate(200 200) scale(0.5) translate(-252.2 -132.8)" fill="none" stroke-width="25.6">' +
   '<circle cx="182.8" cy="132.8" r="100" stroke="#2A3F6E"></circle>' +
   '<circle cx="321.6" cy="132.8" r="100" stroke="#E4485B"></circle></g></svg></div>'
 $doc = [regex]::Replace($doc, '<div id="__bundler_thumbnail">.*?</div>', $thumb)
-$doc = $doc.Replace('background: #faf9f5;', 'background: #E3E1D8;')
+$doc = $doc.Replace('background: #faf9f5;', 'background: #F9F1E9;')
 $doc = $doc.Replace('<title>Bundled Page</title>', '<title>Together</title>')
+$doc = $doc.Replace('background: #E3E1D8;', 'background: #F9F1E9;')
 
 # re-attach the bar layer (replacing any previous copy)
 $dock = [System.IO.File]::ReadAllText("$scratch\dockscript.html", [System.Text.Encoding]::UTF8)

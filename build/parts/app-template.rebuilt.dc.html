@@ -344,7 +344,7 @@ textarea.input { min-height: 90px; resize: vertical; }
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Together">
-<meta name="theme-color" content="#E3E1D8">
+<meta name="theme-color" content="#F9F1E9">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <style>/* vietnamese */
 @font-face {
@@ -531,13 +531,13 @@ textarea.input { min-height: 90px; resize: vertical; }
   --font-meta:'Heebo','Archivo',system-ui,sans-serif;
 
   /* the three inks */
-  --tg-stock:#E3E1D8; --tg-stock-2:#D8D5CA;
+  --tg-stock:#F9F1E9; --tg-stock-2:#D8D5CA;
   --tg-ink-b:#2A3F6E;        /* ink one — structure   */
   --tg-ink-r:#E4485B;        /* ink two — intent      */
   --tg-over:#57304F;         /* overprint — connection */
 
-  --color-bg:#E3E1D8;
-  --color-surface:#EFEDE6;
+  --color-bg:#F9F1E9;
+  --color-surface:#FFF9F3;
   --color-text:#1C2536;
   --color-divider:rgba(28,37,54,.17);
   --color-accent:#E4485B; --color-accent-2:#57304F;
@@ -558,7 +558,7 @@ textarea.input { min-height: 90px; resize: vertical; }
   --color-neutral-700:#3D4657; --color-neutral-800:#2A3241; --color-neutral-900:#1C2536;
 
   --tg-clay:#E4485B; --tg-clay-tint:#F4D8DC;
-  --tg-deep:#57304F; --tg-deep-ink:#E3E1D8; --tg-deep-sub:#D9C6D4; --tg-deep-2:#40233A;
+  --tg-deep:#57304F; --tg-deep-ink:#F9F1E9; --tg-deep-sub:#D9C6D4; --tg-deep-2:#40233A;
   --tg-glow:#D9D5C9;                       /* a vignette on stock, not a glow */
   --tg-btn-a:#E4485B; --tg-btn-b:#E4485B;
   --tg-grad:none;                          /* the gradient is retired        */
@@ -572,16 +572,16 @@ textarea.input { min-height: 90px; resize: vertical; }
 }
 /* both switch positions still land on one ground, as before */
 [data-tg-theme="light"],[data-tg-theme="dark"]{
-  --color-bg:#E3E1D8; --color-surface:#EFEDE6; --color-text:#1C2536;
+  --color-bg:#F9F1E9; --color-surface:#FFF9F3; --color-text:#1C2536;
   --color-divider:rgba(28,37,54,.17);
   --tg-btn-a:#E4485B; --tg-btn-b:#E4485B; --tg-glow:#D9D5C9;
-  --tg-deep:#57304F; --tg-deep-ink:#E3E1D8; --tg-deep-sub:#D9C6D4; --tg-deep-2:#40233A;
+  --tg-deep:#57304F; --tg-deep-ink:#F9F1E9; --tg-deep-sub:#D9C6D4; --tg-deep-2:#40233A;
   color-scheme:light;
 }
 [data-tg-theme] .tg-logo-light,[data-tg-theme] .tg-icon-light{display:block !important}
 [data-tg-theme] .tg-logo-dark,[data-tg-theme] .tg-icon-dark{display:none !important}
 
-body{background:#CBC7B9}
+body{background:#EDE0D5}
 /* the type rules, applied once so no screen can drift */
 [data-tg-phone] input::placeholder,[data-tg-phone] textarea::placeholder{text-transform:none}
 [data-tg-phone] input,[data-tg-phone] textarea{text-transform:none !important}
@@ -769,7 +769,7 @@ label{color:var(--tg-sub);font-style:italic;font-weight:400 !important}
 .tgb-gender{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .tgb-gender .tgp-tile{align-items:center;text-align:center;padding:16px 10px 13px}</style><style>
 /* ── Discover: each profile takes the colour of its first photo ─────────── */
-.tgd-root{--pv:#E4485B;--pd:#1C2536;--pl:#EFEDE6;min-height:100%;
+.tgd-root{--pv:#E4485B;--pd:#1C2536;--pl:#FFF9F3;min-height:100%;
   background:linear-gradient(180deg,color-mix(in srgb,var(--pl) 92%,var(--color-bg)) 0,color-mix(in srgb,var(--pl) 55%,var(--color-bg)) 640px,var(--color-bg) 1400px);
   transition:background .5s ease}
 .tgd-root .tgd-bar{background:color-mix(in srgb,var(--pl) 80%,transparent) !important}
@@ -1083,7 +1083,7 @@ label{color:var(--tg-sub);font-style:italic;font-weight:400 !important}
 .ep-tile.ep-target{box-shadow:0 0 0 6px rgba(228,72,91,.2),var(--tg-lift-lg)}
 
 </style>
-<style>.lk-head{position:relative;display:flex;align-items:center;justify-content:flex-end;margin:-4px -4px 12px;min-height:40px}.lk-grab{position:absolute;left:50%;top:-6px;width:42px;height:4px;margin-left:-21px;border-radius:999px;background:var(--color-divider)}.lk-back{display:inline-flex;align-items:center;gap:4px;height:36px;padding:0 12px 0 6px;border:0;border-radius:999px;cursor:pointer;font:inherit;font-size:14px;color:#1C2536;background:linear-gradient(168deg,rgba(255,255,255,.95),rgba(239,237,230,.9));box-shadow:0 1px 2px rgba(28,37,54,.14),0 8px 16px -10px rgba(28,37,54,.5),inset 0 1px 0 #fff}.lk-x{width:36px;height:36px;border:0;border-radius:50%;display:grid;place-items:center;cursor:pointer;background:linear-gradient(168deg,rgba(255,255,255,.95),rgba(239,237,230,.9));box-shadow:0 1px 2px rgba(28,37,54,.14),0 8px 16px -10px rgba(28,37,54,.5),inset 0 1px 0 #fff}</style></helmet>
+<style>.lk-head{position:relative;display:flex;align-items:center;justify-content:flex-end;margin:-4px -4px 12px;min-height:40px}.lk-grab{position:absolute;left:50%;top:-6px;width:42px;height:4px;margin-left:-21px;border-radius:999px;background:var(--color-divider)}.lk-back{display:inline-flex;align-items:center;gap:4px;height:36px;padding:0 12px 0 6px;border:0;border-radius:999px;cursor:pointer;font:inherit;font-size:14px;color:#1C2536;background:linear-gradient(168deg,rgba(255,255,255,.95),rgba(239,237,230,.9));box-shadow:0 1px 2px rgba(28,37,54,.14),0 8px 16px -10px rgba(28,37,54,.5),inset 0 1px 0 #fff}.lk-x{width:36px;height:36px;border:0;border-radius:50%;display:grid;place-items:center;cursor:pointer;background:linear-gradient(168deg,rgba(255,255,255,.95),rgba(239,237,230,.9));box-shadow:0 1px 2px rgba(28,37,54,.14),0 8px 16px -10px rgba(28,37,54,.5),inset 0 1px 0 #fff}</style><style>[data-tg-phone]{background:radial-gradient(130% 42% at 50% -8%,rgba(240,140,155,.16),transparent 62%),radial-gradient(90% 38% at 100% 104%,rgba(255,196,160,.16),transparent 70%),#F9F1E9 !important}</style></helmet>
 
 <div data-tg-theme="{{ theme }}" data-tg-shell="1" style="min-height:100dvh;background:var(--color-bg);color:var(--color-text);font-family:var(--font-body);display:flex;flex-wrap:wrap;gap:36px;padding:32px 36px;justify-content:center;align-items:flex-start">
 
@@ -1514,8 +1514,8 @@ label{color:var(--tg-sub);font-style:italic;font-weight:400 !important}
                 <div style="padding:0 var(--space-4) var(--space-6)">
                   <div class="card elev-sm" style="padding:0;overflow:hidden">
                     <div style="display:flex;height:210px">
-                      <div class="washed" style="flex:1;background:center/cover no-repeat url(assets/people/maya-1.jpg);display:grid;place-items:center;color:#E3E1D8;font-family:var(--font-heading);font-size:40px">Y</div>
-                      <div class="washed" style="flex:1;background:center/cover no-repeat url(assets/people/itai-1.jpg);display:grid;place-items:center;color:#E3E1D8;font-family:var(--font-heading);font-size:40px">O</div>
+                      <div class="washed" style="flex:1;background:center/cover no-repeat url(assets/people/maya-1.jpg);display:grid;place-items:center;color:#F9F1E9;font-family:var(--font-heading);font-size:40px">Y</div>
+                      <div class="washed" style="flex:1;background:center/cover no-repeat url(assets/people/itai-1.jpg);display:grid;place-items:center;color:#F9F1E9;font-family:var(--font-heading);font-size:40px">O</div>
                     </div>
                     <div style="padding:var(--space-3) var(--space-4) var(--space-4)">
                       <h3 style="font-size:24px;margin:0">Yael &amp; Ori</h3>
@@ -1686,7 +1686,7 @@ label{color:var(--tg-sub);font-style:italic;font-weight:400 !important}
               <p style="font-size:12.5px;color:color-mix(in srgb,var(--color-text) 55%,transparent);margin:0 0 var(--space-4)">{{ slotHint }}</p>
               <sc-if value="{{ hasConnection }}">
                 <div class="card elev-sm tg-tap tg-row" style="flex-direction:row;align-items:center;gap:var(--space-3);padding:var(--space-3)" sc-camel-on-click="{{ go.chat }}">
-                  <div class="washed" style="width:60px;height:60px;border-radius:999px;flex:none;background:center/cover no-repeat url(assets/people/maya-1.jpg);display:grid;place-items:center;color:#E3E1D8;font-family:var(--font-heading);font-size:24px">M</div>
+                  <div class="washed" style="width:60px;height:60px;border-radius:999px;flex:none;background:center/cover no-repeat url(assets/people/maya-1.jpg);display:grid;place-items:center;color:#F9F1E9;font-family:var(--font-heading);font-size:24px">M</div>
                   <div style="flex:1;min-width:0">
                     <div style="display:flex;align-items:center;gap:6px"><span style="font-family:var(--font-heading);font-size:19px">Maya</span><span style="width:8px;height:8px;border-radius:999px;background:var(--color-accent-2-600)"></span></div>
                     <div style="font-size:13px;color:var(--color-accent-800);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ lastMessage }}</div>
@@ -2170,7 +2170,7 @@ label{color:var(--tg-sub);font-style:italic;font-weight:400 !important}
             <div style="display:flex;flex-direction:column;min-height:730px;animation:tg-in .3s ease">
               <div style="position:sticky;top:0;z-index:2;background:color-mix(in srgb,var(--color-bg) 90%,transparent);backdrop-filter:blur(10px);padding:26px var(--space-3) var(--space-2);display:flex;align-items:center;gap:var(--space-3);border-bottom:1px solid var(--color-divider)">
                 <button class="btn btn-icon tg-tap" sc-camel-on-click="{{ go.discover }}" aria-label="Back"><svg width="19" height="19" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
-                <div class="washed" style="width:40px;height:40px;border-radius:999px;flex:none;background:center/cover no-repeat url(assets/people/maya-1.jpg);display:grid;place-items:center;color:#E3E1D8;font-family:var(--font-heading);font-size:17px">M</div>
+                <div class="washed" style="width:40px;height:40px;border-radius:999px;flex:none;background:center/cover no-repeat url(assets/people/maya-1.jpg);display:grid;place-items:center;color:#F9F1E9;font-family:var(--font-heading);font-size:17px">M</div>
                 <div style="flex:1">
                   <div style="font-family:var(--font-heading);font-size:18px">Maya</div>
                   <div style="font-size:13px;color:var(--color-accent-2-700)">Online now</div>
@@ -2281,7 +2281,7 @@ label{color:var(--tg-sub);font-style:italic;font-weight:400 !important}
             <div style="min-height:730px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:var(--space-4);padding:var(--space-8);animation:tg-in .3s ease">
               <div style="position:relative;width:130px;height:130px;display:grid;place-items:center">
                 <div style="position:absolute;inset:0;border-radius:999px;background:var(--color-accent-2-200);animation:tg-breathe 3.2s ease-in-out infinite"></div>
-                <div class="washed" style="width:74px;height:74px;border-radius:999px;background:center/cover no-repeat url(assets/people/maya-1.jpg);display:grid;place-items:center;color:#E3E1D8;font-family:var(--font-heading);font-size:28px;position:relative">M</div>
+                <div class="washed" style="width:74px;height:74px;border-radius:999px;background:center/cover no-repeat url(assets/people/maya-1.jpg);display:grid;place-items:center;color:#F9F1E9;font-family:var(--font-heading);font-size:28px;position:relative">M</div>
               </div>
               <h2 style="font-size:37px;margin:0">{{ waitTitle }}</h2>
               <p style="font-size:19px;line-height:1.5;color:var(--color-accent-800);margin:0;max-width:320px;text-wrap:pretty">{{ waitBody }}</p>
@@ -2496,7 +2496,7 @@ label{color:var(--tg-sub);font-style:italic;font-weight:400 !important}
               <textarea class="input" style="border-radius:var(--radius-md);width:100%;box-sizing:border-box;min-height:88px;padding:12px 14px;font-family:var(--font-body);font-size:14.5px;resize:none" value="{{ likeComment }}" data-tg-cap="first" autocapitalize="sentences" sc-camel-on-input="{{ set.likeComment }}" placeholder="Say something about it, if you want"></textarea>
               <div style="display:flex;flex-direction:column;gap:var(--space-2);margin-top:var(--space-4)">
                 <button class="btn btn-block tg-tap" style="height:50px;width:100%;border:0;border-radius:2px;background:#E4485B;color:#1C2536;font-size:16px;display:grid;place-items:center;cursor:pointer;" sc-camel-on-click="{{ sendLike }}">{{ likeCta }}</button>
-                <button class="btn tg-tap" style="position:relative;height:50px;width:100%;border:1.5px solid var(--tg-clay);color:var(--tg-clay);background:rgba(227,225,216,.9);display:flex;align-items:center;justify-content:center;gap:10px;" sc-camel-on-click="{{ sendRing }}">
+                <button class="btn tg-tap" style="position:relative;height:50px;width:100%;border:1.5px solid var(--tg-clay);color:var(--tg-clay);background:rgba(249, 241, 233,.9);display:flex;align-items:center;justify-content:center;gap:10px;" sc-camel-on-click="{{ sendRing }}">
                   <svg width="17" height="17" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="8.4" cy="12" r="5.6"/><circle cx="15.6" cy="12" r="5.6"/></svg>
                   <span>Send a ring</span>
                   <svg width="17" height="17" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="8.4" cy="12" r="5.6"/><circle cx="15.6" cy="12" r="5.6"/></svg>
@@ -2569,7 +2569,7 @@ label{color:var(--tg-sub);font-style:italic;font-weight:400 !important}
         </sc-if>
 
         <sc-if value="{{ overlay.match }}">
-          <div style="position:absolute;inset:0;z-index:9;background:#E3E1D8;background-image:radial-gradient(62% 34% at 50% 22%,rgba(235,182,190,.34),transparent 70%),radial-gradient(70% 40% at 50% 104%,rgba(87,48,79,.40),transparent 72%);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:var(--space-6);animation:tg-in .3s ease">
+          <div style="position:absolute;inset:0;z-index:9;background:#F9F1E9;background-image:radial-gradient(62% 34% at 50% 22%,rgba(235,182,190,.34),transparent 70%),radial-gradient(70% 40% at 50% 104%,rgba(87,48,79,.40),transparent 72%);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:var(--space-6);animation:tg-in .3s ease">
             <img src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20504.4%20265.6%22%20width%3D%22504.4%22%20height%3D%22265.6%22%3E%20%3Cdefs%3E%20%3Cmask%20id%3D%22tg-cut-blue%22%20maskUnits%3D%22userSpaceOnUse%22%20x%3D%220%22%20y%3D%220%22%20width%3D%22504.4%22%20height%3D%22265.6%22%3E%20%3Crect%20width%3D%22504.4%22%20height%3D%22265.6%22%20fill%3D%22%23fff%22%2F%3E%20%3Cpath%20d%3D%22M274.653%20221.095A100%20100%200%200%201%20234.997%20182.8%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%2239.6%22%2F%3E%20%3C%2Fmask%3E%20%3Cmask%20id%3D%22tg-cut-rose%22%20maskUnits%3D%22userSpaceOnUse%22%20x%3D%220%22%20y%3D%220%22%20width%3D%22504.4%22%20height%3D%22265.6%22%3E%20%3Crect%20width%3D%22504.4%22%20height%3D%22265.6%22%20fill%3D%22%23fff%22%2F%3E%20%3Cpath%20d%3D%22M229.747%2044.505A100%20100%200%200%201%20269.403%2082.8%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%2239.6%22%2F%3E%20%3C%2Fmask%3E%20%3C%2Fdefs%3E%20%3Ccircle%20cx%3D%22182.8%22%20cy%3D%22132.8%22%20r%3D%22100%22%20fill%3D%22none%22%20stroke%3D%22%232A3F6E%22%20stroke-width%3D%2225.6%22%20mask%3D%22url(%23tg-cut-blue)%22%2F%3E%20%3Ccircle%20cx%3D%22321.6%22%20cy%3D%22132.8%22%20r%3D%22100%22%20fill%3D%22none%22%20stroke%3D%22%23E4485B%22%20stroke-width%3D%2225.6%22%20mask%3D%22url(%23tg-cut-rose)%22%2F%3E%20%3C%2Fsvg%3E" alt="" style="display:block;width:196px;height:auto;animation:tg-pop .6s .15s cubic-bezier(.2,.9,.3,1) both">
             <h2 style="font-size:44px;color:#1C2536;margin:var(--space-6) 0 var(--space-2)">You two connected</h2>
             <p style="font-size:16px;color:var(--color-neutral-400);margin:0 0 var(--space-8);max-width:270px;text-wrap:pretty">You pick three questions for her. She picks three for you. Nothing opens until both sides have taken a turn.</p>
@@ -2831,7 +2831,7 @@ label{color:var(--tg-sub);font-style:italic;font-weight:400 !important}
 
     <div class="card elev-sm" style="gap:6px;padding:var(--space-3);flex:none">
       <span class="card-kicker">Where this differs from the spec</span>
-      <p style="font-size:13px;margin:0;text-wrap:pretty">Built on the Together kit, restyled to the agreed system — plum-black #E3E1D8 ground, rose #E4485B, light rose #EBB6BE, plum #57304F. Instrument Serif throughout, all interface copy lowercase, her words in italic. The primary gradient is reserved for the one main action on a screen. Blush #B66A5A, dusty rose #C9A8A8. The wordmark and app icon are your artwork, placed unaltered, ink #252323 for the match moment. Type stays Caprasimo over Figtree per the bound system.</p>
+      <p style="font-size:13px;margin:0;text-wrap:pretty">Built on the Together kit, restyled to the agreed system — plum-black #F9F1E9 ground, rose #E4485B, light rose #EBB6BE, plum #57304F. Instrument Serif throughout, all interface copy lowercase, her words in italic. The primary gradient is reserved for the one main action on a screen. Blush #B66A5A, dusty rose #C9A8A8. The wordmark and app icon are your artwork, placed unaltered, ink #252323 for the match moment. Type stays Caprasimo over Figtree per the bound system.</p>
       <p style="font-size:13px;margin:0;text-wrap:pretty">Destructive actions use the dark neutral rather than an invented red, always with an explicit verb so colour is never the only signal.</p>
     </div>
   </div>
@@ -3668,7 +3668,7 @@ static PEOPLE_AWAITING_PHOTOS = [
     const dv = (() => {
       const ovOpen = !!st.overlay;
       const key = person ? person.name.toLowerCase() : '';
-      const pal = Component.PALETTE[key] || { v: '#E4485B', d: '#1C2536', l: '#EFEDE6' };
+      const pal = Component.PALETTE[key] || { v: '#E4485B', d: '#1C2536', l: '#FFF9F3' };
       const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
       const halt = e => { if (e && e.stopPropagation) e.stopPropagation(); };
       if (!person) return { pal, hero: {}, blocks: [], tiles: [], viewerOpen: false, viewer: {}, ovOpen };
@@ -3806,7 +3806,7 @@ static PEOPLE_AWAITING_PHOTOS = [
         toEdit: () => this.setState({ epMode: 'edit', playing: null }), toView: () => this.setState({ epMode: 'view', playing: null, epSheet: null }),
         back: () => { this.epCancel(); this.setState({ epSheet: null, epMode: 'edit', playing: null }); this.nav('profile', { tab: 'profile' }); },
         list, counters, adds, sheet, vitals, editTiles, editHero,
-        pal: Component.PALETTE.daniel || { v: '#2A3F6E', d: '#1C2536', l: '#E3E1D8' },
+        pal: Component.PALETTE.daniel || { v: '#2A3F6E', d: '#1C2536', l: '#F9F1E9' },
         view: {
           blocks: built.blocks, tiles: built.tiles,
           hero: {

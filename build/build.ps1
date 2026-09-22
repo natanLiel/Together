@@ -663,6 +663,16 @@ $pe0 = $doc.IndexOf('</sc-if>', $px) + '</sc-if>'.Length
 if ($ps0 -lt 0 -or $px - $ps0 -gt 900) { throw "pass button block not found" }
 $doc = $doc.Substring(0, $ps0) + $doc.Substring($pe0)
 $doc = $doc.Replace('Swipe left, or tap the cross, to move on. The heart is how you like.', 'Swipe left to move on. The heart is how you like.')
+# ── 5ab. a happier ground ─────────────────────────────────────────────────────
+#  The grey stock read as dull for a place people come to find someone. The
+#  ground is now a warm cream with a faint blush of light at the top; white
+#  cards still sit clearly on it.
+$doc = $doc.Replace('#E3E1D8', '#F9F1E9').Replace('#EFEDE6', '#FFF9F3').Replace('#CBC7B9', '#EDE0D5')
+$doc = [regex]::Replace($doc, '227, ?225, ?216', '249, 241, 233')
+$warm = '<style>[data-tg-phone]{background:radial-gradient(130% 42% at 50% -8%,rgba(240,140,155,.16),transparent 62%),' +
+  'radial-gradient(90% 38% at 100% 104%,rgba(255,196,160,.16),transparent 70%),#F9F1E9 !important}</style>'
+$hs7 = $doc.IndexOf('</helmet>')
+$doc = $doc.Substring(0, $hs7) + $warm + $doc.Substring($hs7)
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }
