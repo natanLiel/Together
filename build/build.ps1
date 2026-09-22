@@ -688,8 +688,8 @@ function Once8([string]$from, [string]$to, [string]$what) {
 Once8 "      const shotK = k => built.shotOf(built.photos[k].src);" ("      const shotK = k => built.shotOf(built.photos[k].src);`n" +
   "      const media = this.personItems(person).filter(i => i.kind === 'photo' || i.kind === 'video');`n" +
   "      const hi = Math.min(st.heroIdx || 0, media.length - 1), cur = media[hi], isVid = cur.kind === 'video';`n" +
-  "      const heroThumbs = media.map((m, k) => ({ bg: built.shotOf(m.src), cls: (k === hi ? 'on' : '') + (m.kind === 'video' ? ' vid' : ''), pick: e => { halt(e); this.setState({ heroIdx: k, playing: null }); } }));") 'photo index'
-Once8 "bg: shotK(0), open: e => { halt(e); openAt(0); }, like: e => { halt(e); this.openLike('photo', 0); }," "bg: built.shotOf(cur.src), bg0: shotK(0), open: e => { halt(e); if (isVid) this.playMedia(cur); }, like: e => { halt(e); if (isVid) this.openLike('photo', 0, { src: cur.src }); else this.openLike('photo', built.photos.findIndex(p => p.src === cur.src)); }, playCls: isVid && st.playing === cur.id ? 'is-playing' : '', playShow: isVid ? 'flex' : 'none', dur: isVid ? cur.dur : '', secs: isVid ? (cur.secs || 10) + 's' : '0s'," 'hero values'
+  "      const heroThumbs = media.map((m, k) => ({ bg: built.shotOf(m.src), k, p: (k - hi + media.length) % media.length, z: media.length - (k - hi + media.length) % media.length, cls: (k === hi ? 'on' : '') + (m.kind === 'video' ? ' vid' : ''), pick: e => { halt(e); this.setState({ heroIdx: k, playing: null }); } }));") 'photo index'
+Once8 "bg: shotK(0), open: e => { halt(e); openAt(0); }, like: e => { halt(e); this.openLike('photo', 0); }," "bg: built.shotOf(cur.src), bg0: shotK(0), open: e => this.sideTap(e, media.length, hi, k => this.setState({ heroIdx: k, playing: null }), () => { if (isVid) this.playMedia(cur); else if (media.length > 1) this.setState({ heroIdx: (hi + 1) % media.length }); }), like: e => { halt(e); if (isVid) this.openLike('photo', 0, { src: cur.src }); else this.openLike('photo', built.photos.findIndex(p => p.src === cur.src)); }, playCls: isVid && st.playing === cur.id ? 'is-playing' : '', playShow: isVid ? 'flex' : 'none', dur: isVid ? cur.dur : '', secs: isVid ? (cur.secs || 10) + 's' : '0s'," 'hero values'
 # the first 'tiles' belongs to Discover; photos leave the area under the main photo
 Once8 "blocks: built.blocks, tiles: built.tiles," "blocks: built.blocks, tiles: built.tiles.filter(x => !x.isPhoto && !x.isVideo), heroThumbs, stripShow: media.length > 1 ? 'flex' : 'none'," 'discover tiles'
 Once8 "this.setState({ personIdx: this.state.personIdx + 1, viewer: null }" "this.setState({ personIdx: this.state.personIdx + 1, viewer: null, heroIdx: 0 }" 'pass resets the photo'
@@ -780,17 +780,17 @@ $epJs = @"
         down: e => this.epDown(e, m.id, () => this.setState({ epIdx: k, playing: null })) }));
       const editMain = { bg: shotOf(ecur.src), bg0: photos[0] ? shotOf(photos[0].src) : 'none', playShow: eVid ? 'flex' : 'none',
         label: ehi === 0 ? (he ? 'התמונה הראשית' : 'Main photo') : MEDIA[ecur.kind] + ' ' + (ehi + 1) + (he ? ' מתוך ' : ' of ') + media.length,
-        editLabel: he ? 'עריכה' : 'Edit', edit: () => this.epOpen(ecur.id) };
+        editLabel: he ? 'עריכה' : 'Edit', edit: () => this.epOpen(ecur.id), frameTap: e => this.sideTap(e, media.length, ehi, k => this.setState({ epIdx: k, playing: null }), () => this.epOpen(ecur.id)) };
       const editCards = editTiles.filter(t => t.kind === 'prompt' || t.kind === 'voice').map((t, k) => Object.assign({}, t, { pos: String(k + 1) }));
       const vhi = Math.min(st.epViewIdx || 0, media.length - 1), vcur = media[vhi], vVid = vcur.kind === 'video';
-      const viewThumbs = media.map((m, k) => ({ bg: shotOf(m.src), cls: (k === vhi ? 'on' : '') + (m.kind === 'video' ? ' vid' : ''),
+      const viewThumbs = media.map((m, k) => ({ bg: shotOf(m.src), k, p: (k - vhi + media.length) % media.length, z: media.length - (k - vhi + media.length) % media.length, cls: (k === vhi ? 'on' : '') + (m.kind === 'video' ? ' vid' : ''),
         pick: e => { if (e && e.stopPropagation) e.stopPropagation(); this.setState({ epViewIdx: k, playing: null }); } }));
 "@
 Once8 '      const nm = st.form.name || ' ($epJs + '      const nm = st.form.name || ') 'editor values'
 Once8 'list, counters, adds, sheet, vitals, editTiles, editHero,' 'list, counters, adds, sheet, vitals, editTiles, editHero, editStrip, editMain, editCards,' 'editor return'
 Once8 "          blocks: built.blocks, tiles: built.tiles,`n          hero: {" ("          blocks: built.blocks, tiles: built.tiles.filter(x => !x.isPhoto && !x.isVideo), heroThumbs: viewThumbs, stripShow: media.length > 1 ? 'flex' : 'none',`n" +
   "          hero: {`n            playCls: vVid && st.playing === vcur.id ? 'is-playing' : '', playShow: vVid ? 'flex' : 'none', dur: vVid ? vcur.dur : '', secs: vVid ? (vcur.secs || 10) + 's' : '0s', bg0: photos[0] ? shotOf(photos[0].src) : 'none',") 'view values'
-Once8 "bg: photos[0] ? shotOf(photos[0].src) : 'none', open: () => {}," "bg: shotOf(vcur.src), open: () => { if (vVid) this.playMedia(vcur); }," 'view hero'
+Once8 "bg: photos[0] ? shotOf(photos[0].src) : 'none', open: () => {}," "bg: shotOf(vcur.src), open: e => this.sideTap(e, media.length, vhi, k => this.setState({ epViewIdx: k, playing: null }), () => { if (vVid) this.playMedia(vcur); else if (media.length > 1) this.setState({ epViewIdx: (vhi + 1) % media.length }); })," 'view hero'
 Once8 "canFirst: !!cur && sk === 'photo' && items.indexOf(cur) > 0," "canFirst: !!cur && sk === 'photo' && items.filter(i => i.kind === 'photo' || i.kind === 'video').indexOf(cur) > 0," 'make main'
 Once8 "hasSize: !!cur && (sk === 'photo' || sk === 'prompt' || sk === 'video') && items.indexOf(cur) > 0," "hasSize: !!cur && sk === 'prompt'," 'sizes'
 
@@ -853,13 +853,22 @@ $doc = $doc.Substring(0, $hs10) + $css9 + $doc.Substring($hs10)
 #  stack fans it out; sliding picks whatever sits under the finger, and the
 #  one it rests on when it lifts stays as the main photo. A quick tap fans it
 #  out and leaves it open for a second tap.
-$doc = $doc.Replace('<div class="tgs-strip" style="display:{{ dv.stripShow }}">', '<div class="tgs-strip tgs-stack {{ dv.stackCls }}" style="display:{{ dv.stripShow }}" sc-camel-on-pointer-down="{{ dv.stackDown }}">')
-$doc = $doc.Replace('<div class="tgs-strip" style="display:{{ ep.view.stripShow }}">', '<div class="tgs-strip tgs-stack {{ ep.view.stackCls }}" style="display:{{ ep.view.stripShow }}" sc-camel-on-pointer-down="{{ ep.view.stackDown }}">')
-$doc = $doc.Replace('<button class="tgs-thumb tg-tap {{ h.cls }}" style="background:{{ h.bg }}" sc-camel-on-click="{{ h.pick }}" aria-label="Show this photo"></button>', '<button class="tgs-thumb {{ h.cls }}" style="background:{{ h.bg }}" aria-label="Show this photo"></button>')
+$doc = $doc.Replace('<div class="tgs-strip" style="display:{{ dv.stripShow }}">', '<div class="tgs-strip tgs-stack {{ dv.stackCls }}" style="display:{{ dv.stripShow }};--n:{{ dv.stackN }}" sc-camel-on-pointer-down="{{ dv.stackDown }}">')
+$doc = $doc.Replace('<div class="tgs-strip" style="display:{{ ep.view.stripShow }}">', '<div class="tgs-strip tgs-stack {{ ep.view.stackCls }}" style="display:{{ ep.view.stripShow }};--n:{{ ep.view.stackN }}" sc-camel-on-pointer-down="{{ ep.view.stackDown }}">')
+$doc = $doc.Replace('<button class="tgs-thumb tg-tap {{ h.cls }}" style="background:{{ h.bg }}" sc-camel-on-click="{{ h.pick }}" aria-label="Show this photo"></button>', '<button class="tgs-thumb {{ h.cls }}" style="background:{{ h.bg }};--p:{{ h.p }};--k:{{ h.k }};z-index:{{ h.z }}" aria-label="Show this photo"></button>')
 if (-not $doc.Contains('{{ dv.stackDown }}') -or -not $doc.Contains('{{ ep.view.stackDown }}')) { throw "stack markup not applied" }
-Once8 "heroThumbs, stripShow: media.length > 1 ? 'flex' : 'none'," "heroThumbs, stripShow: media.length > 1 ? 'flex' : 'none', stackCls: st.stackOpen ? 'open' : '', stackDown: e => this.stackDown(e, k => this.setState({ heroIdx: k, playing: null }))," 'discover stack'
-Once8 "heroThumbs: viewThumbs, stripShow: media.length > 1 ? 'flex' : 'none'," "heroThumbs: viewThumbs, stripShow: media.length > 1 ? 'flex' : 'none', stackCls: st.stackOpen ? 'open' : '', stackDown: e => this.stackDown(e, k => this.setState({ epViewIdx: k, playing: null }))," 'view stack'
+Once8 "heroThumbs, stripShow: media.length > 1 ? 'flex' : 'none'," "heroThumbs, stripShow: media.length > 1 ? 'flex' : 'none', stackCls: st.stackOpen ? 'open' : '', stackN: String(media.length), stackDown: e => this.stackDown(e, k => this.setState({ heroIdx: k, playing: null }))," 'discover stack'
+Once8 "heroThumbs: viewThumbs, stripShow: media.length > 1 ? 'flex' : 'none'," "heroThumbs: viewThumbs, stripShow: media.length > 1 ? 'flex' : 'none', stackCls: st.stackOpen ? 'open' : '', stackN: String(media.length), stackDown: e => this.stackDown(e, k => this.setState({ epViewIdx: k, playing: null }))," 'view stack'
 Once8 '  passPerson() {' (@"
+  sideTap(e, n, idx, set, center) {
+    if (e && e.stopPropagation) e.stopPropagation();
+    if (this._justDragged || !e || !e.currentTarget) return;
+    const r = e.currentTarget.getBoundingClientRect(), x = (e.clientX - r.left) / r.width;
+    if (n > 1 && x < 0.3) set((idx - 1 + n) % n);
+    else if (n > 1 && x > 0.7) set((idx + 1) % n);
+    else if (center) center();
+  }
+
   stackDown(e, pick) {
     if (e.pointerType === 'mouse' && e.button !== 0) return;
     if (e.stopPropagation) e.stopPropagation();
@@ -894,14 +903,14 @@ Once8 '  passPerson() {' (@"
   passPerson() {
 "@) 'stack method'
 $doc = $doc.Replace("this.setState({ personIdx: this.state.personIdx + 1, viewer: null, heroIdx: 0 }", "this.setState({ personIdx: this.state.personIdx + 1, viewer: null, heroIdx: 0, stackOpen: false }")
-$zs = ''; for ($z = 1; $z -le 8; $z++) { $zs += '.tgs-stack .tgs-thumb:nth-child(' + $z + '){z-index:' + (10 - $z) + '}' }
 $css10 = '<style>' +
-  '.tgs-strip.tgs-stack{gap:0 !important;touch-action:none;-webkit-user-select:none;user-select:none;padding:6px;margin:-6px}' +
-  '.tgs-stack .tgs-thumb{position:relative;touch-action:none;transition:margin .3s cubic-bezier(.3,1.25,.5,1),transform .25s cubic-bezier(.34,1.42,.64,1),opacity .2s ease,filter .2s ease,border-color .2s ease}' +
-  '.tgs-stack .tgs-thumb + .tgs-thumb{margin-top:-35px}' +
-  '.tgs-stack.open .tgs-thumb + .tgs-thumb{margin-top:7px}' + $zs +
-  '.tgs-stack .tgs-thumb.on{z-index:12}' +
-  '.tgs-stack.open .tgs-thumb.on{transform:scale(1.14) translateX(-4px)}' +
+  '.tgs-strip.tgs-stack{gap:0 !important;width:44px;touch-action:none;-webkit-user-select:none;user-select:none;height:calc(44px + (var(--n) - 1) * 9px);transition:height .34s cubic-bezier(.3,1.2,.5,1)}' +
+  '.tgs-strip.tgs-stack.open{height:calc(44px + (var(--n) - 1) * 51px)}' +
+  '.tgs-strip.tgs-stack .tgs-thumb{position:absolute;top:0;left:0;margin:0;touch-action:none;--s:.9;transform:translateY(calc(var(--p) * 9px)) scale(var(--s));' +
+  'transition:transform .4s cubic-bezier(.3,1.2,.5,1),opacity .2s ease,filter .2s ease,border-color .2s ease}' +
+  '.tgs-strip.tgs-stack .tgs-thumb.on{--s:1.08}' +
+  '.tgs-strip.tgs-stack.open .tgs-thumb{transform:translateY(calc(var(--k) * 51px)) scale(var(--s))}' +
+  '.tgs-strip.tgs-stack.open .tgs-thumb.on{--s:1.14;transform:translateY(calc(var(--k) * 51px)) translateX(-4px) scale(var(--s))}' +
   '</style>'
 $hs11 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs11) + $css10 + $doc.Substring($hs11)
