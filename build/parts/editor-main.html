@@ -1,0 +1,13 @@
+<div class="tgd-backdrop" aria-hidden="true"><div class="tgd-backdrop-img" style="background:{{ ep.editMain.bg0 }}"></div></div>
+                    <div class="tgd-hero ep-main">
+                      <div class="tgd-hero-img tg-tap" style="background:{{ ep.editMain.bg }}" sc-camel-on-click="{{ ep.editMain.edit }}"></div>
+                      <div class="tgd-hero-shade"></div>
+                      <span class="tgs-play" style="display:{{ ep.editMain.playShow }}"><svg width="26" height="26" sc-camel-view-box="0 0 24 24" fill="#FBFAF6"><path d="M8 5.5v13l11-6.5z"></path></svg></span>
+                      <span class="ep-mainlabel">{{ ep.editMain.label }}</span>
+                      <button class="ep-mainedit tg-tap" sc-camel-on-click="{{ ep.editMain.edit }}"><svg width="14" height="14" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg>{{ ep.editMain.editLabel }}</button>
+                      <div class="tgs-strip ep-strip" style="display:flex">
+                        <sc-for list="{{ ep.editStrip }}" as="h" hint-placeholder-count="4">
+                          <button class="tgs-thumb {{ h.cls }}" data-ep-id="{{ h.id }}" data-ep-grp="m" style="background:{{ h.bg }}" sc-camel-on-pointer-down="{{ h.down }}" aria-label="{{ h.aria }}"></button>
+                        </sc-for>
+                      </div>
+                    </div>

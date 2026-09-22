@@ -686,10 +686,10 @@ function Once8([string]$from, [string]$to, [string]$what) {
 }
 # which photo the main frame shows
 Once8 "      const shotK = k => built.shotOf(built.photos[k].src);" ("      const shotK = k => built.shotOf(built.photos[k].src);`n" +
-  "      const media = built.photos.map(p => ({ kind: 'photo', src: p.src })).concat(this.personItems(person).filter(i => i.kind === 'video'));`n" +
+  "      const media = this.personItems(person).filter(i => i.kind === 'photo' || i.kind === 'video');`n" +
   "      const hi = Math.min(st.heroIdx || 0, media.length - 1), cur = media[hi], isVid = cur.kind === 'video';`n" +
   "      const heroThumbs = media.map((m, k) => ({ bg: built.shotOf(m.src), cls: (k === hi ? 'on' : '') + (m.kind === 'video' ? ' vid' : ''), pick: e => { halt(e); this.setState({ heroIdx: k, playing: null }); } }));") 'photo index'
-Once8 "bg: shotK(0), open: e => { halt(e); openAt(0); }, like: e => { halt(e); this.openLike('photo', 0); }," "bg: built.shotOf(cur.src), bg0: shotK(0), open: e => { halt(e); if (isVid) this.playMedia(cur); }, like: e => { halt(e); if (isVid) this.openLike('photo', 0, { src: cur.src }); else this.openLike('photo', hi); }, playCls: isVid && st.playing === cur.id ? 'is-playing' : '', playShow: isVid ? 'flex' : 'none', dur: isVid ? cur.dur : '', secs: isVid ? (cur.secs || 10) + 's' : '0s'," 'hero values'
+Once8 "bg: shotK(0), open: e => { halt(e); openAt(0); }, like: e => { halt(e); this.openLike('photo', 0); }," "bg: built.shotOf(cur.src), bg0: shotK(0), open: e => { halt(e); if (isVid) this.playMedia(cur); }, like: e => { halt(e); if (isVid) this.openLike('photo', 0, { src: cur.src }); else this.openLike('photo', built.photos.findIndex(p => p.src === cur.src)); }, playCls: isVid && st.playing === cur.id ? 'is-playing' : '', playShow: isVid ? 'flex' : 'none', dur: isVid ? cur.dur : '', secs: isVid ? (cur.secs || 10) + 's' : '0s'," 'hero values'
 # the first 'tiles' belongs to Discover; photos leave the area under the main photo
 Once8 "blocks: built.blocks, tiles: built.tiles," "blocks: built.blocks, tiles: built.tiles.filter(x => !x.isPhoto && !x.isVideo), heroThumbs, stripShow: media.length > 1 ? 'flex' : 'none'," 'discover tiles'
 Once8 "this.setState({ personIdx: this.state.personIdx + 1, viewer: null }" "this.setState({ personIdx: this.state.personIdx + 1, viewer: null, heroIdx: 0 }" 'pass resets the photo'
@@ -706,7 +706,7 @@ $doc = $doc.Replace('<div class="tgd-backdrop-img" style="background:{{ dv.hero.
 
 
 # swipe right likes whatever the main frame shows; the heart leaves the main photo
-Once8 "      const heroThumbs = media.map(" "      this._heroLike = () => { if (isVid) this.openLike('photo', 0, { src: cur.src }); else this.openLike('photo', hi); };`n      const heroThumbs = media.map(" 'hero like'
+Once8 "      const heroThumbs = media.map(" "      this._heroLike = () => { if (isVid) this.openLike('photo', 0, { src: cur.src }); else this.openLike('photo', built.photos.findIndex(p => p.src === cur.src)); };`n      const heroThumbs = media.map(" 'hero like'
 $hs80 = $doc.IndexOf('<span class="tgd-heart"><button class="tg-tap" sc-camel-on-click="{{ dv.hero.like }}"')
 if ($hs80 -lt 0) { throw 'discover: hero heart not found' }
 $he0 = $doc.IndexOf('</span>', $hs80) + 7
@@ -766,7 +766,89 @@ $slim = '<style>' +
   '.tgd-slim > div:last-child button{font-size:11.5px !important;padding:4px 4px !important}' +
   '</style>'
 $hs9 = $doc.IndexOf('</helmet>')
-$doc = $doc.Substring(0, $hs9) + $slim + $doc.Substring($hs9)# ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
+$doc = $doc.Substring(0, $hs9) + $slim + $doc.Substring($hs9)# ── 5ae. Edit profile, the same shape as Discover ────────────────────────────
+#  Photos and videos live in the main frame with its column of squares: tap a
+#  square to show it, hold one and drag to reorder (the top square is the main
+#  photo), tap the frame to edit what it shows. Only prompts and voice notes
+#  sit in the cards below. View shows exactly what Discover shows.
+$epJs = @"
+      const media = items.filter(i => i.kind === 'photo' || i.kind === 'video');
+      const ehi = Math.min(st.epIdx || 0, media.length - 1), ecur = media[ehi], eVid = ecur.kind === 'video';
+      const MEDIA = he ? { photo: 'תמונה', video: 'סרטון' } : { photo: 'Photo', video: 'Video' };
+      const editStrip = media.map((m, k) => ({ id: m.id, bg: shotOf(m.src), aria: MEDIA[m.kind] + ' ' + (k + 1),
+        cls: (k === ehi ? 'on' : '') + (m.kind === 'video' ? ' vid' : '') + (st.epFlash === m.id ? ' ep-flash' : ''),
+        down: e => this.epDown(e, m.id, () => this.setState({ epIdx: k, playing: null })) }));
+      const editMain = { bg: shotOf(ecur.src), bg0: photos[0] ? shotOf(photos[0].src) : 'none', playShow: eVid ? 'flex' : 'none',
+        label: ehi === 0 ? (he ? 'התמונה הראשית' : 'Main photo') : MEDIA[ecur.kind] + ' ' + (ehi + 1) + (he ? ' מתוך ' : ' of ') + media.length,
+        editLabel: he ? 'עריכה' : 'Edit', edit: () => this.epOpen(ecur.id) };
+      const editCards = editTiles.filter(t => t.kind === 'prompt' || t.kind === 'voice').map((t, k) => Object.assign({}, t, { pos: String(k + 1) }));
+      const vhi = Math.min(st.epViewIdx || 0, media.length - 1), vcur = media[vhi], vVid = vcur.kind === 'video';
+      const viewThumbs = media.map((m, k) => ({ bg: shotOf(m.src), cls: (k === vhi ? 'on' : '') + (m.kind === 'video' ? ' vid' : ''),
+        pick: e => { if (e && e.stopPropagation) e.stopPropagation(); this.setState({ epViewIdx: k, playing: null }); } }));
+"@
+Once8 '      const nm = st.form.name || ' ($epJs + '      const nm = st.form.name || ') 'editor values'
+Once8 'list, counters, adds, sheet, vitals, editTiles, editHero,' 'list, counters, adds, sheet, vitals, editTiles, editHero, editStrip, editMain, editCards,' 'editor return'
+Once8 "          blocks: built.blocks, tiles: built.tiles,`n          hero: {" ("          blocks: built.blocks, tiles: built.tiles.filter(x => !x.isPhoto && !x.isVideo), heroThumbs: viewThumbs, stripShow: media.length > 1 ? 'flex' : 'none',`n" +
+  "          hero: {`n            playCls: vVid && st.playing === vcur.id ? 'is-playing' : '', playShow: vVid ? 'flex' : 'none', dur: vVid ? vcur.dur : '', secs: vVid ? (vcur.secs || 10) + 's' : '0s', bg0: photos[0] ? shotOf(photos[0].src) : 'none',") 'view values'
+Once8 "bg: photos[0] ? shotOf(photos[0].src) : 'none', open: () => {}," "bg: shotOf(vcur.src), open: () => { if (vVid) this.playMedia(vcur); }," 'view hero'
+Once8 "canFirst: !!cur && sk === 'photo' && items.indexOf(cur) > 0," "canFirst: !!cur && sk === 'photo' && items.filter(i => i.kind === 'photo' || i.kind === 'video').indexOf(cur) > 0," 'make main'
+Once8 "hasSize: !!cur && (sk === 'photo' || sk === 'prompt' || sk === 'video') && items.indexOf(cur) > 0," "hasSize: !!cur && sk === 'prompt'," 'sizes'
+
+# View: the squares, as in Discover
+$vw = $doc.IndexOf('<div class="ep-view">')
+if ($vw -lt 0) { throw "view tab not found" }
+$pre = $doc.Substring(0, $vw); $post = $doc.Substring($vw)
+$post = $post.Replace('<div class="tgd-backdrop-img" style="background:{{ ep.view.hero.bg }}">', '<div class="tgd-backdrop-img" style="background:{{ ep.view.hero.bg0 }}">')
+$vh = $post.IndexOf('<div class="tgd-hero">'); $post = $post.Substring(0, $vh) + '<div class="tgd-hero {{ ep.view.hero.playCls }}">' + $post.Substring($vh + '<div class="tgd-hero">'.Length)
+$vc = '<span class="tgd-count">{{ ep.view.hero.count }}</span>'
+$vi = $post.IndexOf($vc); if ($vi -lt 0) { throw "view count not found" }
+$post = $post.Substring(0, $vi) + '<span class="tgs-play" style="display:{{ ep.view.hero.playShow }}"><svg width="26" height="26" sc-camel-view-box="0 0 24 24" fill="#FBFAF6"><path d="M8 5.5v13l11-6.5z"></path></svg></span><span class="tgs-dur" style="display:{{ ep.view.hero.playShow }}">{{ ep.view.hero.dur }}</span><i class="tgs-prog" style="animation-duration:{{ ep.view.hero.secs }}"></i>' +
+  '<div class="tgs-strip" style="display:{{ ep.view.stripShow }}"><sc-for list="{{ ep.view.heroThumbs }}" as="h" hint-placeholder-count="4"><button class="tgs-thumb tg-tap {{ h.cls }}" style="background:{{ h.bg }}" sc-camel-on-click="{{ h.pick }}" aria-label="Show this photo"></button></sc-for></div>' + $post.Substring($vi + $vc.Length)
+$doc = $pre + $post
+
+# Edit: the main frame and its squares in place of the old first tile; cards below
+$es = $doc.IndexOf('<div class="tgd-backdrop" aria-hidden="true"><div class="tgd-backdrop-img" style="background:{{ ep.editHero.bg }}"></div></div>')
+$ee = $doc.IndexOf('<div class="tgm ep-mosaic">', $es)
+if ($es -lt 0 -or $ee -lt $es) { throw "edit stage not found ($es, $ee)" }
+$doc = $doc.Substring(0, $es) + [System.IO.File]::ReadAllText("$discScratch\editor-main.html", [System.Text.Encoding]::UTF8).TrimEnd() + "`n                    " + $doc.Substring($ee)
+Once8 '<sc-for list="{{ ep.editTiles }}" as="t" hint-placeholder-count="7">' '<sc-for list="{{ ep.editCards }}" as="t" hint-placeholder-count="4">' 'edit cards'
+Once8 '<div class="tgt {{ t.cls }}" data-ep-id="{{ t.id }}"' '<div class="tgt {{ t.cls }}" data-ep-id="{{ t.id }}" data-ep-grp="t"' 'card group'
+Once8 '<span>Tap to edit · Hold and drag to move</span>' '<span>Tap to edit · Hold a square or a card, then drag to move</span>' 'edit hint'
+
+# the drag works within its own group; the main frame always holds a photo
+Once8 '  epDown(e, id) {' '  epDown(e, id, tap) {' 'drag tap'
+Once8 'this._ep = { id, el, sc,' 'this._ep = { id, tap, el, sc,' 'drag tap state'
+Once8 "    const nodes = [...document.querySelectorAll('[data-ep-id]')];" "    const grp = d.el.getAttribute('data-ep-grp'), nodes = [...document.querySelectorAll(grp ? '[data-ep-grp=`"' + grp + '`"]' : '[data-ep-id]')];" 'drag group'
+Once8 "    const bad = ti === 0 && kind !== 'photo';" "    const bad = ti === 0 && kind !== 'photo' && d.el.getAttribute('data-ep-grp') === 'm';" 'drag main rule'
+Once8 '      if (!d.moved && Date.now() - d.t0 < 320) this.epOpen(d.id);' '      if (!d.moved && Date.now() - d.t0 < 320) { if (d.tap) d.tap(); else this.epOpen(d.id); }' 'tap'
+Once8 "    const moved = items.splice(d.di, 1)[0];`n    items.splice(d.ni, 0, moved);`n    if (items[0].kind !== 'photo') { this.toast('Your profile always starts with a photo'); return; }`n    this.setItems(items);`n    this.setState({ epFlash: moved.id });" (
+  "    const moved = items.splice(items.findIndex(i => i.id === d.order[d.di]), 1)[0];`n" +
+  "    let to = items.findIndex(i => i.id === d.order[d.ni]); if (d.ni > d.di) to++;`n" +
+  "    items.splice(to, 0, moved);`n" +
+  "    const fm = items.find(i => i.kind === 'photo' || i.kind === 'video');`n" +
+  "    if (!fm || fm.kind !== 'photo') { this.toast('Your profile always starts with a photo'); return; }`n" +
+  "    this.setItems(items);`n" +
+  "    const mk = items.filter(i => i.kind === 'photo' || i.kind === 'video').indexOf(moved);`n" +
+  "    this.setState(mk >= 0 ? { epFlash: moved.id, epIdx: mk } : { epFlash: moved.id });") 'reorder by id'
+Once8 "    if (items.length && items[0].kind !== 'photo') {`n      const k = items.findIndex(i => i.kind === 'photo');`n      if (k > 0) { const p = items.splice(k, 1)[0]; items.unshift(p); }`n    }" (
+  "    const fm = items.findIndex(i => i.kind === 'photo' || i.kind === 'video');`n" +
+  "    if (fm >= 0 && items[fm].kind !== 'photo') {`n      const k = items.findIndex(i => i.kind === 'photo');`n      if (k > 0) { const p = items.splice(k, 1)[0]; items.splice(fm, 0, p); }`n    }") 'first is a photo'
+Once8 "    items.unshift(items.splice(k, 1)[0]);`n    this.setItems(items);" "    items.unshift(items.splice(k, 1)[0]);`n    this.setItems(items);`n    this.setState({ epIdx: 0 });" 'main resets'
+$doc = $doc.Replace("      this.setState({ epFlash: id });`n      return;", "      this.setState({ epFlash: id, epIdx: 99 });`n      return;")
+
+$css9 = '<style>' +
+  '.ep-main{margin-bottom:12px}' +
+  '.ep-mainlabel{position:absolute;top:14px;inset-inline-start:14px;z-index:3;height:26px;padding:0 11px;border-radius:999px;display:flex;align-items:center;font-size:12px;color:#FBFAF6;background:rgba(0,0,0,.38);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}' +
+  '.ep-mainedit{position:absolute;bottom:16px;inset-inline-start:14px;z-index:3;height:36px;padding:0 15px;border-radius:999px;display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer;color:#1C2536;' +
+  'background:color-mix(in srgb,var(--pv) 30%,color-mix(in srgb,#FBFAF6 70%,transparent));-webkit-backdrop-filter:blur(16px) saturate(1.3);backdrop-filter:blur(16px) saturate(1.3);border:1px solid rgba(255,255,255,.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 6px 14px -10px rgba(0,0,0,.45)}' +
+  '.ep-strip .tgs-thumb{touch-action:none;-webkit-user-select:none;user-select:none}' +
+  '.ep-strip .tgs-thumb.ep-lift{transition:none;opacity:1;filter:none;z-index:6;border-color:#fff;box-shadow:0 16px 30px -6px rgba(0,0,0,.65)}' +
+  '.ep-strip .tgs-thumb.ep-target{opacity:1;filter:none;border-color:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.45)}' +
+  '.ep-strip .tgs-thumb.ep-target-no{border-style:dashed}' +
+  '</style>'
+$hs10 = $doc.IndexOf('</helmet>')
+$doc = $doc.Substring(0, $hs10) + $css9 + $doc.Substring($hs10)
+# ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }
 
