@@ -1,9 +1,18 @@
-<div class="tgp-label">__TITLE__</div>
+<div class="tgp-label tga-label"><span>__TITLE__</span>__LATERBTN__</div>
               <p class="tga-note">{{ ab.note }}</p>
+              <div class="tga-preview">
+                <div class="tga-ptitle">{{ ab.previewTitle }}</div>
+                <div class="tga-ptags">
+                  <sc-for list="{{ ab.preview }}" as="g" hint-placeholder-count="4">
+                    <span class="tg-tag"><svg width="14" height="14" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ g.icon }}"></path></svg>{{ g.label }}</span>
+                  </sc-for>
+                </div>
+                <p class="tga-empty" style="display:{{ ab.emptyShow }}">{{ ab.emptyText }}</p>
+              </div>
               <div class="tgp-card tga">
                 <sc-for list="{{ ab.cats }}" as="c" hint-placeholder-count="8">
                   <div class="tga-cat">
-                    <div class="tga-head"><svg width="16" height="16" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ c.icon }}"></path></svg><span>{{ c.title }}</span><small>{{ c.hint }}</small></div>
+                    <div class="tga-head"><svg width="16" height="16" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ c.icon }}"></path></svg><span>{{ c.title }}</span><small class="tga-state {{ c.stateCls }}">{{ c.state }}</small></div>
                     <div class="tga-opts">
                       <sc-for list="{{ c.opts }}" as="o" hint-placeholder-count="4">
                         <button type="button" class="tga-opt tg-tap {{ o.cls }}" sc-camel-on-click="{{ o.pick }}">{{ o.label }}</button>
@@ -12,7 +21,16 @@
                   </div>
                 </sc-for>
                 <div class="tga-cat">
-                  <div class="tga-head"><svg width="16" height="16" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ ab.ownIcon }}"></path></svg><span>{{ ab.ownTitle }}</span><small>{{ ab.ownCount }}</small></div>
-                  <input class="tga-own" value="{{ ab.own }}" sc-camel-on-input="{{ ab.setOwn }}" placeholder="{{ ab.ownHint }}" maxlength="28">
+                  <div class="tga-head"><svg width="16" height="16" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ ab.ownIcon }}"></path></svg><span>{{ ab.ownTitle }}</span><small class="tga-state {{ ab.mineCls }}">{{ ab.mineCount }}</small></div>
+                  <div class="tga-opts" style="display:{{ ab.mineShow }};margin-bottom:10px">
+                    <sc-for list="{{ ab.mine }}" as="m" hint-placeholder-count="2">
+                      <button type="button" class="tga-opt on tga-mine tg-tap" sc-camel-on-click="{{ m.remove }}" aria-label="{{ m.aria }}">{{ m.label }}<svg width="12" height="12" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+                    </sc-for>
+                  </div>
+                  <div class="tga-addrow" style="display:{{ ab.addShow }}">
+                    <input class="tga-own" value="{{ ab.draft }}" sc-camel-on-input="{{ ab.setDraft }}" placeholder="{{ ab.ownHint }}" maxlength="28">
+                    <button type="button" class="tga-add tg-tap {{ ab.addCls }}" sc-camel-on-click="{{ ab.add }}">{{ ab.addLabel }}</button>
+                  </div>
+                  <p class="tga-full" style="display:{{ ab.fullShow }}">{{ ab.fullText }}</p>
                 </div>
               </div>

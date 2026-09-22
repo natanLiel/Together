@@ -45,8 +45,25 @@
       if (!v) return;
       out.push({ label: tr(v), icon: c.k === 'rhythm' && v === 'Night owl' ? Component.ABOUT_MOON : c.icon });
     });
-    if (a.own && a.own.trim()) out.push({ label: a.own.trim(), icon: Component.ABOUT_OWN_ICON });
+    this.aboutMine(a).forEach(t => out.push({ label: t, icon: Component.ABOUT_OWN_ICON }));
     return out;
+  }
+
+  // up to five tags in your own words
+  aboutMine(a) { const o = (a || {}).own; return (Array.isArray(o) ? o : (o ? [o] : [])).filter(t => t && t.trim()).map(t => t.trim()); }
+  addMine() {
+    const me = this.state.me, about = Object.assign({}, me.about || {}), mine = this.aboutMine(about);
+    const t = (this.state.abDraft || '').trim();
+    if (!t) return;
+    if (mine.length >= 5) { this.toast('Five is the most'); return; }
+    if (mine.some(x => x.toLowerCase() === t.toLowerCase())) { this.toast('You already have that one'); return; }
+    about.own = mine.concat([t.charAt(0).toUpperCase() + t.slice(1)]);
+    this.setState({ me: Object.assign({}, me, { about }), abDraft: '' });
+  }
+  removeMine(i) {
+    const me = this.state.me, about = Object.assign({}, me.about || {}), mine = this.aboutMine(about);
+    mine.splice(i, 1); about.own = mine;
+    this.setState({ me: Object.assign({}, me, { about }) });
   }
 
   setAbout(k, v) {

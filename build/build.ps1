@@ -925,19 +925,35 @@ $abJs = @"
     // ——— about you: the tag picker ———
     const ab = (() => {
       const a = st.me.about || {}, tr = s => he ? (Component.ABOUT_HE[s] || s) : s;
-      const cats = Component.ABOUT.map(c => ({
-        title: he ? c.he : c.title, icon: c.icon, hint: c.multi ? (he ? 'אפשר כמה' : 'Pick any') : '',
-        opts: c.opts.map(o => { const on = c.multi ? (a[c.k] || []).indexOf(o) >= 0 : a[c.k] === o; return { label: tr(o), cls: on ? 'on' : '', pick: () => this.setAbout(c.k, o) }; })
-      }));
-      const own = a.own || '';
+      const cats = Component.ABOUT.map(c => {
+        const picked = c.multi ? (a[c.k] || []).length > 0 : !!a[c.k];
+        return {
+          title: he ? c.he : c.title, icon: c.icon,
+          state: picked ? (he ? 'בפרופיל שלך' : 'On your profile') : (c.multi ? (he ? 'אפשר כמה · לא מוצג' : 'Pick any · not shown') : (he ? 'לא מוצג' : 'Not shown')),
+          stateCls: picked ? 'on' : '',
+          opts: c.opts.map(o => { const on = c.multi ? (a[c.k] || []).indexOf(o) >= 0 : a[c.k] === o; return { label: tr(o), cls: on ? 'on' : '', pick: () => this.setAbout(c.k, o) }; })
+        };
+      });
+      const mine = this.aboutMine(a), draft = st.abDraft || '', preview = this.aboutTags(a, he);
       return {
-        cats, own, ownIcon: Component.ABOUT_OWN_ICON, ownCount: own.length + ' / 28',
-        note: he ? 'הכול רשות. מה שבוחרים מופיע בפרופיל כתגיות, אותו דבר לכולם.' : 'All optional. What you pick shows on your profile as tags, the same way for everyone.',
-        ownTitle: he ? 'במילים שלך' : 'In your own words', ownHint: he ? 'למשל: רץ בשש בבוקר' : 'Like: Runs at 6am',
-        setOwn: e => { const v = e.target.value.slice(0, 28); this.setAbout('own', v ? v.charAt(0).toUpperCase() + v.slice(1) : v); }
+        cats, preview, ownIcon: Component.ABOUT_OWN_ICON,
+        note: he ? 'הכול רשות. כל קטגוריה שלא בוחרים בה פשוט לא מופיעה בפרופיל.' : 'All optional. Any category you leave unpicked simply does not show on your profile.',
+        previewTitle: he ? 'ככה זה ייראה בפרופיל שלך' : 'How it shows on your profile',
+        emptyShow: preview.length ? 'none' : 'block', emptyText: he ? 'עדיין אין תגיות. בחרו למטה מה שתרצו שיופיע.' : 'No tags yet. Pick below what you want people to see.',
+        ownTitle: he ? 'תגיות משלך' : 'Your own tags', ownHint: he ? 'למשל: רץ בשש בבוקר' : 'Like: Runs at 6am',
+        mine: mine.map((t, i) => ({ label: t, aria: (he ? 'הסרת ' : 'Remove ') + t, remove: () => this.removeMine(i) })),
+        mineShow: mine.length ? 'flex' : 'none', mineCount: mine.length + (he ? ' מתוך 5' : ' of 5'), mineCls: mine.length ? 'on' : '',
+        addShow: mine.length < 5 ? 'flex' : 'none', fullShow: mine.length >= 5 ? 'block' : 'none',
+        fullText: he ? 'הגעת לחמש. אפשר להסיר אחת כדי להוסיף אחרת.' : 'That is five. Remove one to add another.',
+        draft, addLabel: he ? 'הוספה' : 'Add', addCls: draft.trim() ? '' : 'off',
+        setDraft: e => { const v = e.target.value.slice(0, 28); this.setState({ abDraft: v ? v.charAt(0).toUpperCase() + v.slice(1) : v }); },
+        add: () => this.addMine(),
+        later: !!st.abLater, notLater: !st.abLater,
+        skip: () => this.setState({ abLater: true }), resume: () => this.setState({ abLater: false }),
+        laterLabel: he ? 'אעשה את זה אחר כך' : 'Do this later', resumeLabel: he ? 'להוסיף עכשיו' : 'Add them now',
+        laterText: he ? 'אפשר להוסיף או לשנות תגיות בכל זמן מתוך עריכת הפרופיל.' : 'You can add or change your tags any time from Edit profile.'
       };
     })();
-
 "@
 Once8 '    // ——— the profile editor ———' ($abJs + '    // ——— the profile editor ———') 'picker values'
 Once8 'noPerson: !person, feed, dv,' 'noPerson: !person, feed, dv, ab,' 'picker binding'
@@ -957,11 +973,14 @@ foreach ($pre in @('dv.hero', 'ep.view.hero')) { foreach ($k in @('job', 'intent
 } }
 
 $picker = [System.IO.File]::ReadAllText("$discScratch\about-picker.html", [System.Text.Encoding]::UTF8).TrimEnd()
-Once8 '<div class="tgp-label">My vitals</div>' ($picker.Replace('__TITLE__', 'About you') + "`n`n                  " + '<div class="tgp-label">My vitals</div>') 'picker in edit'
+Once8 '<div class="tgp-label">My vitals</div>' ($picker.Replace('__TITLE__', 'About you').Replace('__LATERBTN__', '') + "`n`n                  " + '<div class="tgp-label">My vitals</div>') 'picker in edit'
 $bs2 = $doc.IndexOf('<sc-if value="{{ at.basics }}">')
 $bf = $doc.IndexOf('<div style="flex:1;min-height:var(--space-6)"></div>', $bs2)
 if ($bs2 -lt 0 -or $bf -lt 0) { throw "basics end not found" }
-$doc = $doc.Substring(0, $bf) + $picker.Replace('__TITLE__', 'A little more about you') + "`n`n              " + $doc.Substring($bf)
+$laterBtn = '<button type="button" class="tga-later tg-tap" sc-camel-on-click="{{ ab.skip }}">{{ ab.laterLabel }}</button>'
+$folded = '<sc-if value="{{ ab.later }}"><div class="tgp-label tga-label"><span>A little more about you</span></div>' +
+  '<div class="tgp-card tga-folded"><p>{{ ab.laterText }}</p><button type="button" class="tga-resume tg-tap" sc-camel-on-click="{{ ab.resume }}">{{ ab.resumeLabel }}</button></div></sc-if>'
+$doc = $doc.Substring(0, $bf) + $folded + "`n              <sc-if value=""{{ ab.notLater }}"">" + $picker.Replace('__TITLE__', 'A little more about you').Replace('__LATERBTN__', $laterBtn) + "</sc-if>`n`n              " + $doc.Substring($bf)
 
 $css11 = '<style>' +
   '.tg-tag{display:inline-flex !important;align-items:center;gap:6px;height:30px;padding:0 12px 0 10px !important;border-radius:999px !important;font-size:12.5px;line-height:1;white-space:nowrap}' +
@@ -970,6 +989,20 @@ $css11 = '<style>' +
   '.tgd-root .tgt-dtl > .tg-tag{height:30px}' +
   '.ep-stage{clip-path:inset(0)}' +
   '.tga{padding:2px 14px 12px}' +
+  '.tga-label{display:flex;align-items:center;justify-content:space-between;gap:10px}' +
+  '.tga-later{border:0;background:none;padding:4px 0;font:inherit;font-size:12.5px;letter-spacing:0;text-transform:none;color:#E4485B;cursor:pointer}' +
+  '.tga-folded{padding:14px 16px;display:flex;flex-direction:column;gap:10px}.tga-folded p{margin:0;font-size:13.5px;line-height:1.45;color:#1C2536}' +
+  '.tga-resume{align-self:flex-start;height:34px;padding:0 14px;border-radius:999px;border:1px solid #E4485B;background:#FBF1F0;color:#1C2536;font:inherit;font-size:13px;cursor:pointer}' +
+  '.tga-preview{margin:0 0 12px;padding:12px 14px;border-radius:3px;border:1px dashed rgba(28,37,54,.18);background:color-mix(in srgb,#FBFAF6 60%,transparent)}' +
+  '.tga-ptitle{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-accent-800);margin-bottom:9px}' +
+  '.tga-ptags{display:flex;flex-wrap:wrap;gap:6px}' +
+  '.tga-ptags .tg-tag{color:#1C2536;background:#FBFAF6;border:1px solid rgba(28,37,54,.12)}' +
+  '.tga-empty{margin:0;font-size:13px;line-height:1.45;color:color-mix(in srgb,var(--color-text) 60%,transparent)}' +
+  '.tga-state{color:color-mix(in srgb,var(--color-text) 45%,transparent)}.tga-state.on{color:#E4485B}' +
+  '.tga-mine{display:inline-flex;align-items:center;gap:7px}.tga-mine svg{opacity:.55}' +
+  '.tga-addrow{gap:8px;align-items:center}.tga-addrow .tga-own{margin:0;flex:1}' +
+  '.tga-add{height:40px;padding:0 16px;border-radius:3px;border:0;background:#1C2536;color:#FBFAF6;font:inherit;font-size:13.5px;cursor:pointer}.tga-add.off{opacity:.35}' +
+  '.tga-full{margin:2px 0 6px;font-size:12.5px;color:color-mix(in srgb,var(--color-text) 55%,transparent)}' +
   '.tga-note{font-size:13px;line-height:1.45;color:color-mix(in srgb,var(--color-text) 60%,transparent);margin:-2px 2px 10px}' +
   '.tga-cat{padding:13px 0 5px;border-top:1px solid rgba(28,37,54,.07)}.tga-cat:first-child{border-top:0}' +
   '.tga-head{display:flex;align-items:center;gap:7px;font-size:13.5px;color:#1C2536;margin-bottom:9px}' +
