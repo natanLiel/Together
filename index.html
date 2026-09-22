@@ -485,6 +485,22 @@ var CSS_TEXT = [
 "  -webkit-backdrop-filter:blur(30px) saturate(1.9) brightness(1.06);backdrop-filter:blur(30px) saturate(1.9) brightness(1.06);",
 "  border-top:1px solid rgba(255,255,255,.75) !important;border-radius:22px 22px var(--tg-phone-r,44px) var(--tg-phone-r,44px);",
 "  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 -1px 2px rgba(28,37,54,.10),0 -20px 40px -22px rgba(28,37,54,.55)}",
+/* ── a lighter pane: mostly warm white, with only a hint of the person's colour ── */
+"#tgSurf{background:linear-gradient(180deg,color-mix(in srgb,#FFFCF8 80%,var(--tg-pl,#FFF9F3)),color-mix(in srgb,#FFFCF8 88%,var(--tg-pl,#FFF9F3))) !important}",
+/* ── the mark as a glass shirt button: frosted, a wide dished centre, a thin neon edge ── */
+"#tgBar #tgHub,#tgBar:not(.open) #tgHub,#tgBar.open #tgHub,#tgBar.open #tgHub.on,#tgHub.hot,#tgHub.conn{width:66px !important;height:66px !important;overflow:visible;",
+"  background:radial-gradient(44% 24% at 34% 16%,rgba(255,255,255,.9),rgba(255,255,255,0) 74%),radial-gradient(24% 12% at 68% 88%,rgba(255,255,255,.5),rgba(255,255,255,0) 74%),",
+"    radial-gradient(closest-side,rgba(255,255,255,0) 72%,rgba(255,255,255,.4) 88%,rgba(255,255,255,.12) 100%),radial-gradient(90% 90% at 50% 40%,rgba(255,255,255,.78),rgba(246,240,236,.7)) !important;",
+"  -webkit-backdrop-filter:blur(10px) saturate(1.5) brightness(1.08);backdrop-filter:blur(10px) saturate(1.5) brightness(1.08);",
+"  box-shadow:inset 0 0 0 1px rgba(255,255,255,.85),inset 0 2px 1px rgba(255,255,255,.95),inset 0 -6px 10px rgba(20,24,40,.18),inset 0 0 12px rgba(255,255,255,.22),",
+"    0 0 0 .5px rgba(28,37,54,.22),0 16px 28px -10px rgba(28,37,54,.5) !important}",
+"#tgHub::before{content:'';position:absolute;inset:5px;border-radius:50%;pointer-events:none;",
+"  background:radial-gradient(90% 90% at 50% 68%,rgba(255,255,255,.55),rgba(240,234,230,.35) 75%);",
+"  box-shadow:inset 0 3px 5px rgba(20,24,40,.2),inset 0 -2px 2px rgba(255,255,255,.8),0 1px 0 rgba(255,255,255,.75),0 -1px 0 rgba(20,24,40,.06)}",
+"#tgHub::after{content:'';position:absolute;inset:1px;border-radius:50%;pointer-events:none;border:1px solid #FF7F96;",
+"  box-shadow:0 0 1.5px rgba(255,61,94,.7),inset 0 0 1.5px rgba(255,61,94,.45)}",
+"#tgHub svg{position:relative;z-index:1;filter:drop-shadow(0 1px 0 rgba(255,255,255,.8))}",
+"#tgHub .hbdg{z-index:2}",
 /* the live icon lifts off the glass: it rises, takes the ink, catches a
    highlight on top and drops a small soft shadow on the pane below it */
 ".tgTab::before{content:'';position:absolute;top:27px;left:50%;width:26px;height:7px;margin-left:-13px;",
