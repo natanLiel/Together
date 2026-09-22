@@ -719,7 +719,7 @@ Once8 "    if (dx <= -80) { this.passPerson(); return; }" "    if (dx <= -80) { 
 Once8 'Swipe left to move on. The heart is how you like.' 'Swipe right to like the photo, left to move on.' 'hint'
 
 $css8 = '<style>' +
-  '.tgs-strip{position:absolute;top:14px;inset-inline-end:12px;z-index:3;flex-direction:column;gap:8px}' +
+  '.tgs-strip{position:absolute;bottom:16px;inset-inline-end:12px;z-index:3;flex-direction:column;gap:8px}' +
   '.tgs-thumb{width:46px;height:46px;border-radius:12px;border:2px solid rgba(255,255,255,.55);padding:0;cursor:pointer;' +
   'box-shadow:0 4px 12px rgba(0,0,0,.35);opacity:.78;transition:transform .25s cubic-bezier(.34,1.42,.64,1),opacity .2s ease,border-color .2s ease}' +
   '.tgs-thumb.on{opacity:1;border-color:#fff;transform:scale(1.1);box-shadow:0 0 0 2px #E4485B,0 8px 18px rgba(0,0,0,.45)}' +
@@ -749,7 +749,23 @@ $css8 = '<style>' +
   '</style>'
 $hs8 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs8) + $css8 + $doc.Substring($hs8)
-# ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
+# ── 5ad. a slimmer Discover header ────────────────────────────────────────────
+#  The title, People/Couples and the sort took a third of the first screen.
+#  Less air above, smaller pills, and the sort as a slim row of its own.
+$db0 = '<div class="tgd-bar" style="position:sticky;top:0;z-index:2;background:color-mix(in srgb,var(--color-bg) 88%,transparent);backdrop-filter:blur(10px);padding:30px var(--space-4) var(--space-3)">'
+if (-not $doc.Contains($db0)) { throw "discover header not found" }
+$doc = $doc.Replace($db0, $db0.Replace('class="tgd-bar"', 'class="tgd-bar tgd-slim"'))
+$slim = '<style>' +
+  '.tgd-slim{padding:18px var(--space-4) 8px !important}' +
+  '.tgd-slim > div:first-child{margin-bottom:6px !important}' +
+  '.tgd-slim > div:first-child > span{font-size:20px !important}' +
+  '.tgd-slim > div:first-child > div{padding:2px !important}' +
+  '.tgd-slim > div:first-child button{font-size:12px !important;padding:4px 11px !important}' +
+  '.tgd-slim > div:last-child{padding:2px !important}' +
+  '.tgd-slim > div:last-child button{font-size:11.5px !important;padding:4px 4px !important}' +
+  '</style>'
+$hs9 = $doc.IndexOf('</helmet>')
+$doc = $doc.Substring(0, $hs9) + $slim + $doc.Substring($hs9)# ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }
 
