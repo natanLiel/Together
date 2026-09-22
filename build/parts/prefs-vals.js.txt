@@ -15,10 +15,10 @@ prefs: st.prefs, distLabel: he ? (st.prefs.dist >= 100 ? '100 ק״מ או יות
             return { label: g, ink, on: on ? '1' : '0', bd: on ? ON : 'rgba(28,37,54,.10)', bg: on ? '#FBF1F0' : '#FBFAF6',
               pick: () => this.setState({ form: Object.assign({}, st.form, { gender: g }), openField: '' }) };
           }),
-          bSeeking: ['Women', 'Men', 'Everyone'].map(s => {
-            const on = st.form.seeking === s;
-            return { label: s, bg: on ? '#FBFAF6' : 'transparent', fg: on ? '#1C2536' : 'var(--color-accent-800)',
-              sh: on ? '0 1px 2px rgba(28,37,54,.12), 0 3px 10px rgba(28,37,54,.10)' : 'none',
+          bSeeking: [['Women', '#E4485B', ''], ['Men', '#2A3F6E', ''], ['Everyone', '#2A3F6E', '#E4485B']].map(([s, ink, ink2]) => {
+            const on = st.form.seeking === s, two = !!ink2;
+            return { label: s, ink, ink2: ink2 || ink, on: on ? '1' : '0', bd: on ? ON : 'rgba(28,37,54,.10)', bg: on ? '#FBF1F0' : '#FBFAF6',
+              cx1: two ? '15' : '20', cx2: two ? '25' : '20', r: two ? '10' : '13', sw: two ? '4.2' : '5', op2: two ? '1' : '0',
               pick: () => this.setState({ form: Object.assign({}, st.form, { seeking: s }), openField: '' }) };
           }),
           bIntent: [
