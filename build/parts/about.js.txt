@@ -1,13 +1,13 @@
   // ——— about you: one set of tags every profile picks from ———
   static ABOUT = [
     { k: 'kids', title: 'Kids', he: 'ילדים', icon: 'M12 4.5a2.5 2.5 0 1 1 0 5a2.5 2.5 0 1 1 0-5zM7 20c0-3.2 2.2-6 5-6s5 2.8 5 6', opts: ['Wants kids', 'Open about kids', 'Not sure yet', 'Does not want kids', 'Has kids'] },
-    { k: 'drink', title: 'Drinking', he: 'שתייה', icon: 'M6 4h12l-1.5 7a4.5 4.5 0 0 1-9 0zM12 15.5V20M8.5 20h7', opts: ['Does not drink', 'Rarely drinks', 'Social drinker'] },
+    { k: 'drink', title: 'Drinking', he: 'שתייה', icon: 'M6 4h12l-1.5 7a4.5 4.5 0 0 1-9 0zM12 15.5V20M8.5 20h7', opts: ['Does not drink', 'Rarely drinks', 'Social drinker', 'Enjoys a drink'] },
     { k: 'smoke', title: 'Smoking', he: 'עישון', icon: 'M3 14h13v3H3zM18.5 14v3M21 14v3M18 10.5c0-1.8 2-1.8 2-3.6', opts: ['Does not smoke', 'Smokes sometimes', 'Smokes'] },
     { k: 'diet', title: 'Food', he: 'אוכל', icon: 'M7 3v7a2 2 0 0 0 4 0V3M9 12v9M16 3c-1.7 1.2-2.5 3.2-2.5 6H17V3zM16.5 9v12', opts: ['Eats everything', 'Vegetarian', 'Vegan', 'Keeps kosher'] },
-    { k: 'pets', title: 'Pets', he: 'חיות', icon: 'M8 7.5a1.6 1.6 0 1 1 0 3.2a1.6 1.6 0 1 1 0-3.2zM16 7.5a1.6 1.6 0 1 1 0 3.2a1.6 1.6 0 1 1 0-3.2zM12 5a1.6 1.6 0 1 1 0 3.2a1.6 1.6 0 1 1 0-3.2zM12 12.5c-2.8 0-4.8 3-4.8 5c0 1.8 2.2 1.8 4.8 1c2.6.8 4.8.8 4.8-1c0-2-2-5-4.8-5z', opts: ['Has a dog', 'Has a cat', 'Loves animals', 'No pets'] },
+    { k: 'pets', title: 'Pets', he: 'חיות', icon: 'M8 7.5a1.6 1.6 0 1 1 0 3.2a1.6 1.6 0 1 1 0-3.2zM16 7.5a1.6 1.6 0 1 1 0 3.2a1.6 1.6 0 1 1 0-3.2zM12 5a1.6 1.6 0 1 1 0 3.2a1.6 1.6 0 1 1 0-3.2zM12 12.5c-2.8 0-4.8 3-4.8 5c0 1.8 2.2 1.8 4.8 1c2.6.8 4.8.8 4.8-1c0-2-2-5-4.8-5z', opts: ['Has a dog', 'Has a cat', 'Loves animals', 'No pets'], other: true, hint: 'Like: A parrot', hintHe: 'למשל: תוכי' },
     { k: 'rhythm', title: 'Rhythm', he: 'קצב', icon: 'M12 8a4 4 0 1 1 0 8a4 4 0 1 1 0-8zM12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4', opts: ['Early bird', 'Night owl', 'Somewhere between'] },
-    { k: 'faith', title: 'Faith', he: 'אמונה', icon: 'M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.5l-5.3 2.9 1.2-6-4.5-4.1 6-.7z', opts: ['Secular', 'Traditional', 'Religious', 'Spiritual'] },
-    { k: 'langs', title: 'Languages', he: 'שפות', multi: true, icon: 'M4 5h16v10H9l-5 4z', opts: ['Hebrew', 'English', 'Arabic', 'Russian', 'French', 'Spanish', 'Amharic'] }
+    { k: 'faith', title: 'Faith', he: 'אמונה', multi: true, other: true, hint: 'Type your faith', hintHe: 'כתבו את האמונה שלך', icon: 'M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.5l-5.3 2.9 1.2-6-4.5-4.1 6-.7z', opts: ['Jewish', 'Muslim', 'Christian', 'Druze', 'Secular', 'Traditional', 'Religious', 'Spiritual'] },
+    { k: 'langs', title: 'Languages', he: 'שפות', multi: true, other: true, hint: 'Type a language', hintHe: 'כתבו שפה', icon: 'M4 5h16v10H9l-5 4z', opts: ['Hebrew', 'English', 'Arabic', 'Russian', 'French', 'Spanish', 'Amharic'] }
   ];
   static ABOUT_OWN_ICON = 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z';
   static ABOUT_MOON = 'M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z';
@@ -18,22 +18,22 @@
     'Eats everything': 'אוכל הכול', 'Vegetarian': 'צמחוני', 'Vegan': 'טבעוני', 'Keeps kosher': 'שומר כשרות',
     'Has a dog': 'יש כלב', 'Has a cat': 'יש חתול', 'Loves animals': 'אוהב חיות', 'No pets': 'בלי חיות',
     'Early bird': 'ציפור בוקר', 'Night owl': 'ינשוף לילה', 'Somewhere between': 'איפשהו באמצע',
-    'Secular': 'חילוני', 'Traditional': 'מסורתי', 'Religious': 'דתי', 'Spiritual': 'רוחני',
+    'Jewish': 'יהודי', 'Muslim': 'מוסלמי', 'Christian': 'נוצרי', 'Druze': 'דרוזי', 'Enjoys a drink': 'אוהב לשתות', 'Secular': 'חילוני', 'Traditional': 'מסורתי', 'Religious': 'דתי', 'Spiritual': 'רוחני',
     'Hebrew': 'עברית', 'English': 'אנגלית', 'Arabic': 'ערבית', 'Russian': 'רוסית', 'French': 'צרפתית', 'Spanish': 'ספרדית', 'Amharic': 'אמהרית'
   };
   static ABOUT_PEOPLE = {
     maya: { kids: 'Wants kids', drink: 'Rarely drinks', pets: 'Loves animals', langs: ['Hebrew', 'English'] },
     noa: { pets: 'Has a dog', kids: 'Open about kids', rhythm: 'Early bird', own: 'Runs at 6am' },
-    shira: { kids: 'Wants kids', diet: 'Vegetarian', rhythm: 'Night owl', own: 'Nights out, rarely' },
-    tamar: { kids: 'Has kids', drink: 'Social drinker', faith: 'Secular', langs: ['Hebrew', 'English', 'French'] },
+    shira: { kids: 'Wants kids', diet: 'Vegetarian', rhythm: 'Night owl', own: 'Rare nights out' },
+    tamar: { kids: 'Has kids', drink: 'Social drinker', faith: ['Jewish', 'Secular'], langs: ['Hebrew', 'English', 'French'] },
     avigail: { kids: 'Wants kids', rhythm: 'Early bird', langs: ['Hebrew', 'English'], own: 'Up before five' },
-    roni: { kids: 'Open about kids', pets: 'Loves animals', langs: ['Hebrew', 'English'], own: 'Swims year round' },
-    itai: { kids: 'Wants kids', drink: 'Rarely drinks', diet: 'Eats everything', own: 'Plays bass badly' },
+    roni: { kids: 'Open about kids', pets: 'Loves animals', langs: ['Hebrew', 'English'], own: 'Swims all year' },
+    itai: { kids: 'Wants kids', drink: 'Rarely drinks', diet: 'Eats everything', own: 'Bad bass player' },
     yonatan: { kids: 'Open about kids', smoke: 'Does not smoke', pets: 'Has a cat', own: 'Sails, slowly' },
-    adam: { kids: 'Wants kids', drink: 'Does not drink', rhythm: 'Early bird', faith: 'Traditional' },
-    roi: { kids: 'Has kids', drink: 'Social drinker', smoke: 'Does not smoke', own: 'Reads at the beach' },
-    eitan: { kids: 'Not sure yet', langs: ['Hebrew', 'English'], own: 'Two coffees, no more' },
-    omer: { kids: 'Wants kids', drink: 'Rarely drinks', rhythm: 'Early bird', own: 'Sleeps outside often' }
+    adam: { kids: 'Wants kids', drink: 'Does not drink', rhythm: 'Early bird', faith: ['Jewish', 'Traditional'] },
+    roi: { kids: 'Has kids', drink: 'Social drinker', smoke: 'Does not smoke', own: 'Beach reader' },
+    eitan: { kids: 'Not sure yet', langs: ['Hebrew', 'English'], own: 'Two coffees max' },
+    omer: { kids: 'Wants kids', drink: 'Rarely drinks', rhythm: 'Early bird', own: 'Sleeps outdoors' }
   };
 
   // the picked tags, in one order for everyone, each with its icon
@@ -66,11 +66,34 @@
     this.setState({ me: Object.assign({}, me, { about }) });
   }
 
+  // "Other" on a single-pick list opens a box to type your own
+  aboutOther(k) {
+    const me = this.state.me, about = Object.assign({}, me.about || {}), c = Component.ABOUT.find(x => x.k === k);
+    const on = about[k + '_other'] || (about[k] && c.opts.indexOf(about[k]) < 0);
+    about[k] = ''; about[k + '_other'] = !on;
+    this.setState({ me: Object.assign({}, me, { about }) });
+  }
+  aboutType(k, v) {
+    const me = this.state.me, about = Object.assign({}, me.about || {});
+    about[k] = v ? v.charAt(0).toUpperCase() + v.slice(1) : ''; about[k + '_other'] = true;
+    this.setState({ me: Object.assign({}, me, { about }) });
+  }
+  // a typed entry on a pick-any list, like a language that is not listed
+  aboutAdd(k) {
+    const t = (((this.state.abIn || {})[k]) || '').trim();
+    if (!t) return;
+    const me = this.state.me, about = Object.assign({}, me.about || {}), cur = (about[k] || []).slice();
+    const T = t.charAt(0).toUpperCase() + t.slice(1);
+    if (cur.some(x => x.toLowerCase() === T.toLowerCase())) { this.toast('You already have that one'); return; }
+    about[k] = cur.concat([T]);
+    this.setState({ me: Object.assign({}, me, { about }), abIn: Object.assign({}, this.state.abIn || {}, { [k]: '' }) });
+  }
+
   setAbout(k, v) {
     const me = this.state.me, about = Object.assign({}, me.about || {});
     const c = Component.ABOUT.find(x => x.k === k);
     if (c && c.multi) { const cur = (about[k] || []).slice(), i = cur.indexOf(v); if (i >= 0) cur.splice(i, 1); else cur.push(v); about[k] = cur; }
-    else if (c) about[k] = about[k] === v ? '' : v;
+    else if (c) { about[k] = about[k] === v ? '' : v; about[k + '_other'] = false; }
     else about[k] = v;
     this.setState({ me: Object.assign({}, me, { about }) });
   }

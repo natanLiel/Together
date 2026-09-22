@@ -926,12 +926,20 @@ $abJs = @"
     const ab = (() => {
       const a = st.me.about || {}, tr = s => he ? (Component.ABOUT_HE[s] || s) : s;
       const cats = Component.ABOUT.map(c => {
-        const picked = c.multi ? (a[c.k] || []).length > 0 : !!a[c.k];
+        const v = a[c.k], picked = c.multi ? (v || []).length > 0 : !!v;
+        const otherOn = !c.multi && !!c.other && !!(a[c.k + '_other'] || (v && c.opts.indexOf(v) < 0));
+        let opts = c.opts.map(o => { const on = c.multi ? (v || []).indexOf(o) >= 0 : v === o; return { label: tr(o), cls: on ? 'on' : '', pick: () => this.setAbout(c.k, o) }; });
+        if (c.multi) opts = opts.concat((v || []).filter(o => c.opts.indexOf(o) < 0).map(o => ({ label: o, cls: 'on', pick: () => this.setAbout(c.k, o) })));
+        else if (c.other) opts.push({ label: he ? 'אחר' : 'Other', cls: otherOn ? 'on' : '', pick: () => this.aboutOther(c.k) });
+        const draft = ((st.abIn || {})[c.k]) || '';
         return {
           title: he ? c.he : c.title, icon: c.icon,
           state: picked ? (he ? 'בפרופיל שלך' : 'On your profile') : (c.multi ? (he ? 'אפשר כמה · לא מוצג' : 'Pick any · not shown') : (he ? 'לא מוצג' : 'Not shown')),
-          stateCls: picked ? 'on' : '',
-          opts: c.opts.map(o => { const on = c.multi ? (a[c.k] || []).indexOf(o) >= 0 : a[c.k] === o; return { label: tr(o), cls: on ? 'on' : '', pick: () => this.setAbout(c.k, o) }; })
+          stateCls: picked ? 'on' : '', opts,
+          inShow: c.other && (c.multi || otherOn) ? 'flex' : 'none',
+          inVal: c.multi ? draft : (otherOn ? (v || '') : ''), inHint: he ? (c.hintHe || '') : (c.hint || ''),
+          inSet: e => { const t = e.target.value.slice(0, 15); if (c.multi) this.setState({ abIn: Object.assign({}, this.state.abIn || {}, { [c.k]: t }) }); else this.aboutType(c.k, t); },
+          addShow: c.multi ? 'inline-flex' : 'none', addCls: draft.trim() ? '' : 'off', addLabel: he ? 'הוספה' : 'Add', add: () => this.aboutAdd(c.k)
         };
       });
       const mine = this.aboutMine(a), draft = st.abDraft || '', preview = this.aboutTags(a, he);
@@ -942,11 +950,11 @@ $abJs = @"
         emptyShow: preview.length ? 'none' : 'block', emptyText: he ? 'עדיין אין תגיות. בחרו למטה מה שתרצו שיופיע.' : 'No tags yet. Pick below what you want people to see.',
         ownTitle: he ? 'תגיות משלך' : 'Your own tags', ownHint: he ? 'למשל: רץ בשש בבוקר' : 'Like: Runs at 6am',
         mine: mine.map((t, i) => ({ label: t, aria: (he ? 'הסרת ' : 'Remove ') + t, remove: () => this.removeMine(i) })),
-        mineShow: mine.length ? 'flex' : 'none', mineCount: mine.length + (he ? ' מתוך 5' : ' of 5'), mineCls: mine.length ? 'on' : '',
+        mineShow: mine.length ? 'flex' : 'none', mineCount: mine.length + (he ? ' מתוך 5 · עד 15 תווים' : ' of 5 · 15 letters each'), mineCls: mine.length ? 'on' : '',
         addShow: mine.length < 5 ? 'flex' : 'none', fullShow: mine.length >= 5 ? 'block' : 'none',
         fullText: he ? 'הגעת לחמש. אפשר להסיר אחת כדי להוסיף אחרת.' : 'That is five. Remove one to add another.',
         draft, addLabel: he ? 'הוספה' : 'Add', addCls: draft.trim() ? '' : 'off',
-        setDraft: e => { const v = e.target.value.slice(0, 28); this.setState({ abDraft: v ? v.charAt(0).toUpperCase() + v.slice(1) : v }); },
+        setDraft: e => { const v = e.target.value.slice(0, 15); this.setState({ abDraft: v ? v.charAt(0).toUpperCase() + v.slice(1) : v }); },
         add: () => this.addMine(),
         later: !!st.abLater, notLater: !st.abLater,
         skip: () => this.setState({ abLater: true }), resume: () => this.setState({ abLater: false }),
@@ -1001,7 +1009,8 @@ $css11 = '<style>' +
   '.tga-state{color:color-mix(in srgb,var(--color-text) 45%,transparent)}.tga-state.on{color:#E4485B}' +
   '.tga-mine{display:inline-flex;align-items:center;gap:7px}.tga-mine svg{opacity:.55}' +
   '.tga-addrow{gap:8px;align-items:center}.tga-addrow .tga-own{margin:0;flex:1}' +
-  '.tga-add{height:40px;padding:0 16px;border-radius:3px;border:0;background:#1C2536;color:#FBFAF6;font:inherit;font-size:13.5px;cursor:pointer}.tga-add.off{opacity:.35}' +
+  '.tga-add{display:inline-flex;align-items:center;justify-content:center;flex:none;height:40px;padding:0 16px;border-radius:3px;border:0;background:#1C2536;color:#FBFAF6;font:inherit;font-size:13.5px;cursor:pointer}.tga-add.off{opacity:.35}' +
+  '.tga-cat .tga-catin{margin:10px 0 6px}' +
   '.tga-full{margin:2px 0 6px;font-size:12.5px;color:color-mix(in srgb,var(--color-text) 55%,transparent)}' +
   '.tga-note{font-size:13px;line-height:1.45;color:color-mix(in srgb,var(--color-text) 60%,transparent);margin:-2px 2px 10px}' +
   '.tga-cat{padding:13px 0 5px;border-top:1px solid rgba(28,37,54,.07)}.tga-cat:first-child{border-top:0}' +

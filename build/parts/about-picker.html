@@ -18,6 +18,10 @@
                         <button type="button" class="tga-opt tg-tap {{ o.cls }}" sc-camel-on-click="{{ o.pick }}">{{ o.label }}</button>
                       </sc-for>
                     </div>
+                    <div class="tga-addrow tga-catin" style="display:{{ c.inShow }}">
+                      <input class="tga-own" value="{{ c.inVal }}" sc-camel-on-input="{{ c.inSet }}" placeholder="{{ c.inHint }}" maxlength="15">
+                      <button type="button" class="tga-add tg-tap {{ c.addCls }}" style="display:{{ c.addShow }}" sc-camel-on-click="{{ c.add }}">{{ c.addLabel }}</button>
+                    </div>
                   </div>
                 </sc-for>
                 <div class="tga-cat">
@@ -28,7 +32,7 @@
                     </sc-for>
                   </div>
                   <div class="tga-addrow" style="display:{{ ab.addShow }}">
-                    <input class="tga-own" value="{{ ab.draft }}" sc-camel-on-input="{{ ab.setDraft }}" placeholder="{{ ab.ownHint }}" maxlength="28">
+                    <input class="tga-own" value="{{ ab.draft }}" sc-camel-on-input="{{ ab.setDraft }}" placeholder="{{ ab.ownHint }}" maxlength="15">
                     <button type="button" class="tga-add tg-tap {{ ab.addCls }}" sc-camel-on-click="{{ ab.add }}">{{ ab.addLabel }}</button>
                   </div>
                   <p class="tga-full" style="display:{{ ab.fullShow }}">{{ ab.fullText }}</p>
