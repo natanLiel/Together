@@ -673,6 +673,82 @@ $warm = '<style>[data-tg-phone]{background:radial-gradient(130% 42% at 50% -8%,r
   'radial-gradient(90% 38% at 100% 104%,rgba(255,196,160,.16),transparent 70%),#F9F1E9 !important}</style>'
 $hs7 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs7) + $warm + $doc.Substring($hs7)
+# ── 5ac. the main photo holds every photo; the heart becomes a swipe ─────────
+#  Squares down the right edge of the main photo switch between photos and
+#  videos; the blurred ground keeps the first photo. Only prompts, voice notes
+#  and details sit under it, in glass tinted by the person's colours. Swiping
+#  right likes whatever the frame shows; left still moves on. Tapping a photo
+#  no longer opens it full screen. The glass for the remaining hearts matches.
+function Once8([string]$from, [string]$to, [string]$what) {
+  $i = $script:doc.IndexOf($from)
+  if ($i -lt 0) { throw "discover: '$what' not found" }
+  $script:doc = $script:doc.Substring(0, $i) + $to + $script:doc.Substring($i + $from.Length)
+}
+# which photo the main frame shows
+Once8 "      const shotK = k => built.shotOf(built.photos[k].src);" ("      const shotK = k => built.shotOf(built.photos[k].src);`n" +
+  "      const media = built.photos.map(p => ({ kind: 'photo', src: p.src })).concat(this.personItems(person).filter(i => i.kind === 'video'));`n" +
+  "      const hi = Math.min(st.heroIdx || 0, media.length - 1), cur = media[hi], isVid = cur.kind === 'video';`n" +
+  "      const heroThumbs = media.map((m, k) => ({ bg: built.shotOf(m.src), cls: (k === hi ? 'on' : '') + (m.kind === 'video' ? ' vid' : ''), pick: e => { halt(e); this.setState({ heroIdx: k, playing: null }); } }));") 'photo index'
+Once8 "bg: shotK(0), open: e => { halt(e); openAt(0); }, like: e => { halt(e); this.openLike('photo', 0); }," "bg: built.shotOf(cur.src), bg0: shotK(0), open: e => { halt(e); if (isVid) this.playMedia(cur); }, like: e => { halt(e); if (isVid) this.openLike('photo', 0, { src: cur.src }); else this.openLike('photo', hi); }, playCls: isVid && st.playing === cur.id ? 'is-playing' : '', playShow: isVid ? 'flex' : 'none', dur: isVid ? cur.dur : '', secs: isVid ? (cur.secs || 10) + 's' : '0s'," 'hero values'
+# the first 'tiles' belongs to Discover; photos leave the area under the main photo
+Once8 "blocks: built.blocks, tiles: built.tiles," "blocks: built.blocks, tiles: built.tiles.filter(x => !x.isPhoto && !x.isVideo), heroThumbs, stripShow: media.length > 1 ? 'flex' : 'none'," 'discover tiles'
+Once8 "this.setState({ personIdx: this.state.personIdx + 1, viewer: null }" "this.setState({ personIdx: this.state.personIdx + 1, viewer: null, heroIdx: 0 }" 'pass resets the photo'
+
+# the squares, down the right edge of the main photo; the count badge gives way to them
+Once8 '<span class="tgd-count">{{ dv.hero.count }}</span>' ('<div class="tgs-strip" style="display:{{ dv.stripShow }}">' +
+  '<sc-for list="{{ dv.heroThumbs }}" as="h" hint-placeholder-count="4">' +
+  '<button class="tgs-thumb tg-tap {{ h.cls }}" style="background:{{ h.bg }}" sc-camel-on-click="{{ h.pick }}" aria-label="Show this photo"></button>' +
+  '</sc-for></div>') 'hero count'
+Once8 '<div class="tgd-hero">' '<div class="tgd-hero {{ dv.hero.playCls }}">' 'hero frame'
+Once8 '<div class="tgs-strip"' ('<span class="tgs-play" style="display:{{ dv.hero.playShow }}"><svg width="26" height="26" sc-camel-view-box="0 0 24 24" fill="#FBFAF6"><path d="M8 5.5v13l11-6.5z"></path></svg></span><span class="tgs-dur" style="display:{{ dv.hero.playShow }}">{{ dv.hero.dur }}</span><i class="tgs-prog" style="animation-duration:{{ dv.hero.secs }}"></i><div class="tgs-strip"') 'play badge'
+# the blurred ground keeps the first photo whatever the frame shows
+$doc = $doc.Replace('<div class="tgd-backdrop-img" style="background:{{ dv.hero.bg }}">', '<div class="tgd-backdrop-img" style="background:{{ dv.hero.bg0 }}">')
+
+
+# swipe right likes whatever the main frame shows; the heart leaves the main photo
+Once8 "      const heroThumbs = media.map(" "      this._heroLike = () => { if (isVid) this.openLike('photo', 0, { src: cur.src }); else this.openLike('photo', hi); };`n      const heroThumbs = media.map(" 'hero like'
+$hs80 = $doc.IndexOf('<span class="tgd-heart"><button class="tg-tap" sc-camel-on-click="{{ dv.hero.like }}"')
+if ($hs80 -lt 0) { throw 'discover: hero heart not found' }
+$he0 = $doc.IndexOf('</span>', $hs80) + 7
+$doc = $doc.Substring(0, $hs80) + '<span class="tgs-likecue" data-tg-likecue="1"><svg width="34" height="34" sc-camel-view-box="0 0 24 24" fill="none" stroke="#E4485B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 5.6a5.2 5.2 0 0 0-7.4 0L12 7l-1.4-1.4a5.2 5.2 0 1 0-7.4 7.4L12 21.5l8.8-8.5a5.2 5.2 0 0 0 0-7.4z"></path></svg></span>' + $doc.Substring($he0)
+$hs81 = $doc.IndexOf('<span class="tgd-heart"><button class="tg-tap" sc-camel-on-click="{{ ep.view.hero.like }}"')
+if ($hs81 -ge 0) { $he1 = $doc.IndexOf('</span>', $hs81) + 7; $doc = $doc.Substring(0, $hs81) + $doc.Substring($he1) }
+Once8 "    const vx = dx > 0 ? Math.min(28, dx * 0.18) : dx;   // right: a small give, nothing more" "    const vx = dx > 0 ? Math.min(120, dx * 0.8) : dx;" 'right drag'
+Once8 "    if (l) l.style.opacity = '0';" "    if (l) l.style.opacity = '0';`n    const c = document.querySelector('[data-tg-likecue]'); if (c) { const k = Math.max(0, Math.min(1, dx / 90)); c.style.opacity = String(k); c.style.transform = 'scale(' + (0.6 + k * 0.4) + ')'; }" 'like cue'
+Once8 "    if (dx <= -80) { this.passPerson(); return; }" "    if (dx <= -80) { this.passPerson(); return; }`n    if (dx >= 80 && this._heroLike) { const d0 = this.deck(); if (d0) { d0.style.transition = 'transform .22s ease'; d0.style.transform = 'none'; } this.setStamp(0); this._justDragged = false; this._heroLike(); this._justDragged = true; return; }" 'swipe like'
+Once8 'Swipe left to move on. The heart is how you like.' 'Swipe right to like the photo, left to move on.' 'hint'
+
+$css8 = '<style>' +
+  '.tgs-strip{position:absolute;top:14px;inset-inline-end:12px;z-index:3;flex-direction:column;gap:8px}' +
+  '.tgs-thumb{width:46px;height:46px;border-radius:12px;border:2px solid rgba(255,255,255,.55);padding:0;cursor:pointer;' +
+  'box-shadow:0 4px 12px rgba(0,0,0,.35);opacity:.78;transition:transform .25s cubic-bezier(.34,1.42,.64,1),opacity .2s ease,border-color .2s ease}' +
+  '.tgs-thumb.on{opacity:1;border-color:#fff;transform:scale(1.1);box-shadow:0 0 0 2px #E4485B,0 8px 18px rgba(0,0,0,.45)}' +
+  '.tgd-hero-img{transition:background-image .35s ease}' +
+  '.tgs-thumb.vid{position:relative}.tgs-thumb.vid::after{content:"";position:absolute;inset:0;border-radius:10px;background:rgba(0,0,0,.28) no-repeat center/14px url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Cpath d=%27M8 5.5v13l11-6.5z%27 fill=%27white%27/%3E%3C/svg%3E")}' +
+  '.tgs-play{position:absolute;left:50%;top:42%;width:72px;height:72px;margin:-36px 0 0 -36px;z-index:2;border-radius:50%;align-items:center;justify-content:center;pointer-events:none;' +
+  'background:rgba(251,250,246,.22);backdrop-filter:blur(10px);border:1px solid rgba(251,250,246,.55);box-shadow:0 10px 30px rgba(0,0,0,.35);transition:opacity .25s ease,transform .25s ease}' +
+  '.tgd-hero.is-playing .tgs-play{opacity:0;transform:scale(.8)}' +
+  '.tgs-dur{position:absolute;top:14px;inset-inline-start:14px;z-index:2;height:24px;align-items:center;padding:0 9px;border-radius:999px;font-size:12px;color:#FBFAF6;background:rgba(0,0,0,.4)}' +
+  '.tgs-prog{position:absolute;inset-inline-start:0;bottom:0;height:3px;width:0;z-index:3;background:#E4485B}' +
+  '.tgd-hero.is-playing .tgs-prog{animation:tgd-prog linear forwards}' +
+  '.tgd-hero.is-playing .tgd-hero-img{transform:scale(1.12);transition:transform 12s linear,background-image .35s ease}' +
+  '.tgd-root .tgt-card,.tgd-root .tgt-tone .tgt-card,.tgd-root .tgt-voice{background:color-mix(in srgb,var(--pv) 30%,color-mix(in srgb,#FBFAF6 70%,transparent)) !important;' +
+  '-webkit-backdrop-filter:blur(16px) saturate(1.3);backdrop-filter:blur(16px) saturate(1.3);border:1px solid rgba(255,255,255,.55) !important}' +
+  '.tgd-root .tgt-voice .tgt-vrow{background:transparent}' +
+  '.tgd-root .tgt-dtl > span{background:color-mix(in srgb,var(--pv) 30%,color-mix(in srgb,#FBFAF6 70%,transparent)) !important;color:#1C2536 !important;' +
+  'border:1px solid rgba(255,255,255,.55) !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 6px 14px -10px rgba(0,0,0,.45);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}' +
+  '.tgd-root .tgd-heart{background:transparent !important;box-shadow:0 6px 14px -8px rgba(0,0,0,.45) !important}' +
+  '.tgd-root .tgd-heart button,.tgd-root .tgt-heart{overflow:hidden;background:color-mix(in srgb,var(--pv) 30%,color-mix(in srgb,#FBFAF6 70%,transparent)) !important;background-image:none !important;' +
+  '-webkit-backdrop-filter:blur(16px) saturate(1.3);backdrop-filter:blur(16px) saturate(1.3);border:1px solid rgba(255,255,255,.55) !important;' +
+  'box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 6px 14px -10px rgba(0,0,0,.45) !important}' +
+  '.tgd-root .tgd-heart button svg,.tgd-root .tgt-heart svg{position:relative;z-index:1;stroke:#E4485B;stroke-width:1.5px;filter:none}' +
+  '.tgd-root .tgd-heart button:active svg,.tgd-root .tgt-heart:active svg{filter:none;stroke-width:2px}' +
+  '.tgs-likecue{position:absolute;left:50%;top:42%;width:84px;height:84px;margin:-42px 0 0 -42px;z-index:3;border-radius:50%;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;transform:scale(.6);transition:opacity .15s ease;' +
+  'background:color-mix(in srgb,var(--pv) 30%,color-mix(in srgb,#FBFAF6 70%,transparent));-webkit-backdrop-filter:blur(16px) saturate(1.3);backdrop-filter:blur(16px) saturate(1.3);border:1px solid rgba(255,255,255,.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 10px 24px -10px rgba(0,0,0,.5)}' +
+  '.tgs-strip{gap:7px !important}.tgs-thumb{width:44px !important;height:44px !important}' +
+  '</style>'
+$hs8 = $doc.IndexOf('</helmet>')
+$doc = $doc.Substring(0, $hs8) + $css8 + $doc.Substring($hs8)
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }
