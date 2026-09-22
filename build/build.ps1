@@ -920,7 +920,7 @@ $doc = $doc.Substring(0, $hs11) + $css10 + $doc.Substring($hs11)
 #  pick them in The basics (optional) and any time in Edit profile, from the
 #  same picker. Every tag is the same pill with an icon, on the photo or under it.
 Once8 '  passPerson() {' ([System.IO.File]::ReadAllText("$discScratch\about.js.txt", [System.Text.Encoding]::UTF8).TrimEnd() + "`n`n  passPerson() {") 'about methods'
-Once8 "me: { work: 'Product designer'," "me: { about: { kids: 'Wants kids', drink: 'Social drinker', pets: 'Has a dog', langs: ['Hebrew', 'English'], own: 'Makes pasta from scratch' }, work: 'Product designer'," 'my tags'
+Once8 "me: { work: 'Product designer', height: '180 cm', home: 'Tel Aviv'," "me: { about: {}, work: '', height: '', home: ''," 'a blank start'
 $abJs = @"
     // ——— about you: the tag picker ———
     const ab = (() => {
@@ -1043,9 +1043,10 @@ Once8 "intent:'מה אתם מחפשים'}[m])" "intent:'מה אתם מחפשים
 Once8 "intent:'what you are here for'}[m])" "intent:'what you are here for',home:'home'}[m])" 'home hint'
 Once8 "        [he ? 'גובה' : 'Height', me.height]," "        [he ? 'גובה' : 'Height', me.height || (he ? 'לא נבחר' : 'Not set')]," 'height not set'
 Once8 "        [he ? 'גיל' : 'Age', '31']," "        [he ? 'גיל' : 'Age', String(age)]," 'age from birthday'
-Once8 "name: nm + ', 31', verified: false, city: me.home," "name: nm + ', ' + age, verified: false, city: me.home," 'age on the profile'
-Once8 "job: me.work, intent: cap(st.form.intent || 'A relationship'), dist: me.height," "job: me.work, intent: cap(st.form.intent || 'A relationship'), dist: me.height, jobShow: me.work ? '' : 'none', distShow: me.height ? '' : 'none'," 'empty chips'
+Once8 "name: nm + ', 31', verified: false, city: me.home," "name: nm + ', ' + age, verified: false, city: '', home: me.home, homeShow: me.home ? '' : 'none'," 'age on the profile'
+Once8 "job: me.work, intent: cap(st.form.intent || 'A relationship'), dist: me.height," "job: me.work, intent: cap(st.form.intent || ''), dist: me.height, jobShow: me.work ? '' : 'none', distShow: me.height ? '' : 'none', intentShow: st.form.intent ? '' : 'none'," 'empty chips'
 $doc = [regex]::Replace($doc, '<span class="tg-tag">(<svg(?:(?!</svg>).)*</svg>)\{\{ ep\.view\.hero\.(job|dist) \}\}</span>', '<span class="tg-tag" style="display:{{ ep.view.hero.$2Show }}">$1{{ ep.view.hero.$2 }}</span>')
+$doc = [regex]::Replace($doc, '<span class="tg-tag">(<svg(?:(?!</svg>).)*</svg>)\{\{ ep\.view\.hero\.intent \}\}</span>', '<span class="tg-tag" style="display:{{ ep.view.hero.intentShow }}">$1{{ ep.view.hero.intent }}</span>')
 if (-not $doc.Contains('{{ ep.view.hero.jobShow }}')) { throw "empty chip hiding not applied" }
 $bs3 = $doc.IndexOf('<sc-if value="{{ at.basics }}">')
 $bt = $doc.IndexOf('<div class="tgp-label">I am</div>', $bs3)
@@ -1062,6 +1063,26 @@ $css12 = '<style>' +
   '</style>'
 $hs13 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs13) + $css12 + $doc.Substring($hs13)
+# ── 5ai. work, home and height are tags, shown only when filled ──────────────
+#  On the photo the tags run work, home, height, then what they are here for.
+#  Anything left empty has no tag. Home leaves the line under the name, which
+#  now only carries the distance.
+Once8 "city: person.city + ' · ' + person.dist + ' km away'," "city: person.dist + (he ? ' ק״מ ממך' : ' km away'), home: person.city," 'their home'
+Once8 "        [he ? 'מחפש' : 'Looking for', st.form.intent || 'A relationship']" "        [he ? 'מחפש' : 'Looking for', st.form.intent || (he ? 'לא נבחר' : 'Not set')]" 'looking for not set'
+Once8 "        [he ? 'עבודה' : 'Work', me.work]," "        [he ? 'עבודה' : 'Work', me.work || (he ? 'לא נבחר' : 'Not set')]," 'work not set'
+Once8 "        [he ? 'מגורים' : 'Home', me.home]," "        [he ? 'מגורים' : 'Home', me.home || (he ? 'לא נבחר' : 'Not set')]," 'home not set'
+$pin = 'M12 21s-6-5.4-6-10.5a6 6 0 0 1 12 0C18 15.6 12 21 12 21zM12 8.2a2.3 2.3 0 1 1 0 4.6a2.3 2.3 0 1 1 0-4.6z'
+foreach ($pre in @('dv.hero', 'ep.view.hero')) {
+  $rx = '(<div class="tgd-chips">\s*)(<span class="tg-tag"[^>]*>(?:(?!</span>).)*\{\{ ' + [regex]::Escape($pre) + '\.job \}\}</span>)(\s*)(<span class="tg-tag"[^>]*>(?:(?!</span>).)*\{\{ ' + [regex]::Escape($pre) + '\.intent \}\}</span>)(\s*)(<span class="tg-tag"[^>]*>(?:(?!</span>).)*\{\{ ' + [regex]::Escape($pre) + '\.dist \}\}</span>)'
+  $m9 = [regex]::Match($doc, $rx)
+  if (-not $m9.Success) { throw "chips not found for $pre" }
+  $show = if ($pre -eq 'ep.view.hero') { ' style="display:{{ ' + $pre + '.homeShow }}"' } else { '' }
+  $homeTag = '<span class="tg-tag"' + $show + '><svg width="14" height="14" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="' + $pin + '"></path></svg>{{ ' + $pre + '.home }}</span>'
+  $new = $m9.Groups[1].Value + $m9.Groups[2].Value + $m9.Groups[3].Value + $homeTag + $m9.Groups[3].Value + $m9.Groups[6].Value + $m9.Groups[3].Value + $m9.Groups[4].Value
+  $doc = $doc.Substring(0, $m9.Index) + $new + $doc.Substring($m9.Index + $m9.Length)
+}
+$hs14 = $doc.IndexOf('</helmet>')
+$doc = $doc.Substring(0, $hs14) + '<style>.tgd-meta:empty,.tgd-meta:has(> .sc-interp:only-child:empty){display:none}</style>' + $doc.Substring($hs14)
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }
