@@ -1,0 +1,35 @@
+  // ——— connections: one slot on the free plan, three with Premium ———
+  slotCount() { return this.isPrem() ? 3 : 1; }
+  // the chat on screen keeps its messages in state.messages; stash them before leaving it
+  saveActive(conns) {
+    const i = this.state.chatIdx || 0;
+    if (conns[i]) conns[i] = Object.assign({}, conns[i], { messages: this.state.messages });
+    return conns;
+  }
+  matchWith(name) {
+    const p = Component.PEOPLE.find(x => x.name === name) || Component.PEOPLE[0];
+    const conns = (this.state.conns || []).slice();
+    const i = conns.findIndex(c => c.key === p.name.toLowerCase());
+    if (i >= 0) { this.switchChat(i); return; }
+    if (conns.length >= this.slotCount()) { if (this.isPrem()) { this.setState({ overlay: null }); this.toast('All three slots are taken'); } else this.setState({ overlay: 'upgrade', upgradeCtx: 'slots' }); return; }
+    const saved = this.saveActive(conns);
+    saved.push({ key: p.name.toLowerCase(), name: p.name, photo: p.pics[0], messages: [], open: false, unread: 0 });
+    this.setState({ conns: saved, chatIdx: saved.length - 1, messages: [], matched: true, ended: false, overlay: 'match', qIndex: 0, qActs: [], unlocked: false });
+  }
+  switchChat(i) {
+    const conns = this.saveActive((this.state.conns || []).slice());
+    const c = conns[i];
+    if (!c) return;
+    conns[i] = Object.assign({}, c, { unread: 0 });
+    const base = { conns, chatIdx: i, messages: c.messages || [], draft: '', typing: false };
+    if (c.open) this.setState(Object.assign(base, { screen: 'chat', tab: 'together', overlay: null }));
+    else this.setState(Object.assign(base, { overlay: 'match' }));
+  }
+  // ending one connection frees its slot and leaves the others as they are
+  dropPatch() {
+    const conns = (this.state.conns || []).slice();
+    conns.splice(this.state.chatIdx || 0, 1);
+    const n = conns[0];
+    return { conns, chatIdx: 0, messages: n ? (n.messages || []) : [], matched: conns.length > 0, ended: conns.length === 0 };
+  }
+

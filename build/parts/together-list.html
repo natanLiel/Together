@@ -1,0 +1,18 @@
+<sc-if value="{{ hasConnection }}">
+                <div class="tgc-list">
+                  <sc-for list="{{ tg.cards }}" as="c" hint-placeholder-count="1">
+                    <button type="button" class="tgc-card tg-tap" sc-camel-on-click="{{ c.go }}">
+                      <span class="tgc-face" style="background:{{ c.bg }}"><i style="display:{{ c.dot }}"></i></span>
+                      <span class="tgc-txt"><b>{{ c.name }}</b><small class="{{ c.subCls }}">{{ c.sub }}</small></span>
+                      <svg width="18" height="18" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;opacity:.4"><path d="M9 6l6 6-6 6"></path></svg>
+                    </button>
+                  </sc-for>
+                  <sc-for list="{{ tg.open }}" as="o" hint-placeholder-count="2">
+                    <button type="button" class="tgc-card tgc-empty tg-tap" sc-camel-on-click="{{ o.go }}">
+                      <span class="tgc-face tgc-plus"><svg width="20" height="20" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></span>
+                      <span class="tgc-txt"><b>{{ o.label }}</b><small>{{ o.sub }}</small></span>
+                    </button>
+                  </sc-for>
+                </div>
+                <button type="button" class="tgc-upsell tg-tap" style="display:{{ tg.upsell }}" sc-camel-on-click="{{ tg.upsellGo }}">{{ tg.upsellLabel }}</button>
+              </sc-if>

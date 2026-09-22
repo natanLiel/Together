@@ -1144,6 +1144,94 @@ Once8 "      if (el.dataset.init === '1') return;" ("      if (el.dataset.init =
   "      const len = +el.dataset.len || 0, w = el.dataset.wheel;`n" +
   "      const at = w === 'd' ? len * 4 + Math.min(f.bd, len) - 1 : w === 'm' ? 48 + f.bm : f.by - (new Date().getFullYear() - 90);") 'wheel place per list'
 Once8 "      const target = idx[el.dataset.wheel] * 36;" "      const target = at * 36;" 'wheel target'
+# ── 5am. connections you can see and move between ─────────────────────────────
+#  A match becomes a connection: one on the free plan, three with Premium.
+#  Together lists them with any open slots; Discover carries a banner while
+#  you are connected; the chat has a switcher once there is more than one.
+#  Everything that named Maya now names whoever the chat is with.
+Once8 '  passPerson() {' ([System.IO.File]::ReadAllText("$discScratch\conns.js.txt", [System.Text.Encoding]::UTF8).TrimEnd() + "`n`n  passPerson() {") 'connection methods'
+Once8 '    const person = pool[st.personIdx] || null;' ('    const person = pool[st.personIdx] || null;' + "`n" + [System.IO.File]::ReadAllText("$discScratch\conn-vals.js.txt", [System.Text.Encoding]::UTF8).TrimEnd()) 'connection values'
+Once8 'noPerson: !person, feed, dv, ab, vit,' 'noPerson: !person, feed, dv, ab, vit, mate, tg, cb, csw, chatBack,' 'connection bindings'
+Once8 "    const pool = Component.PEOPLE.filter(p => (p.g === 'w' && wantW) || (p.g === 'm' && wantM));" "    const pool = Component.PEOPLE.filter(p => ((p.g === 'w' && wantW) || (p.g === 'm' && wantM)) && !(st.conns || []).some(c => c.key === p.name.toLowerCase()));" 'connected people leave Discover'
+Once8 "sendLike: () => this.setState({ overlay: 'sent', sentKind: 'like' })," "sendLike: () => this.setState({ overlay: 'sent', sentKind: 'like', likedName: person ? person.name : st.likedName })," 'who was liked'
+Once8 "this.setState({ overlay: 'sent', sentKind: 'ring', rings: st.rings - 1 });" "this.setState({ overlay: 'sent', sentKind: 'ring', rings: st.rings - 1, likedName: person ? person.name : st.likedName });" 'who was rung'
+Once8 "simulateMatch: () => this.setState({ overlay: 'match', matched: true })," "simulateMatch: () => this.matchWith(st.likedName || (person && person.name))," 'a match is a connection'
+Once8 "enterChat: () => this.setState({ overlay: null, screen: 'chat', tab: 'together', ended: false })," "enterChat: () => this.setState({ overlay: null, screen: 'chat', tab: 'together', ended: false, conns: (st.conns || []).map((c, i) => i === ci ? Object.assign({}, c, { open: true }) : c) })," 'chat opens'
+Once8 "hasConnection: st.matched && !st.ended, noConnection: !st.matched || st.ended," "hasConnection: conns.length > 0, noConnection: conns.length === 0," 'connected'
+Once8 "slotLabel: prem ? (st.matched && !st.ended ? '1 of 3 slots' : '0 of 3 slots') : (st.matched && !st.ended ? 'Your one slot is taken' : 'Your one slot is free')," "slotLabel: conns.length + (he ? ' מתוך ' : ' of ') + slots + (he ? ' מקומות' : (slots === 1 ? ' slot' : ' slots'))," 'slot count'
+Once8 "quickExit: () => this.setState({ overlay: 'freed', ended: true, matched: false, undoLeft: 0 })," "quickExit: () => this.setState(Object.assign({ overlay: 'freed', undoLeft: 0 }, this.dropPatch()))," 'end now'
+Once8 "finishEnd: () => this.setState({ overlay: 'freed', ended: true, matched: false, undoLeft: 0 })," "finishEnd: () => this.setState(Object.assign({ overlay: 'freed', undoLeft: 0 }, this.dropPatch()))," 'end'
+Once8 "if (p.undoLeft === 0) { p.overlay = 'freed'; p.ended = true; }" "if (p.undoLeft === 0) { p.overlay = 'freed'; Object.assign(p, this.dropPatch()); }" 'end after the hour'
+Once8 "    if (this.state.matched && !this.state.ended) { this.setState({ overlay: 'upgrade', upgradeCtx: 'slots' }); return; }" "    if ((this.state.conns || []).length >= this.slotCount()) { if (this.isPrem()) this.toast('All three slots are taken'); else this.setState({ overlay: 'upgrade', upgradeCtx: 'slots' }); return; }" 'likes wait for a slot'
+# the name in the ritual and its notes
+Once8 "matchName: 'Maya'," "matchName: mate.name," 'match name'
+Once8 "'Send these to Maya'" "'Send these to ' + mate.name" 'send picks'
+Once8 "this.toast('Maya has been notified')" "this.toast(mate.name + ' has been notified')" 'notified'
+Once8 "'Maya asked you · '" "mate.name + ' asked you · '" 'asked you'
+Once8 "t: 'Your three are with Maya'" "t: 'Your three are with ' + mate.name" 'three are with'
+Once8 "'Chat opens the moment Maya has answered yours." "'Chat opens the moment ' + mate.name + ' has answered yours." 'chat opens when'
+
+$bits = [System.IO.File]::ReadAllText("$discScratch\conn-bits.html", [System.Text.Encoding]::UTF8)
+$banner = $bits.Substring($bits.IndexOf('<!--BANNER-->') + 13, $bits.IndexOf('<!--SWITCH-->') - $bits.IndexOf('<!--BANNER-->') - 13).Trim()
+$switch = $bits.Substring($bits.IndexOf('<!--SWITCH-->') + 13).Trim()
+# Discover: the banner takes the place of the old slot-full note
+$sf = $doc.IndexOf('<sc-if value="{{ slotFull }}">')
+$sfe = $doc.IndexOf('</sc-if>', $sf) + 8
+if ($sf -lt 0) { throw "slot-full note not found" }
+$doc = $doc.Substring(0, $sf) + $banner + $doc.Substring($sfe)
+# Together: the list of connections and open slots
+$tgs = $doc.IndexOf('<sc-if value="{{ at.together }}">')
+$hc = $doc.IndexOf('<sc-if value="{{ hasConnection }}">', $tgs)
+$hce = $doc.IndexOf('</sc-if>', $hc) + 8
+if ($tgs -lt 0 -or $hc -lt 0) { throw "together card not found" }
+$doc = $doc.Substring(0, $hc) + [System.IO.File]::ReadAllText("$discScratch\together-list.html", [System.Text.Encoding]::UTF8).Trim() + $doc.Substring($hce)
+$ip = $doc.IndexOf('<sc-if value="{{ isPremium }}">', $tgs)
+$ipe = $doc.IndexOf('</sc-if>', $ip) + 8
+if ($ip -gt 0 -and $ip - $tgs -lt 8000) { $doc = $doc.Substring(0, $ip) + $doc.Substring($ipe) }
+# chat: back goes to Together, the switcher sits under the header, the face and name follow the chat
+$cs = $doc.IndexOf('<sc-if value="{{ at.chat }}">')
+$bk = $doc.IndexOf('sc-camel-on-click="{{ go.discover }}" aria-label="Back"', $cs)
+if ($bk -lt 0 -or $bk - $cs -gt 3000) { throw "chat back not found" }
+$doc = $doc.Substring(0, $bk) + 'sc-camel-on-click="{{ chatBack }}" aria-label="Back"' + $doc.Substring($bk + 'sc-camel-on-click="{{ go.discover }}" aria-label="Back"'.Length)
+$cb2 = $doc.IndexOf('<div style="padding:var(--space-3) var(--space-4) 0">', $cs)
+if ($cb2 -lt 0) { throw "chat body not found" }
+$doc = $doc.Substring(0, $cb2) + $switch + "`n`n              " + $doc.Substring($cb2)
+foreach ($scr in @('at.chat', 'at.waiting', 'at.videocall')) {
+  $s0 = $doc.IndexOf('<sc-if value="{{ ' + $scr + ' }}">')
+  $p0 = $doc.IndexOf('url(assets/people/maya-1.jpg)', $s0)
+  if ($s0 -lt 0 -or $p0 -lt 0 -or $p0 - $s0 -gt 4000) { throw "photo in $scr not found" }
+  $doc = $doc.Substring(0, $p0) + 'url({{ mate.photo }})' + $doc.Substring($p0 + 'url(assets/people/maya-1.jpg)'.Length)
+}
+# every other Maya in the screens from Together to the overlays
+$r0 = $doc.IndexOf('<sc-if value="{{ at.together }}">'); $r1 = $doc.IndexOf('data-tg-caption', $r0); if ($r1 -lt 0) { throw 'caption not found' }
+$mid = $doc.Substring($r0, $r1 - $r0).Replace('>Maya<', '>{{ mate.name }}<').Replace('Maya', '{{ mate.name }}')
+$mid = $mid.Replace('>You two connected<', '>You and {{ mate.name }} connected<').Replace('You pick three questions for her. She picks three for you.', 'You pick three questions for {{ mate.name }}, and they pick three for you.')
+$doc = $doc.Substring(0, $r0) + $mid + $doc.Substring($r1)
+
+$css16 = '<style>' +
+  '.tgc-list{display:flex;flex-direction:column;gap:10px;margin-top:4px}' +
+  '.tgc-card{display:flex;align-items:center;gap:14px;width:100%;padding:12px 14px;border-radius:16px;border:1px solid rgba(255,255,255,.75);background:rgba(251,250,246,.8);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 12px 26px -18px rgba(28,37,54,.5);text-align:start;font:inherit;color:#1C2536;cursor:pointer}' +
+  '.tgc-face{position:relative;width:56px;height:56px;border-radius:50%;flex:none;box-shadow:0 0 0 2px #FBFAF6,0 6px 14px -6px rgba(0,0,0,.4)}' +
+  '.tgc-face i{position:absolute;top:1px;inset-inline-end:1px;width:12px;height:12px;border-radius:50%;background:#E4485B;box-shadow:0 0 0 2px #FBFAF6}' +
+  '.tgc-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}' +
+  '.tgc-txt b{font-family:var(--font-heading) !important;font-weight:400;font-size:19px;line-height:1.15}' +
+  '.tgc-txt small{font-size:13px;color:var(--color-accent-800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tgc-txt small.turn{color:#E4485B}' +
+  '.tgc-empty{background:transparent;border:1.5px dashed rgba(28,37,54,.18);box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}' +
+  '.tgc-empty .tgc-txt b{font-size:16px;color:rgba(28,37,54,.7)}' +
+  '.tgc-plus{display:grid;place-items:center;background:rgba(28,37,54,.05);box-shadow:none;color:rgba(28,37,54,.45)}' +
+  '.tgc-upsell{margin-top:14px;border:0;background:none;color:#E4485B;font:inherit;font-size:13.5px;cursor:pointer;width:100%;justify-content:center}' +
+  '.tgc-banner{display:flex;align-items:center;gap:12px;width:calc(100% - 32px);margin:0 16px 12px;padding:10px 10px 10px 12px;border-radius:16px;border:1px solid rgba(255,255,255,.55);background:color-mix(in srgb,var(--pv) 30%,color-mix(in srgb,#FBFAF6 70%,transparent));-webkit-backdrop-filter:blur(16px) saturate(1.3);backdrop-filter:blur(16px) saturate(1.3);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 10px 22px -14px rgba(0,0,0,.45);font:inherit;color:#1C2536;text-align:start;cursor:pointer;position:relative;z-index:2}' +
+  '.tgc-faces{display:flex;flex:none}.tgc-faces i{width:38px;height:38px;border-radius:50%;box-shadow:0 0 0 2px #FBFAF6}.tgc-faces i + i{margin-inline-start:-14px}' +
+  '.tgc-banner .tgc-txt b{font-size:15.5px}.tgc-banner .tgc-txt small{font-size:12px}' +
+  '.tgc-open{flex:none;height:32px;padding:0 13px;border-radius:999px;background:#1C2536;color:#FBFAF6;font-size:12.5px;display:inline-flex;align-items:center}' +
+  '.tgc-switch{gap:8px;padding:6px 16px 6px;overflow-x:auto;scrollbar-width:none}.tgc-switch::-webkit-scrollbar{display:none}' +
+  '.tgc-sw{display:flex;align-items:center;gap:8px;height:40px;padding:0 14px 0 4px;border-radius:999px;border:1px solid rgba(28,37,54,.1);background:rgba(251,250,246,.6);font:inherit;font-size:14px;color:rgba(28,37,54,.62);cursor:pointer;flex:none;position:relative;transition:background .2s ease,color .2s ease,box-shadow .2s ease,transform .2s ease}' +
+  '.tgc-sw i{width:32px;height:32px;border-radius:50%;flex:none;opacity:.7;transition:opacity .2s ease}' +
+  '.tgc-sw.on{background:#FBFAF6;color:#1C2536;border-color:rgba(28,37,54,.16);box-shadow:0 8px 18px -10px rgba(28,37,54,.5);transform:translateY(-1px)}.tgc-sw.on i{opacity:1}' +
+  '.tgc-sw b{position:absolute;top:3px;inset-inline-start:28px;width:10px;height:10px;border-radius:50%;background:#E4485B;box-shadow:0 0 0 2px #FBFAF6}' +
+  '</style>'
+$hs16 = $doc.IndexOf('</helmet>')
+$doc = $doc.Substring(0, $hs16) + $css16 + $doc.Substring($hs16)
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }

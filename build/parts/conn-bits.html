@@ -1,0 +1,12 @@
+<!--BANNER-->
+<button type="button" class="tgc-banner tg-tap" style="display:{{ cb.show }}" sc-camel-on-click="{{ cb.go }}">
+                <span class="tgc-faces"><sc-for list="{{ cb.faces }}" as="f" hint-placeholder-count="1"><i style="background:{{ f.bg }}"></i></sc-for></span>
+                <span class="tgc-txt"><b>{{ cb.text }}</b><small>{{ cb.sub }}</small></span>
+                <span class="tgc-open">{{ cb.cta }}</span>
+              </button>
+<!--SWITCH-->
+<div class="tgc-switch" style="display:{{ csw.show }}">
+                <sc-for list="{{ csw.items }}" as="s" hint-placeholder-count="3">
+                  <button type="button" class="tgc-sw tg-tap {{ s.cls }}" sc-camel-on-click="{{ s.go }}"><i style="background:{{ s.bg }}"></i>{{ s.name }}<b style="display:{{ s.dot }}"></b></button>
+                </sc-for>
+              </div>

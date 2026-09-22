@@ -1,0 +1,30 @@
+    // ——— connections: who you are talking to, the list in Together, the banner, the switcher ———
+    const conns = st.conns || [], slots = prem ? 3 : 1, ci = Math.min(st.chatIdx || 0, Math.max(conns.length - 1, 0));
+    const faceOf = src => 'center/cover no-repeat url(' + src + ')';
+    const mate = conns[ci] ? { name: conns[ci].name, photo: conns[ci].photo } : { name: st.likedName || 'Maya', photo: 'assets/people/' + (st.likedName || 'Maya').toLowerCase() + '-1.jpg' };
+    const lastOf = (c, i) => { const m = (i === ci ? st.messages : c.messages) || []; return m.length ? m[m.length - 1].text : ''; };
+    const tg = {
+      cards: conns.map((c, i) => ({
+        name: c.name, bg: faceOf(c.photo), dot: c.unread ? 'block' : 'none', subCls: c.open ? '' : 'turn',
+        sub: c.open ? (lastOf(c, i) || (he ? 'הצ׳אט פתוח. תגידו משהו.' : 'Chat is open. Say something.')) : (he ? 'התור שלך: לבחור שלוש שאלות' : 'Your turn: pick three questions'),
+        go: () => this.switchChat(i)
+      })),
+      open: Array.from({ length: Math.max(0, slots - conns.length) }, () => ({
+        label: he ? 'מקום פנוי' : 'Open slot', sub: he ? 'לייק ב־Discover ממלא אותו' : 'A like in Discover can fill it', go: () => this.tabTo('discover')
+      })),
+      upsell: !prem ? 'flex' : 'none', upsellLabel: he ? 'מקום לשלושה עם פרימיום' : 'Room for three with Premium',
+      upsellGo: () => this.setState({ overlay: 'upgrade', upgradeCtx: 'slots' })
+    };
+    const cb = {
+      show: conns.length ? 'flex' : 'none', faces: conns.map(c => ({ bg: faceOf(c.photo) })),
+      text: conns.length === 1 ? (he ? 'את/ה ו' + conns[0].name + ' מחוברים' : 'You and ' + conns[0].name + ' are connected') : (he ? conns.length + ' חיבורים' : conns.length + ' connections'),
+      sub: conns.length >= slots ? (prem ? (he ? 'כל שלושת המקומות תפוסים' : 'All three slots are taken') : (he ? 'הלייקים ייפתחו כשהמקום שלך יתפנה' : 'Liking opens again when your slot does')) : (he ? 'עוד ' + (slots - conns.length) + ' מקומות פנויים' : (slots - conns.length) + ' more ' + (slots - conns.length === 1 ? 'slot' : 'slots') + ' open'),
+      cta: conns.length === 1 ? (he ? 'לצ׳אט' : 'Open chat') : (he ? 'לצ׳אטים' : 'Open chats'),
+      go: () => conns.length === 1 ? this.switchChat(0) : this.tabTo('together')
+    };
+    const csw = {
+      show: conns.length > 1 ? 'flex' : 'none',
+      items: conns.map((c, i) => ({ name: c.name, bg: faceOf(c.photo), cls: i === ci ? 'on' : '', dot: c.unread && i !== ci ? 'block' : 'none', go: () => { if (i !== ci) this.switchChat(i); } }))
+    };
+    const chatBack = () => { this.setState({ conns: this.saveActive((st.conns || []).slice()) }); this.tabTo('together'); };
+
