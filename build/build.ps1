@@ -721,8 +721,9 @@ Once8 'Swipe left to move on. The heart is how you like.' 'Swipe right to like t
 $css8 = '<style>' +
   '.tgs-strip{position:absolute;bottom:16px;inset-inline-end:12px;z-index:3;flex-direction:column;gap:8px}' +
   '.tgs-thumb{width:46px;height:46px;border-radius:12px;border:2px solid rgba(255,255,255,.55);padding:0;cursor:pointer;' +
-  'box-shadow:0 4px 12px rgba(0,0,0,.35);opacity:.78;transition:transform .25s cubic-bezier(.34,1.42,.64,1),opacity .2s ease,border-color .2s ease}' +
-  '.tgs-thumb.on{opacity:1;border-color:#fff;transform:scale(1.1);box-shadow:0 0 0 2px #E4485B,0 8px 18px rgba(0,0,0,.45)}' +
+  'box-shadow:0 4px 12px rgba(0,0,0,.35);opacity:.78;transition:transform .25s cubic-bezier(.34,1.42,.64,1),opacity .2s ease,filter .2s ease,border-color .2s ease}' +
+  '.tgs-thumb:not(.on){opacity:.55;filter:saturate(.6) brightness(.85);border-color:rgba(255,255,255,.35);transform:scale(.9)}' +
+  '.tgs-thumb.on{opacity:1;filter:none;border-color:#fff;transform:scale(1.08);box-shadow:0 10px 22px -6px rgba(0,0,0,.6)}' +
   '.tgd-hero-img{transition:background-image .35s ease}' +
   '.tgs-thumb.vid{position:relative}.tgs-thumb.vid::after{content:"";position:absolute;inset:0;border-radius:10px;background:rgba(0,0,0,.28) no-repeat center/14px url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Cpath d=%27M8 5.5v13l11-6.5z%27 fill=%27white%27/%3E%3C/svg%3E")}' +
   '.tgs-play{position:absolute;left:50%;top:42%;width:72px;height:72px;margin:-36px 0 0 -36px;z-index:2;border-radius:50%;align-items:center;justify-content:center;pointer-events:none;' +
