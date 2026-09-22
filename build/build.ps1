@@ -1014,6 +1014,52 @@ $css11 = '<style>' +
   '</style>'
 $hs12 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs12) + $css11 + $doc.Substring($hs12)
+# ── 5ah. the vitals are part of setting up ───────────────────────────────────
+#  The basics now asks for work, home and height too, the same values My
+#  vitals shows and edits. Home is needed; work and height are optional and
+#  their chips stay off the profile until filled. Age comes from the birthday.
+$vitJs = @"
+    // ——— the vitals, asked in The basics and shown in My vitals ———
+    const vit = (() => {
+      const me = st.me, capV = v => v ? v.charAt(0).toUpperCase() + v.slice(1) : v;
+      const setMe = patch => this.setState({ me: Object.assign({}, this.state.me, patch) });
+      const cm = parseInt(me.height, 10);
+      const step = d => { const base = isNaN(cm) ? 170 : cm + d; setMe({ height: Math.max(140, Math.min(215, base)) + ' cm' }); };
+      return {
+        work: me.work || '', home: me.home || '', heightLabel: me.height || (he ? 'לא נבחר' : 'Not set'), heightCls: me.height ? 'on' : '',
+        note: he ? 'מגורים מופיעים כעיר שלך. עבודה וגובה הם רשות, ולא מופיעים עד שממלאים אותם.' : 'Home shows as your city. Work and height are optional and stay off your profile until you fill them.',
+        setWork: e => setMe({ work: capV(e.target.value.slice(0, 40)) }),
+        setHome: e => setMe({ home: capV(e.target.value.slice(0, 30)) }),
+        down: () => step(-1), up: () => step(1),
+        clear: () => setMe({ height: '' }), clearShow: me.height ? 'inline-flex' : 'none', clearLabel: he ? 'ניקוי' : 'Clear'
+      };
+    })();
+
+"@
+Once8 '    // ——— about you: the tag picker ———' ($vitJs + '    // ——— about you: the tag picker ———') 'vitals values'
+Once8 'noPerson: !person, feed, dv, ab,' 'noPerson: !person, feed, dv, ab, vit,' 'vitals binding'
+Once8 "    const missing = ['name','last','handle','gender','seeking','intent'].filter(k => !st.form[k]);" "    const missing = ['name','last','handle','gender','seeking','intent'].filter(k => !st.form[k]).concat(st.me.home && st.me.home.trim() ? [] : ['home']);" 'home needed'
+Once8 "intent:'מה אתם מחפשים'}[m])" "intent:'מה אתם מחפשים',home:'מגורים'}[m])" 'home hint he'
+Once8 "intent:'what you are here for'}[m])" "intent:'what you are here for',home:'home'}[m])" 'home hint'
+Once8 "        [he ? 'גובה' : 'Height', me.height]," "        [he ? 'גובה' : 'Height', me.height || (he ? 'לא נבחר' : 'Not set')]," 'height not set'
+Once8 "        [he ? 'גיל' : 'Age', '31']," "        [he ? 'גיל' : 'Age', String(age)]," 'age from birthday'
+Once8 "name: nm + ', 31', verified: false, city: me.home," "name: nm + ', ' + age, verified: false, city: me.home," 'age on the profile'
+Once8 "job: me.work, intent: cap(st.form.intent || 'A relationship'), dist: me.height," "job: me.work, intent: cap(st.form.intent || 'A relationship'), dist: me.height, jobShow: me.work ? '' : 'none', distShow: me.height ? '' : 'none'," 'empty chips'
+$doc = [regex]::Replace($doc, '<span class="tg-tag">(<svg(?:(?!</svg>).)*</svg>)\{\{ ep\.view\.hero\.(job|dist) \}\}</span>', '<span class="tg-tag" style="display:{{ ep.view.hero.$2Show }}">$1{{ ep.view.hero.$2 }}</span>')
+if (-not $doc.Contains('{{ ep.view.hero.jobShow }}')) { throw "empty chip hiding not applied" }
+$bs3 = $doc.IndexOf('<sc-if value="{{ at.basics }}">')
+$bt = $doc.IndexOf('<sc-if value="{{ ab.later }}">', $bs3)
+if ($bs3 -lt 0 -or $bt -lt 0) { throw "basics tags section not found" }
+$doc = $doc.Substring(0, $bt) + [System.IO.File]::ReadAllText("$discScratch\vitals-basics.html", [System.Text.Encoding]::UTF8).TrimEnd() + "`n`n              " + $doc.Substring($bt)
+$css12 = '<style>' +
+  '.tg-tag[style*="display:none"],.tg-tag[style*="display: none"]{display:none !important}' +
+  '.tgv-height{display:flex;align-items:center;gap:10px;margin-top:6px}' +
+  '.tgv-height b{min-width:82px;text-align:center;font-weight:400;font-size:16px;color:color-mix(in srgb,var(--color-text) 45%,transparent)}.tgv-height b.on{color:#1C2536}' +
+  '.tgv-step{width:40px;height:40px;border-radius:50%;border:1px solid rgba(28,37,54,.14);background:#FBFAF6;color:#1C2536;display:grid;place-items:center;cursor:pointer}' +
+  '.tgv-clear{margin-inline-start:auto;border:0;background:none;font:inherit;font-size:13px;color:#E4485B;cursor:pointer;padding:6px 2px}' +
+  '</style>'
+$hs13 = $doc.IndexOf('</helmet>')
+$doc = $doc.Substring(0, $hs13) + $css12 + $doc.Substring($hs13)
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }

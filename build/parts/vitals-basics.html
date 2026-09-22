@@ -1,0 +1,22 @@
+<div class="tgp-label">Your vitals</div>
+              <p class="tga-note">{{ vit.note }}</p>
+              <div class="tgp-card tgb-card">
+                <label class="tgb-field">
+                  <span>Work</span>
+                  <input class="tg-vinput" value="{{ vit.work }}" sc-camel-on-input="{{ vit.setWork }}" placeholder="What you do">
+                </label>
+                <label class="tgb-field">
+                  <span>Home</span>
+                  <input class="tg-vinput" value="{{ vit.home }}" sc-camel-on-input="{{ vit.setHome }}" placeholder="Tel Aviv">
+                </label>
+                <div class="tgb-field">
+                  <span>Height</span>
+                  <div class="tgv-height">
+                    <button type="button" class="tgv-step tg-tap" sc-camel-on-click="{{ vit.down }}" aria-label="Shorter"><svg width="16" height="16" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 12h12"></path></svg></button>
+                    <b class="{{ vit.heightCls }}">{{ vit.heightLabel }}</b>
+                    <button type="button" class="tgv-step tg-tap" sc-camel-on-click="{{ vit.up }}" aria-label="Taller"><svg width="16" height="16" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 12h12M12 6v12"></path></svg></button>
+                    <button type="button" class="tgv-clear tg-tap" style="display:{{ vit.clearShow }}" sc-camel-on-click="{{ vit.clear }}">{{ vit.clearLabel }}</button>
+                  </div>
+                </div>
+              </div>
+
