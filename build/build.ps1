@@ -1507,6 +1507,39 @@ $css19 = '<style>' +
   '</style>'
 $hs25 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs25) + $css19 + $doc.Substring($hs25)
+# ── 5au. Preferences: Show me as the tiles from sign-up ──────────────────────
+#  The same three tiles with their rings and a tick, still allowing two at
+#  once the way Preferences always did.
+$pseek = @"
+          pSeek: [['Women', '#E4485B', ''], ['Men', '#2A3F6E', ''], ['Everyone', '#2A3F6E', '#E4485B']].map(([o, ink, ink2]) => {
+            const on = seek.indexOf(o) >= 0, two = !!ink2;
+            return {
+              label: o, ink, ink2: ink2 || ink, on: on ? '1' : '0', bd: on ? ON : 'rgba(28,37,54,.10)', bg: on ? '#FBF1F0' : '#FBFAF6',
+              cx1: two ? '15' : '20', cx2: two ? '25' : '20', r: two ? '10' : '13', sw: two ? '4.2' : '5', op2: two ? '1' : '0',
+              pick: () => {
+                if (o === 'Everyone') return this.setPref('seek', ['Everyone']);
+                let s = seek.filter(x => x !== 'Everyone');
+                s = s.indexOf(o) >= 0 ? s.filter(x => x !== o) : s.concat([o]);
+                if (!s.length) return;
+                this.setPref('seek', s.length === 2 ? ['Everyone'] : s);
+              }
+            };
+          }),
+"@
+Once8 "          seekOpts: ['Women', 'Men', 'Everyone'].map(o => {" ($pseek + "          seekOpts: ['Women', 'Men', 'Everyone'].map(o => {") 'the tiles values'
+$ps0 = $doc.IndexOf('<div class="tgp-seg">', $doc.IndexOf('<div class="tgp-label">Show me</div>', $doc.IndexOf('<sc-if value="{{ at.prefs }}">')))
+$pe0 = $doc.IndexOf('</div>', $doc.IndexOf('</sc-for>', $ps0)) + '</div>'.Length
+if ($ps0 -lt 0 -or $pe0 -lt $ps0) { throw "Show me control not found" }
+$tiles = '<div class="tgb-gender">' + "`n" +
+  '                <sc-for list="{{ pSeek }}" as="s" hint-placeholder-count="3">' + "`n" +
+  '                  <button type="button" class="tgp-tile tg-tap" style="border-color:{{ s.bd }};background:{{ s.bg }}" sc-camel-on-click="{{ s.pick }}">' + "`n" +
+  '                    <svg sc-camel-view-box="0 0 40 40" style="width:30px;height:30px;display:block;overflow:visible" aria-hidden="true"><circle cx="{{ s.cx1 }}" cy="20" r="{{ s.r }}" fill="none" stroke="{{ s.ink }}" stroke-width="{{ s.sw }}"></circle><circle cx="{{ s.cx2 }}" cy="20" r="{{ s.r }}" fill="none" stroke="{{ s.ink2 }}" stroke-width="{{ s.sw }}" style="opacity:{{ s.op2 }}"></circle></svg>' + "`n" +
+  '                    <span class="tgp-tiletitle">{{ s.label }}</span>' + "`n" +
+  '                    <span class="tgp-tick" style="opacity:{{ s.on }}"><svg width="12" height="12" sc-camel-view-box="0 0 24 24" fill="none" stroke="#FBFAF6" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>' + "`n" +
+  '                  </button>' + "`n" +
+  '                </sc-for>' + "`n" +
+  '              </div>'
+$doc = $doc.Substring(0, $ps0) + $tiles + $doc.Substring($pe0)
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }

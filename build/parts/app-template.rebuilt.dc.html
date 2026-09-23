@@ -1880,9 +1880,13 @@ label{color:var(--tg-sub);font-style:italic;font-weight:400 !important}
               </div>
 
               <div class="tgp-label">Show me</div>
-              <div class="tgp-seg">
-                <sc-for list="{{ seekOpts }}" as="opt" hint-placeholder-count="3">
-                  <button class="tg-tap" style="background:{{ opt.bg }};color:{{ opt.fg }};box-shadow:{{ opt.sh }}" sc-camel-on-click="{{ opt.toggle }}">{{ opt.label }}</button>
+              <div class="tgb-gender">
+                <sc-for list="{{ pSeek }}" as="s" hint-placeholder-count="3">
+                  <button type="button" class="tgp-tile tg-tap" style="border-color:{{ s.bd }};background:{{ s.bg }}" sc-camel-on-click="{{ s.pick }}">
+                    <svg sc-camel-view-box="0 0 40 40" style="width:30px;height:30px;display:block;overflow:visible" aria-hidden="true"><circle cx="{{ s.cx1 }}" cy="20" r="{{ s.r }}" fill="none" stroke="{{ s.ink }}" stroke-width="{{ s.sw }}"></circle><circle cx="{{ s.cx2 }}" cy="20" r="{{ s.r }}" fill="none" stroke="{{ s.ink2 }}" stroke-width="{{ s.sw }}" style="opacity:{{ s.op2 }}"></circle></svg>
+                    <span class="tgp-tiletitle">{{ s.label }}</span>
+                    <span class="tgp-tick" style="opacity:{{ s.on }}"><svg width="12" height="12" sc-camel-view-box="0 0 24 24" fill="none" stroke="#FBFAF6" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>
+                  </button>
                 </sc-for>
               </div>
 
@@ -4588,7 +4592,20 @@ static PEOPLE_AWAITING_PHOTOS = [
               pick: () => this.setState({ form: Object.assign({}, st.form, { intent: v }), openField: '' }) };
           }),          prefsState: st.prefsDirty ? (he ? 'שומרים…' : 'Saving…') : (st.prefsSaved ? (he ? 'נשמר' : 'Saved') : ''),
           prefsStateOn: (st.prefsDirty || st.prefsSaved) ? '1' : '0',
-          seekOpts: ['Women', 'Men', 'Everyone'].map(o => {
+          pSeek: [['Women', '#E4485B', ''], ['Men', '#2A3F6E', ''], ['Everyone', '#2A3F6E', '#E4485B']].map(([o, ink, ink2]) => {
+            const on = seek.indexOf(o) >= 0, two = !!ink2;
+            return {
+              label: o, ink, ink2: ink2 || ink, on: on ? '1' : '0', bd: on ? ON : 'rgba(28,37,54,.10)', bg: on ? '#FBF1F0' : '#FBFAF6',
+              cx1: two ? '15' : '20', cx2: two ? '25' : '20', r: two ? '10' : '13', sw: two ? '4.2' : '5', op2: two ? '1' : '0',
+              pick: () => {
+                if (o === 'Everyone') return this.setPref('seek', ['Everyone']);
+                let s = seek.filter(x => x !== 'Everyone');
+                s = s.indexOf(o) >= 0 ? s.filter(x => x !== o) : s.concat([o]);
+                if (!s.length) return;
+                this.setPref('seek', s.length === 2 ? ['Everyone'] : s);
+              }
+            };
+          }),          seekOpts: ['Women', 'Men', 'Everyone'].map(o => {
             const on = seek.indexOf(o) >= 0;
             return {
               label: o, bg: on ? '#FBFAF6' : 'transparent', fg: on ? '#1C2536' : 'var(--color-accent-800)',
