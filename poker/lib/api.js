@@ -485,28 +485,39 @@ function createApi(store, opts = {}) {
     });
   }
 
-  async function handle(req, res) {
-    const { pathname } = new URL(req.url, 'http://x');
-    if (!pathname.startsWith('/api/')) return serveStatic(req, res, pathname);
+  // Runs one API call. Kept free of HTTP so the browser demo can call it directly.
+  function dispatch(method, pathname, headers, body) {
     try {
-      const r = routes.find((x) => x.method === req.method && x.re.test(pathname));
+      const r = routes.find((x) => x.method === method && x.re.test(pathname));
       if (!r) fail(404, 'Not found');
       const match = pathname.match(r.re);
       const params = {};
       r.keys.forEach((k, i) => { params[k] = decodeURIComponent(match[i + 1]); });
-      const body = req.method === 'GET' ? {} : await readBody(req);
-      const sig = `${req.method} ${pathname}`;
+      const req = { headers };
+      const sig = `${method} ${pathname}`;
       const user = OPEN.has(sig) || OPEN_RE.test(sig) ? null : auth(req);
-      const result = r.handler({ req, user, params, body });
-      if (req.method !== 'GET') store.save();
-      send(res, 200, result);
+      const result = r.handler({ req, user, params, body: body || {} });
+      if (method !== 'GET') store.save();
+      return { status: 200, body: result };
     } catch (err) {
-      if (err instanceof HttpError) send(res, err.status, { error: err.message, ...(err.extra || {}) });
-      else { console.error(err); send(res, 500, { error: 'Something went wrong' }); }
+      if (err instanceof HttpError) return { status: err.status, body: { error: err.message, ...(err.extra || {}) } };
+      console.error(err);
+      return { status: 500, body: { error: 'Something went wrong' } };
     }
   }
 
-  return { handle };
+  async function handle(req, res) {
+    const { pathname } = new URL(req.url, 'http://x');
+    if (!pathname.startsWith('/api/')) return serveStatic(req, res, pathname);
+    let body = {};
+    if (req.method !== 'GET') {
+      try { body = await readBody(req); } catch (err) { return send(res, err.status || 400, { error: err.message }); }
+    }
+    const out = dispatch(req.method, pathname, req.headers, body);
+    send(res, out.status, out.body);
+  }
+
+  return { handle, dispatch };
 }
 
 module.exports = { createApi };

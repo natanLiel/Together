@@ -21,8 +21,8 @@ const store = {
 };
 
 const state = {
-  token: store.get('pn.token', null),
-  user: store.get('pn.user', null),
+  token: store.get('pn.token', null) || (window.PN_DEMO_SESSION || {}).token || null,
+  user: store.get('pn.user', null) || (window.PN_DEMO_SESSION || {}).user || null,
   me: null,
   game: null,
   openPlayer: null,
@@ -367,7 +367,7 @@ async function viewNewGame() {
 }
 
 // ---------------------------------------------------------------- game
-const inviteLink = (g) => `${location.origin}/j/${g.code}`;
+const inviteLink = (g) => (window.PN_DEMO_SESSION ? `${location.href.split('#')[0]}#/join/${g.code}` : `${location.origin}/j/${g.code}`);
 const isTyping = () => {
   const a = document.activeElement;
   return a && ['INPUT', 'TEXTAREA', 'SELECT'].includes(a.tagName) || $dialog.open;
@@ -1062,4 +1062,5 @@ function viewTimer() {
 }
 
 // ---------------------------------------------------------------- boot
+window.PN = { state, store, router };
 router();
