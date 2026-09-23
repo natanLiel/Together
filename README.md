@@ -4,6 +4,8 @@ One connection at a time.
 
 A dating app built on a single constraint: you hold **one slot**. Until you close it, nothing else opens. No inbox of half-conversations, no reject button, no scoreboard.
 
+> Also in this repo: **[Poker Night](poker/README.md)**, a tracker for friendly home poker games.
+
 ## Run it
 
 Open `index.html`. That's the whole thing — one self-contained file, no build step, no server, no network. Add it to your home screen on iOS or Android and it runs full-screen as an installed app.

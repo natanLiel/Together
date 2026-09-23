@@ -1,0 +1,14 @@
+{
+  "name": "poker-night",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Track friendly poker nights: buy-ins, approvals, standings, settle-up and long-term stats.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/*.test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

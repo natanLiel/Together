@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Poker Night</title>
+  <meta name="description" content="Track friendly poker nights: buy-ins, standings, settle-up and stats.">
+  <meta name="theme-color" content="#0f2a1f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="app" aria-live="polite"></main>
+  <nav id="tabs" hidden>
+    <a href="#/" data-tab="home"><span>🏠</span>Home</a>
+    <a href="#/stats" data-tab="stats"><span>📊</span>Stats</a>
+    <a href="#/hands" data-tab="hands"><span>🃏</span>Hands</a>
+    <a href="#/timer" data-tab="timer"><span>⏱️</span>Blinds</a>
+  </nav>
+  <div id="toast" role="status"></div>
+  <dialog id="dialog"></dialog>
+  <script src="hand.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
