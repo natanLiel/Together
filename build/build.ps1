@@ -1548,6 +1548,49 @@ if ($k0 -lt 0) { throw "Kids block not found" }
 $k1 = $doc.IndexOf('<div class="tgp-label">', $k0 + 10)
 if ($k1 -lt $k0) { throw "Kids block end not found" }
 $doc = $doc.Substring(0, $k0) + $doc.Substring($k1)
+# ── 5aw. a living ground under glass ─────────────────────────────────────────
+#  Behind every screen two soft pink shapes wander on long loops, each
+#  dragging a trail, with a sheet of frosted glass over them. The panels are
+#  translucent so the colour moves behind the content. Discover keeps its own
+#  photo ground and is left alone.
+$phi = $doc.IndexOf('data-tg-phone="1"')
+$phg = $doc.IndexOf('>', $phi) + 1
+if ($phi -lt 0 -or $phg -lt 1) { throw "phone root not found" }
+$blobs = ''
+foreach ($k in @('a', 'b')) { foreach ($t in @('', ' t1', ' t2', ' t3')) { $blobs += '<i class="' + $k + $t + '"></i>' } }
+$layers = "`n        " + '<div class="tgglow" aria-hidden="true">' + $blobs + '</div>' + "`n        " + '<div class="tgglass" aria-hidden="true"></div>'
+$doc = $doc.Substring(0, $phg) + $layers + $doc.Substring($phg)
+$css20 = '<style>' +
+  '[data-tg-phone]{position:relative;isolation:isolate}' +
+  '.tgglow,.tgglass{position:absolute;inset:0;pointer-events:none;border-radius:inherit;overflow:hidden}' +
+  '.tgglow{z-index:0}' +
+  '.tgglass{z-index:1;-webkit-backdrop-filter:blur(26px) saturate(1.35);backdrop-filter:blur(26px) saturate(1.35);' +
+  'background:linear-gradient(180deg,rgba(255,252,248,.3),rgba(255,251,246,.3));box-shadow:inset 0 1px 0 rgba(255,255,255,.55)}' +
+  '[data-tg-phone] > *:not(.tgglow):not(.tgglass){position:relative;z-index:2}' +
+  '.tgglow i{position:absolute;display:block;width:86%;aspect-ratio:1;border-radius:50%;filter:blur(42px);will-change:transform;transform:translate3d(0,0,0);' +
+  'background:radial-gradient(circle at 50% 50%,rgba(228,72,91,.9),rgba(228,72,91,0) 66%)}' +
+  '.tgglow i.a{animation:tgw-a 46s linear infinite}.tgglow i.b{animation:tgw-b 58s linear infinite}' +
+  '.tgglow i.t1{opacity:.5;filter:blur(54px);animation-delay:-1.3s}' +
+  '.tgglow i.t2{opacity:.3;filter:blur(66px);animation-delay:-2.7s}' +
+  '.tgglow i.t3{opacity:.16;filter:blur(80px);animation-delay:-4.2s}' +
+  '@keyframes tgw-a{0%{transform:translate3d(-24%,-12%,0) scale(1)}14%{transform:translate3d(30%,14%,0) scale(1.14)}30%{transform:translate3d(44%,58%,0) scale(.96)}' +
+  '46%{transform:translate3d(6%,96%,0) scale(1.18)}62%{transform:translate3d(-26%,70%,0) scale(1.02)}78%{transform:translate3d(-10%,34%,0) scale(1.1)}' +
+  '92%{transform:translate3d(24%,-4%,0) scale(.98)}100%{transform:translate3d(-24%,-12%,0) scale(1)}}' +
+  '@keyframes tgw-b{0%{transform:translate3d(38%,104%,0) scale(1.08)}16%{transform:translate3d(-16%,78%,0) scale(.94)}33%{transform:translate3d(-30%,36%,0) scale(1.2)}' +
+  '50%{transform:translate3d(10%,-10%,0) scale(1)}66%{transform:translate3d(46%,20%,0) scale(1.12)}84%{transform:translate3d(30%,64%,0) scale(.98)}' +
+  '100%{transform:translate3d(38%,104%,0) scale(1.08)}}' +
+  '@media (prefers-reduced-motion:reduce){.tgglow i{animation:none}}' +
+  '.tgp-card,.tgb-card,.card,.tgp-tile,.tga,.tga-folded,.tgp-seg,.tgb-wheelcard,.eps-card,' +
+  '.tgb-field input.tg-vinput,.tgb-tag,.tga-own,.tgp-range .tgp-track,.tgc-card{' +
+  'background-color:rgba(251,250,246,.52) !important;-webkit-backdrop-filter:blur(14px) saturate(1.3);backdrop-filter:blur(14px) saturate(1.3);' +
+  'border-color:rgba(255,255,255,.6) !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 14px 30px -22px rgba(28,37,54,.5) !important}' +
+  '.tgp-card > *,.tgb-card > *{background:transparent !important}.tgp-tile{background-image:none !important}' +
+  '.card[style*="tg-deep"],.tgp-card[style*="tg-deep"]{background-color:var(--tg-deep) !important;-webkit-backdrop-filter:none !important;backdrop-filter:none !important;border-color:transparent !important;box-shadow:0 18px 40px -24px rgba(28,37,54,.7) !important}' +
+  '.ep-bar,.ep-tabs,.lk-head{background:rgba(255,252,248,.4) !important;-webkit-backdrop-filter:blur(18px) saturate(1.3);backdrop-filter:blur(18px) saturate(1.3)}' +
+  '[data-tg-phone] .tg-scroll [style*="#F9F1E9"]{background-color:transparent !important}' +
+  '</style>'
+$hs26 = $doc.IndexOf('</helmet>')
+$doc = $doc.Substring(0, $hs26) + $css20 + $doc.Substring($hs26)
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }
