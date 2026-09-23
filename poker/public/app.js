@@ -716,7 +716,7 @@ async function viewStats() {
     ['💰', 'Biggest winner', top((r) => r.s.net), (r) => signed(r.s.net, cur)],
     ['🚀', 'Best single night', top((r) => r.s.best), (r) => signed(r.s.best, cur)],
     ['🎯', 'Best win rate (3+ nights)', top((r) => r.s.winRate, 3), (r) => pct(r.s.winRate)],
-    ['🔥', 'Hottest streak now', top((r) => r.s.streak), (r) => (r.s.streak > 0 ? `${r.s.streak} wins` : null)],
+    ['🔥', 'Hottest streak now', top((r) => r.s.streak), (r) => (r.s.streak >= 2 ? `${r.s.streak} wins in a row` : null)],
     ['🪑', 'Most nights', top((r) => r.s.games), (r) => `${r.s.games}`],
     ['🎁', 'Most generous', top((r) => -r.s.net), (r) => (r.s.net < 0 ? signed(r.s.net, cur) : null)],
   ].filter(([, , r, f]) => r && f(r));
@@ -759,8 +759,8 @@ async function viewPlayer(uid) {
         <div class="tile"><div class="v ${netClass(s.avg)}">${signed(s.avg, cur)}</div><div class="k">Avg per night</div></div>
         <div class="tile"><div class="v ${netClass(s.roi)}">${s.roi > 0 ? '+' : ''}${pct(s.roi)}</div><div class="k">ROI on buy-ins</div></div>
         <div class="tile"><div class="v">${s.streak > 0 ? `🔥 ${s.streak}W` : s.streak < 0 ? `🧊 ${-s.streak}L` : '–'}</div><div class="k">Current streak</div></div>
-        <div class="tile"><div class="v win">${signed(s.best, cur)}</div><div class="k">Best night</div></div>
-        <div class="tile"><div class="v lose">${signed(s.worst, cur)}</div><div class="k">Worst night</div></div>
+        <div class="tile"><div class="v ${netClass(s.best)}">${signed(s.best, cur)}</div><div class="k">Best night</div></div>
+        <div class="tile"><div class="v ${netClass(s.worst)}">${signed(s.worst, cur)}</div><div class="k">Worst night</div></div>
         <div class="tile"><div class="v">${money(s.totalBuyIn, cur)}</div><div class="k">Total bought in</div></div>
       </div>
     </div>
