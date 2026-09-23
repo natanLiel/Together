@@ -1291,14 +1291,13 @@ $hs20 = $doc.IndexOf('<div class="tgd-hero {{ dv.hero.playCls }}">')
 $he20 = $doc.IndexOf('<div style="text-align:center;padding:var(--space-4) 0 0;', $hs20)
 if ($hs20 -lt 0 -or $he20 -lt $hs20) { throw "discover profile bounds not found" }
 $region = $doc.Substring($hs20, $he20 - $hs20)
-$region = [regex]::Replace($region, '<span class="tgs-likecue"(?:(?!</span>).)*</span>', '')
 $region = $region.Replace('dv.', 'lv.')
 $lvScreen = '<sc-if value="{{ at.likeprofile }}">' + "`n" +
   '            <div class="tgd-root lv" style="--pv:{{ lv.pal.v }};--pd:{{ lv.pal.d }};--pl:{{ lv.pal.l }};animation:tg-in .3s ease">' + "`n" +
   '              <div class="tgd-backdrop" aria-hidden="true"><div class="tgd-backdrop-img" style="background:{{ lv.hero.bg0 }}"></div></div>' + "`n" +
   '              <div class="ep-bar"><button class="btn btn-icon tg-tap" sc-camel-on-click="{{ lv.close }}" aria-label="Back"><svg width="19" height="19" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></button><span class="ep-title">{{ lv.title }}</span><span style="width:38px"></span></div>' + "`n" +
   '              <div class="lv-note" style="display:{{ lv.noteShow }}"><b>{{ lv.kicker }}</b><p>{{ lv.note }}</p></div>' + "`n" +
-  '              ' + $region + "`n" +
+  '              <div style="padding:0 var(--space-4) 8px"><div data-tg-deck="1" style="display:flex;flex-direction:column;gap:14px;touch-action:pan-y;user-select:none;-webkit-user-select:none;-webkit-user-drag:none" ondragstart="return false" sc-camel-on-pointer-down="{{ deckDown }}" sc-camel-on-pointer-move="{{ deckMove }}" sc-camel-on-pointer-up="{{ deckUp }}" sc-camel-on-pointer-cancel="{{ deckUp }}">' + "`n              " + $region + '</div></div>' + "`n" +
   '              <div class="lv-acts">' +
   '<button type="button" class="lv-drop tg-tap" sc-camel-on-click="{{ lv.drop }}">{{ lv.dropLabel }}</button>' +
   '<button type="button" class="lv-back tg-tap" sc-camel-on-click="{{ lv.likeBack }}"><svg width="17" height="17" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 5.6a5.2 5.2 0 0 0-7.4 0L12 7l-1.4-1.4a5.2 5.2 0 1 0-7.4 7.4L12 21.5l8.8-8.5a5.2 5.2 0 0 0 0-7.4z"></path></svg>{{ lv.backLabel }}</button>' +
@@ -1360,6 +1359,11 @@ $css18 = '<style>' +
   '</style>'
 $hs22 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs22) + $css18 + $doc.Substring($hs22)
+# ── 5aq. their profile swipes too ────────────────────────────────────────────
+#  On the profile of someone who liked you, the same gestures apply: right
+#  likes them back, left takes them off the list.
+Once8 "    if (dx <= -80) { this.passPerson(); return; }" "    if (dx <= -80) { if (this.state.screen === 'likeprofile') { this.dropLike(); return; } this.passPerson(); return; }" 'left on their profile'
+Once8 "    if (dx >= 80 && this._heroLike) {" ("    if (dx >= 80 && this.state.screen === 'likeprofile') { const dl = this.deck(); if (dl) { dl.style.transition = 'transform .22s ease'; dl.style.transform = 'none'; } this.setStamp(0); this.likeBack(); return; }`n" + "    if (dx >= 80 && this._heroLike) {") 'right on their profile'
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }

@@ -1734,6 +1734,7 @@ label{color:var(--tg-sub);font-style:italic;font-weight:400 !important}
               <div class="tgd-backdrop" aria-hidden="true"><div class="tgd-backdrop-img" style="background:{{ lv.hero.bg0 }}"></div></div>
               <div class="ep-bar"><button class="btn btn-icon tg-tap" sc-camel-on-click="{{ lv.close }}" aria-label="Back"><svg width="19" height="19" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></button><span class="ep-title">{{ lv.title }}</span><span style="width:38px"></span></div>
               <div class="lv-note" style="display:{{ lv.noteShow }}"><b>{{ lv.kicker }}</b><p>{{ lv.note }}</p></div>
+              <div style="padding:0 var(--space-4) 8px"><div data-tg-deck="1" style="display:flex;flex-direction:column;gap:14px;touch-action:pan-y;user-select:none;-webkit-user-select:none;-webkit-user-drag:none" ondragstart="return false" sc-camel-on-pointer-down="{{ deckDown }}" sc-camel-on-pointer-move="{{ deckMove }}" sc-camel-on-pointer-up="{{ deckUp }}" sc-camel-on-pointer-cancel="{{ deckUp }}">
               <div class="tgd-hero {{ lv.hero.playCls }}">
                         <div class="tgd-hero-img tg-tap" style="background:{{ lv.hero.bg }}" sc-camel-on-click="{{ lv.hero.open }}"></div>
                         <div class="tgd-hero-shade"></div>
@@ -1753,7 +1754,7 @@ label{color:var(--tg-sub);font-style:italic;font-weight:400 !important}
                             <span class="tg-tag"><svg width="14" height="14" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7a5 5 0 1 1 0 10a5 5 0 1 1 0-10zM15 7a5 5 0 1 1 0 10a5 5 0 1 1 0-10z"></path></svg>{{ lv.hero.intent }}</span>
                           </div>
                         </div>
-                        
+                        <span class="tgs-likecue" data-tg-likecue="1"><svg width="34" height="34" sc-camel-view-box="0 0 24 24" fill="none" stroke="#E4485B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 5.6a5.2 5.2 0 0 0-7.4 0L12 7l-1.4-1.4a5.2 5.2 0 1 0-7.4 7.4L12 21.5l8.8-8.5a5.2 5.2 0 0 0 0-7.4z"></path></svg></span>
                       </div>
 
                       <div class="tgm">
@@ -1802,7 +1803,7 @@ label{color:var(--tg-sub);font-style:italic;font-weight:400 !important}
                           </div>
                         </sc-for>
                       </div>
-                      
+                      </div></div>
               <div class="lv-acts"><button type="button" class="lv-drop tg-tap" sc-camel-on-click="{{ lv.drop }}">{{ lv.dropLabel }}</button><button type="button" class="lv-back tg-tap" sc-camel-on-click="{{ lv.likeBack }}"><svg width="17" height="17" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 5.6a5.2 5.2 0 0 0-7.4 0L12 7l-1.4-1.4a5.2 5.2 0 1 0-7.4 7.4L12 21.5l8.8-8.5a5.2 5.2 0 0 0 0-7.4z"></path></svg>{{ lv.backLabel }}</button></div>
             </div>
           </sc-if>
@@ -4643,7 +4644,8 @@ static PEOPLE_AWAITING_PHOTOS = [
     if (!dragged) return;
     this._justDragged = true;
     setTimeout(() => { this._justDragged = false; }, 280);
-    if (dx <= -80) { this.passPerson(); return; }
+    if (dx <= -80) { if (this.state.screen === 'likeprofile') { this.dropLike(); return; } this.passPerson(); return; }
+    if (dx >= 80 && this.state.screen === 'likeprofile') { const dl = this.deck(); if (dl) { dl.style.transition = 'transform .22s ease'; dl.style.transform = 'none'; } this.setStamp(0); this.likeBack(); return; }
     if (dx >= 80 && this._heroLike) { const d0 = this.deck(); if (d0) { d0.style.transition = 'transform .22s ease'; d0.style.transform = 'none'; } this.setStamp(0); this._justDragged = false; this._heroLike(); this._justDragged = true; return; }
     const d = this.deck();
     if (d) { d.style.transition = 'transform .22s ease'; d.style.transform = 'none'; }
