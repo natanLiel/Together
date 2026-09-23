@@ -1331,7 +1331,7 @@ $bs5 = $doc.IndexOf('<div class="tgd-bar tgd-slim"')
 $be5 = $doc.IndexOf('<button type="button" class="tgc-banner', $bs5)
 if ($bs5 -lt 0 -or $be5 -lt $bs5) { throw "discover header bounds not found" }
 $sortBtn = { param($v, $s, $c, $set, $label) '<button class="tgd-sortb tg-tap tg-cased" style="background:{{ ' + $v + ' }};box-shadow:{{ ' + $s + ' }};color:{{ ' + $c + ' }}" sc-camel-on-click="{{ ' + $set + ' }}">' + $label + '</button>' }
-$head = '<div class="tgd-bar tgd-slim tgd-one" style="position:sticky;top:0;z-index:2;background:color-mix(in srgb,var(--color-bg) 88%,transparent);backdrop-filter:blur(10px);padding:14px var(--space-4) 8px">' + "`n" +
+$head = '<div class="tgd-bar tgd-slim tgd-one" style="position:sticky;top:0;z-index:2;background:color-mix(in srgb,var(--color-bg) 88%,transparent);backdrop-filter:blur(10px);padding:8px var(--space-4) 6px">' + "`n" +
   '                <div class="tgd-onerow">' + "`n" +
   '                  <span class="tgd-title">Discover</span>' + "`n" +
   '                  <div class="tgd-sort">' + "`n                    " +
@@ -1349,13 +1349,11 @@ $doc = $doc.Substring(0, $bs5) + $head + $doc.Substring($be5)
 $css18 = '<style>' +
   '.tgd-onerow{display:flex;align-items:center;gap:8px}' +
   '.tgd-title{font-family:var(--font-heading);font-size:19px;flex:none}' +
-  '.tgd-sort{flex:1;min-width:0;display:flex;gap:2px;padding:2px;border-radius:999px;border:1px solid rgba(28,37,54,.11);' +
-  'background-image:linear-gradient(168deg,rgba(28,37,54,.05) 0%,rgba(28,37,54,.016) 55%,rgba(28,37,54,.038) 100%)}' +
-  '.tgd-sortb{flex:1;min-width:0;border:0;cursor:pointer;text-align:center;font-size:11px;padding:5px 2px;border-radius:999px;white-space:nowrap}' +
-  '.tgd-mode{flex:none;display:flex;gap:2px;padding:2px;border-radius:999px;border:1px solid rgba(28,37,54,.11);' +
-  'background-image:linear-gradient(168deg,rgba(28,37,54,.05) 0%,rgba(28,37,54,.016) 55%,rgba(28,37,54,.038) 100%)}' +
-  '.tgd-modeb{width:30px;height:26px;border:0;border-radius:999px;cursor:pointer;display:grid;place-items:center;padding:0}' +
-  '.tgd-root .tgd-hero-img{aspect-ratio:3/4.55}' +
+  '.tgd-sort{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:2px}' +
+  '.tgd-sortb{flex:0 1 auto;min-width:0;border:0;cursor:pointer;text-align:center;font-size:11.5px;line-height:1;height:26px;padding:0 10px;border-radius:999px;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center}' +
+  '.tgd-mode{flex:none;display:flex;align-items:center;gap:2px}' +
+  '.tgd-modeb{width:30px;height:26px;border:0;border-radius:999px;cursor:pointer;display:grid;place-items:center;padding:0;box-shadow:none !important}' +
+  '.tgd-root .tgd-hero-img{aspect-ratio:3/4.8}' +
   '</style>'
 $hs22 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs22) + $css18 + $doc.Substring($hs22)
