@@ -1009,7 +1009,7 @@ $css11 = '<style>' +
   '.tga-state{color:color-mix(in srgb,var(--color-text) 45%,transparent)}.tga-state.on{color:#E4485B}' +
   '.tga-mine{display:inline-flex;align-items:center;gap:7px}.tga-mine svg{opacity:.55}' +
   '.tga-addrow{gap:8px;align-items:center}.tga-addrow .tga-own{margin:0;flex:1}' +
-  '.tga-add{display:inline-flex;align-items:center;justify-content:center;flex:none;height:40px;padding:0 16px;border-radius:3px;border:0;background:#1C2536;color:#FBFAF6;font:inherit;font-size:13.5px;cursor:pointer}.tga-add.off{opacity:.35}' +
+  '.tga-add{display:inline-flex;align-items:center;justify-content:center;flex:none;height:34px;padding:0 15px;border-radius:999px;border:0;background:#1C2536;color:#FBFAF6;font:inherit;font-size:13px;cursor:pointer}.tga-add.off{opacity:.3}' +
   '.tga-cat .tga-catin{margin:10px 0 6px}' +
   '.tga-full{margin:2px 0 6px;font-size:12.5px;color:color-mix(in srgb,var(--color-text) 55%,transparent)}' +
   '.tga-note{font-size:13px;line-height:1.45;color:color-mix(in srgb,var(--color-text) 60%,transparent);margin:-2px 2px 10px}' +
@@ -1019,7 +1019,8 @@ $css11 = '<style>' +
   '.tga-opts{display:flex;flex-wrap:wrap;gap:7px}' +
   '.tga-opt{height:32px;padding:0 13px;border-radius:999px;border:1px solid rgba(28,37,54,.13);background:#FBFAF6;color:#1C2536;font-size:13px;cursor:pointer;transition:background .2s ease,border-color .2s ease,box-shadow .2s ease}' +
   '.tga-opt.on{background:#FBF1F0;border-color:#E4485B;box-shadow:inset 0 0 0 1px #E4485B}' +
-  '.tga-own{display:block;width:100%;box-sizing:border-box;height:40px;border-radius:3px;border:1px solid rgba(28,37,54,.13);background:#FBFAF6;padding:0 12px;font:inherit;font-size:14px;color:#1C2536;margin-bottom:6px}' +
+  '.tga-own{display:block;width:100%;box-sizing:border-box;height:34px;border-radius:999px;border:1px solid rgba(28,37,54,.11);background:rgba(251,250,246,.7);padding:0 13px;font:inherit;font-size:13px;color:#1C2536;margin-bottom:6px}' +
+  '.tga-own::placeholder{color:rgba(28,37,54,.38)}.tga-own:focus{outline:none;border-color:rgba(228,72,91,.55);background:#FBFAF6}' +
   '</style>'
 $hs12 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs12) + $css11 + $doc.Substring($hs12)
