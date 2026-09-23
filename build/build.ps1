@@ -1569,16 +1569,17 @@ $css20 = '<style>' +
   '[data-tg-phone] > *:not(.tgglow):not(.tgglass){position:relative;z-index:2}' +
   '.tgglow i{position:absolute;display:block;width:86%;aspect-ratio:1;border-radius:50%;filter:blur(42px);will-change:transform;transform:translate3d(0,0,0);' +
   'background:radial-gradient(circle at 50% 50%,rgba(228,72,91,.9),rgba(228,72,91,0) 66%)}' +
-  '.tgglow i.a{animation:tgw-a 46s linear infinite}.tgglow i.b{animation:tgw-b 58s linear infinite}' +
+  '.tgglow i.a{top:0;left:0;animation:tgw-a 46s linear infinite}' +
+  '.tgglow i.b{bottom:0;top:auto;left:0;animation:tgw-b 58s linear infinite}' +
   '.tgglow i.t1{opacity:.5;filter:blur(54px);animation-delay:-1.3s}' +
   '.tgglow i.t2{opacity:.3;filter:blur(66px);animation-delay:-2.7s}' +
   '.tgglow i.t3{opacity:.16;filter:blur(80px);animation-delay:-4.2s}' +
-  '@keyframes tgw-a{0%{transform:translate3d(-24%,-12%,0) scale(1)}14%{transform:translate3d(30%,14%,0) scale(1.14)}30%{transform:translate3d(44%,58%,0) scale(.96)}' +
-  '46%{transform:translate3d(6%,96%,0) scale(1.18)}62%{transform:translate3d(-26%,70%,0) scale(1.02)}78%{transform:translate3d(-10%,34%,0) scale(1.1)}' +
-  '92%{transform:translate3d(24%,-4%,0) scale(.98)}100%{transform:translate3d(-24%,-12%,0) scale(1)}}' +
-  '@keyframes tgw-b{0%{transform:translate3d(38%,104%,0) scale(1.08)}16%{transform:translate3d(-16%,78%,0) scale(.94)}33%{transform:translate3d(-30%,36%,0) scale(1.2)}' +
-  '50%{transform:translate3d(10%,-10%,0) scale(1)}66%{transform:translate3d(46%,20%,0) scale(1.12)}84%{transform:translate3d(30%,64%,0) scale(.98)}' +
-  '100%{transform:translate3d(38%,104%,0) scale(1.08)}}' +
+  '@keyframes tgw-a{0%{transform:translate3d(8%,-50%,0) scale(1)}15%{transform:translate3d(-16%,8%,0) scale(1.1)}32%{transform:translate3d(26%,66%,0) scale(.95)}' +
+  '50%{transform:translate3d(-4%,118%,0) scale(1.16)}68%{transform:translate3d(-30%,58%,0) scale(1.02)}85%{transform:translate3d(12%,2%,0) scale(1.08)}' +
+  '100%{transform:translate3d(8%,-50%,0) scale(1)}}' +
+  '@keyframes tgw-b{0%{transform:translate3d(8%,50%,0) scale(1.05)}18%{transform:translate3d(-18%,-12%,0) scale(.95)}35%{transform:translate3d(22%,-78%,0) scale(1.16)}' +
+  '52%{transform:translate3d(-8%,-128%,0) scale(1)}70%{transform:translate3d(-30%,-58%,0) scale(1.1)}88%{transform:translate3d(14%,-6%,0) scale(.98)}' +
+  '100%{transform:translate3d(8%,50%,0) scale(1.05)}}' +
   '@media (prefers-reduced-motion:reduce){.tgglow i{animation:none}}' +
   '.tgp-card,.tgb-card,.card,.tgp-tile,.tga,.tga-folded,.tgp-seg,.tgb-wheelcard,.eps-card,' +
   '.tgb-field input.tg-vinput,.tgb-tag,.tga-own,.tgp-range .tgp-track,.tgc-card{' +
@@ -1599,8 +1600,8 @@ Once8 '      showTabs: tabScreens.indexOf(screen) >= 0,' "      stillGround: ['s
 $css21 = '<style>' +
   '[data-tg-still="on"] .tgglow i{animation:none !important}' +
   '[data-tg-still="on"] .tgglow i.t1,[data-tg-still="on"] .tgglow i.t2,[data-tg-still="on"] .tgglow i.t3{display:none}' +
-  '[data-tg-still="on"] .tgglow i.a{transform:translate3d(-24%,-12%,0) scale(1)}' +
-  '[data-tg-still="on"] .tgglow i.b{transform:translate3d(38%,104%,0) scale(1.08)}' +
+  '[data-tg-still="on"] .tgglow i.a{transform:translate3d(8%,-50%,0) scale(1)}' +
+  '[data-tg-still="on"] .tgglow i.b{transform:translate3d(8%,50%,0) scale(1.05)}' +
   '</style>'
 $hs27 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs27) + $css21 + $doc.Substring($hs27)
