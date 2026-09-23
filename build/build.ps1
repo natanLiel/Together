@@ -1423,6 +1423,21 @@ $doc = $doc.Replace('<button type="button" class="tgc-banner tg-tap" style="disp
 if (-not $doc.Contains('{{ cb.down }}')) { throw "banner drag not wired" }
 $hs23 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs23) + '<style>.tgc-banner{touch-action:pan-x;-webkit-user-select:none;user-select:none;will-change:transform}</style>' + $doc.Substring($hs23)
+# ── 5as. the question bank ───────────────────────────────────────────────────
+#  Twelve rounds of questions, each with its own mark and a line saying what
+#  it is for. The picker shows the mark on the chip and the line underneath.
+$qs0 = $doc.IndexOf('  static QCATS = [')
+$qe0 = $doc.IndexOf("`n  ];", $qs0) + "`n  ];".Length
+if ($qs0 -lt 0 -or $qe0 -lt $qs0) { throw "question bank not found" }
+$doc = $doc.Substring(0, $qs0) + [System.IO.File]::ReadAllText("$discScratch\qcats.js.txt", [System.Text.Encoding]::UTF8).TrimEnd() + $doc.Substring($qe0)
+Once8 'qCats: cats.map((c, i) => ({' "qCatSub: (cats[st.qCat] || cats[0]).sub, qCats: cats.map((c, i) => ({ icon: c.icon," 'the mark and the line'
+Once8 'sc-camel-on-click="{{ c.pick }}">{{ c.name }}</button>' 'sc-camel-on-click="{{ c.pick }}"><span style="margin-inline-end:5px">{{ c.icon }}</span>{{ c.name }}</button>' 'the mark on the chip'
+$qc0 = $doc.IndexOf('<sc-for list="{{ qCats }}" as="c"')
+$qcEnd = $doc.IndexOf('</div>', $doc.IndexOf('</sc-for>', $qc0)) + '</div>'.Length
+if ($qc0 -lt 0 -or $qcEnd -lt $qc0) { throw "category row not found" }
+$doc = $doc.Substring(0, $qcEnd) + "`n              " + '<p class="qcat-sub">{{ qCatSub }}</p>' + $doc.Substring($qcEnd)
+$hs24 = $doc.IndexOf('</helmet>')
+$doc = $doc.Substring(0, $hs24) + '<style>.qcat-sub{margin:-6px 2px 12px;font-size:12.5px;line-height:1.4;color:color-mix(in srgb,var(--color-text) 58%,transparent)}</style>' + $doc.Substring($hs24)
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }
