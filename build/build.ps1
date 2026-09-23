@@ -1366,6 +1366,63 @@ $doc = $doc.Substring(0, $hs22) + $css18 + $doc.Substring($hs22)
 #  likes them back, left takes them off the list.
 Once8 "    if (dx <= -80) { this.passPerson(); return; }" "    if (dx <= -80) { if (this.state.screen === 'likeprofile') { this.dropLike(); return; } this.passPerson(); return; }" 'left on their profile'
 Once8 "    if (dx >= 80 && this._heroLike) {" ("    if (dx >= 80 && this.state.screen === 'likeprofile') { const dl = this.deck(); if (dl) { dl.style.transition = 'transform .22s ease'; dl.style.transform = 'none'; } this.setStamp(0); this.likeBack(); return; }`n" + "    if (dx >= 80 && this._heroLike) {") 'right on their profile'
+# ── 5ar. the connection banner slides away ───────────────────────────────────
+#  Holding the banner and dragging it up dismisses it, the way a phone
+#  notification goes. Leaving Discover and coming back brings it back.
+Once8 '  passPerson() {' (@"
+  // hold the banner and push it up to dismiss it
+  cbDown(e) {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    const el = e.currentTarget;
+    this._cb = { el, y0: e.clientY, y: e.clientY, moved: false };
+    if (!this._cbMove) { this._cbMove = ev => this.cbMove(ev); this._cbUp = ev => this.cbUp(ev); }
+    window.addEventListener('pointermove', this._cbMove);
+    window.addEventListener('pointerup', this._cbUp);
+    window.addEventListener('pointercancel', this._cbUp);
+  }
+  cbMove(ev) {
+    const d = this._cb;
+    if (!d) return;
+    const dy = Math.min(0, ev.clientY - d.y0);
+    if (Math.abs(ev.clientY - d.y0) > 6) d.moved = true;
+    if (!d.moved) return;
+    if (ev.cancelable) ev.preventDefault();
+    d.y = ev.clientY;
+    d.el.style.transition = 'none';
+    d.el.style.transform = 'translateY(' + dy + 'px)';
+    d.el.style.opacity = String(Math.max(0, 1 + dy / 90));
+  }
+  cbUp() {
+    const d = this._cb;
+    window.removeEventListener('pointermove', this._cbMove);
+    window.removeEventListener('pointerup', this._cbUp);
+    window.removeEventListener('pointercancel', this._cbUp);
+    this._cb = null;
+    if (!d) return;
+    const dy = d.y - d.y0;
+    if (d.moved) { this._cbDragged = true; setTimeout(() => { this._cbDragged = false; }, 280); }
+    if (dy <= -40) {
+      d.el.style.transition = 'transform .22s ease, opacity .22s ease';
+      d.el.style.transform = 'translateY(-120%)';
+      d.el.style.opacity = '0';
+      setTimeout(() => { this.setState({ cbHide: true }); d.el.style.cssText = d.el.style.cssText.replace(/transform[^;]*;?|opacity[^;]*;?|transition[^;]*;?/g, ''); }, 200);
+      return;
+    }
+    d.el.style.transition = 'transform .24s cubic-bezier(.34,1.42,.64,1), opacity .2s ease';
+    d.el.style.transform = 'none';
+    d.el.style.opacity = '1';
+  }
+
+  passPerson() {
+"@) 'banner drag'
+Once8 "      show: conns.length ? 'flex' : 'none'," "      show: conns.length && !st.cbHide ? 'flex' : 'none', down: e => this.cbDown(e)," 'banner hidden'
+Once8 "      go: () => conns.length === 1 ? this.switchChat(0) : this.tabTo('together')" "      go: () => { if (this._cbDragged) return; if (conns.length === 1) this.switchChat(0); else this.tabTo('together'); }" 'banner tap'
+Once8 '  tabTo(tab) { this.setState({ tab, screen: tab, overlay: null }); }' "  tabTo(tab) { this.setState({ tab, screen: tab, overlay: null, cbHide: false }); }" 'coming back shows it again'
+Once8 '  nav(screen, extra) { this.setState(Object.assign({ screen, overlay: null }, extra || {})); }' "  nav(screen, extra) { this.setState(Object.assign({ screen, overlay: null }, screen === 'discover' ? { cbHide: false } : {}, extra || {})); }" 'and by any other way in'
+$doc = $doc.Replace('<button type="button" class="tgc-banner tg-tap" style="display:{{ cb.show }}" sc-camel-on-click="{{ cb.go }}">', '<button type="button" class="tgc-banner tg-tap" style="display:{{ cb.show }}" sc-camel-on-click="{{ cb.go }}" sc-camel-on-pointer-down="{{ cb.down }}">')
+if (-not $doc.Contains('{{ cb.down }}')) { throw "banner drag not wired" }
+$hs23 = $doc.IndexOf('</helmet>')
+$doc = $doc.Substring(0, $hs23) + '<style>.tgc-banner{touch-action:pan-x;-webkit-user-select:none;user-select:none;will-change:transform}</style>' + $doc.Substring($hs23)
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }
