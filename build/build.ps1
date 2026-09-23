@@ -1292,11 +1292,12 @@ $he20 = $doc.IndexOf('<div style="text-align:center;padding:var(--space-4) 0 0;'
 if ($hs20 -lt 0 -or $he20 -lt $hs20) { throw "discover profile bounds not found" }
 $region = $doc.Substring($hs20, $he20 - $hs20)
 $region = $region.Replace('dv.', 'lv.')
+$hh = $region.IndexOf('>') + 1
+$region = $region.Substring(0, $hh) + '<div class="lv-note" style="display:{{ lv.noteShow }}"><p>{{ lv.note }}</p></div>' + $region.Substring($hh)
 $lvScreen = '<sc-if value="{{ at.likeprofile }}">' + "`n" +
   '            <div class="tgd-root lv" style="--pv:{{ lv.pal.v }};--pd:{{ lv.pal.d }};--pl:{{ lv.pal.l }};animation:tg-in .3s ease">' + "`n" +
   '              <div class="tgd-backdrop" aria-hidden="true"><div class="tgd-backdrop-img" style="background:{{ lv.hero.bg0 }}"></div></div>' + "`n" +
   '              <div class="ep-bar"><button class="btn btn-icon tg-tap" sc-camel-on-click="{{ lv.close }}" aria-label="Back"><svg width="19" height="19" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></button><span class="ep-title">{{ lv.title }}</span><span style="width:38px"></span></div>' + "`n" +
-  '              <div class="lv-note" style="display:{{ lv.noteShow }}"><span class="lv-face" style="background:{{ lv.face }}"></span><p>{{ lv.note }}</p></div>' + "`n" +
   '              <div style="padding:0 var(--space-4) 8px"><div data-tg-deck="1" style="display:flex;flex-direction:column;gap:14px;touch-action:pan-y;user-select:none;-webkit-user-select:none;-webkit-user-drag:none" ondragstart="return false" sc-camel-on-pointer-down="{{ deckDown }}" sc-camel-on-pointer-move="{{ deckMove }}" sc-camel-on-pointer-up="{{ deckUp }}" sc-camel-on-pointer-cancel="{{ deckUp }}">' + "`n              " + $region + '</div></div>' + "`n" +
   '              <div class="lv-acts">' +
   '<button type="button" class="lv-drop tg-tap" sc-camel-on-click="{{ lv.drop }}">{{ lv.dropLabel }}</button>' +
@@ -1309,11 +1310,10 @@ $doc = $doc.Substring(0, $lkEnd) + $lvScreen + $doc.Substring($lkEnd)
 
 $css17 = '<style>' +
   '.lv{padding-bottom:96px}' +
-  '.lv-note{margin:0 16px 10px;padding:9px 13px 9px 9px;border-radius:999px;align-items:center;gap:10px;position:relative;z-index:2;' +
-  'background:color-mix(in srgb,var(--pv) 30%,color-mix(in srgb,#FBFAF6 70%,transparent));-webkit-backdrop-filter:blur(16px) saturate(1.3);backdrop-filter:blur(16px) saturate(1.3);' +
-  'border:1px solid rgba(255,255,255,.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 10px 22px -14px rgba(0,0,0,.45)}' +
-  '.lv-face{width:30px;height:30px;border-radius:50%;flex:none;box-shadow:0 0 0 1.5px rgba(255,255,255,.7)}' +
-  '.lv-note p{margin:0;font-family:var(--font-heading);font-size:15px;line-height:1.35;color:#1C2536;text-wrap:pretty;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}' +
+  '.lv-note{position:absolute;top:16px;inset-inline:18px;z-index:3;margin:0;padding:0;background:none;border:0;box-shadow:none;pointer-events:none}' +
+  '.lv-note p{color:#FBFAF6 !important;text-shadow:0 1px 2px rgba(0,0,0,.55),0 6px 20px rgba(0,0,0,.5)}' +
+  '.lv-note p{margin:0;font-family:var(--font-heading);font-size:17px;line-height:1.35;text-wrap:pretty;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}' +
+  '.lv .ep-bar{padding:14px 12px 14px !important}' +
   '.lv-acts{position:sticky;bottom:0;z-index:5;display:flex;gap:10px;padding:12px 16px calc(12px + env(safe-area-inset-bottom));margin-top:14px;' +
   'background:linear-gradient(180deg,color-mix(in srgb,#FBFAF6 0%,transparent),color-mix(in srgb,#FFFCF8 88%,transparent) 42%)}' +
   '.lv-drop,.lv-back{flex:1;height:50px;border-radius:999px;font:inherit;font-size:15px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px}' +
@@ -1352,7 +1352,7 @@ $css18 = '<style>' +
   '.tgd-sort{flex:1;min-width:0;display:flex;align-items:center;justify-content:flex-end;gap:0}' +
   '.tgd-sortb{position:relative;flex:0 1 auto;min-width:0;border:0;cursor:pointer;text-align:center;font-size:11.5px;line-height:1;height:26px;padding:0 11px;border-radius:999px;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center}' +
   '.tgd-sortb + .tgd-sortb::before{content:"";position:absolute;inset-inline-start:0;top:7px;bottom:7px;width:1px;background:rgba(28,37,54,.16)}' +
-  '.tgd-mode{position:absolute;top:-3px;inset-inline-end:0;flex:none;display:flex;align-items:center;gap:1px}' +
+  '.tgd-mode{position:absolute;top:50%;transform:translateY(-50%);inset-inline-end:0;flex:none;display:flex;align-items:center;gap:1px}' +
   '.tgd-modeb{width:25px;height:22px;border:0;border-radius:999px;cursor:pointer;display:grid;place-items:center;padding:0;box-shadow:none !important}' +
   '.tgd-modeb svg{width:14px;height:14px}' +
   '.tgd-root .tgd-hero-img{aspect-ratio:3/4.8}' +
