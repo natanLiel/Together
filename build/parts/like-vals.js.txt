@@ -34,9 +34,9 @@
           home: likeP.city, job: likeP.tags[1] || likeP.tags[0], intent: cap(likeP.intent), dist: likeP.tags[0], count: ''
         },
         title: he ? 'עשו לך לייק' : 'Liked you',
-        what: likeRec ? likeRec.what : '', note: likeRec ? (likeRec.note || '') : '',
+        what: likeRec ? likeRec.what : '', note: likeRec && likeRec.note ? '“' + likeRec.note + '”' : '',
         noteShow: likeRec && likeRec.note ? 'flex' : 'none',
-        kicker: likeP.name + (he ? ' כתבו לך' : ' wrote'),
+        face: 'center/cover no-repeat url(' + likeP.pics[0] + ')',
         backLabel: he ? 'לייק בחזרה' : 'Like back', dropLabel: he ? 'לא בשבילי' : 'Not for me',
         likeBack: () => this.likeBack(), drop: () => this.dropLike(), close: () => this.nav('likes', { tab: 'likes' })
       };
