@@ -1591,6 +1591,19 @@ $css20 = '<style>' +
   '</style>'
 $hs26 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs26) + $css20 + $doc.Substring($hs26)
+# ── 5ax. the ground holds still until The basics ─────────────────────────────
+#  On the splash and the sign-in screens the pink rests at the top and the
+#  bottom and does not move. From The basics on, it comes alive.
+Once8 'data-tg-phone="1"' 'data-tg-phone="1" data-tg-still="{{ stillGround }}"' 'the still flag'
+Once8 '      showTabs: tabScreens.indexOf(screen) >= 0,' "      stillGround: ['splash', 'auth', 'login', 'otp'].indexOf(screen) >= 0 ? 'on' : '',`n      showTabs: tabScreens.indexOf(screen) >= 0," 'which screens hold still'
+$css21 = '<style>' +
+  '[data-tg-still="on"] .tgglow i{animation:none !important}' +
+  '[data-tg-still="on"] .tgglow i.t1,[data-tg-still="on"] .tgglow i.t2,[data-tg-still="on"] .tgglow i.t3{display:none}' +
+  '[data-tg-still="on"] .tgglow i.a{transform:translate3d(-24%,-12%,0) scale(1)}' +
+  '[data-tg-still="on"] .tgglow i.b{transform:translate3d(38%,104%,0) scale(1.08)}' +
+  '</style>'
+$hs27 = $doc.IndexOf('</helmet>')
+$doc = $doc.Substring(0, $hs27) + $css21 + $doc.Substring($hs27)
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }
