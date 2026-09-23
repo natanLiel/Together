@@ -1325,6 +1325,41 @@ $css17 = '<style>' +
   '</style>'
 $hs21 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs21) + $css17 + $doc.Substring($hs21)
+# ── 5ap. Discover in one row, and a taller photo ─────────────────────────────
+#  The title, the sort and the people/couples switch share a single row; the
+#  switch is two small icons. The main photo grows to fill nearly the screen.
+$bs5 = $doc.IndexOf('<div class="tgd-bar tgd-slim"')
+$be5 = $doc.IndexOf('<button type="button" class="tgc-banner', $bs5)
+if ($bs5 -lt 0 -or $be5 -lt $bs5) { throw "discover header bounds not found" }
+$sortBtn = { param($v, $s, $c, $set, $label) '<button class="tgd-sortb tg-tap tg-cased" style="background:{{ ' + $v + ' }};box-shadow:{{ ' + $s + ' }};color:{{ ' + $c + ' }}" sc-camel-on-click="{{ ' + $set + ' }}">' + $label + '</button>' }
+$head = '<div class="tgd-bar tgd-slim tgd-one" style="position:sticky;top:0;z-index:2;background:color-mix(in srgb,var(--color-bg) 88%,transparent);backdrop-filter:blur(10px);padding:14px var(--space-4) 8px">' + "`n" +
+  '                <div class="tgd-onerow">' + "`n" +
+  '                  <span class="tgd-title">Discover</span>' + "`n" +
+  '                  <div class="tgd-sort">' + "`n                    " +
+  (& $sortBtn 'sortA' 'sortAShadow' 'sortAc' 'setSort.recommended' 'For you') + "`n                    " +
+  (& $sortBtn 'sortB' 'sortBShadow' 'sortBc' 'setSort.nearby' 'Nearby') + "`n                    " +
+  (& $sortBtn 'sortC' 'sortCShadow' 'sortCc' 'setSort.curated' 'Curated') + "`n" +
+  '                  </div>' + "`n" +
+  '                  <div class="tgd-mode">' + "`n" +
+  '                    <button class="tgd-modeb tg-tap" style="background:{{ segSingle }};box-shadow:{{ segSingleShadow }};color:{{ segSingleC }}" sc-camel-on-click="{{ setMode.single }}" aria-label="People"><svg width="17" height="17" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"></circle><path d="M5 20c0-3.6 3.1-5.6 7-5.6s7 2 7 5.6"></path></svg></button>' + "`n" +
+  '                    <button class="tgd-modeb tg-tap" style="background:{{ segCouple }};box-shadow:{{ segCoupleShadow }};color:{{ segCoupleC }}" sc-camel-on-click="{{ setMode.couples }}" aria-label="Couples"><svg width="19" height="19" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8" r="3.1"></circle><circle cx="16" cy="9" r="2.6"></circle><path d="M2.5 20c0-3.2 2.7-5 6-5s6 1.8 6 5"></path><path d="M15 15.2c2.8.2 4.6 1.9 4.6 4.8"></path></svg></button>' + "`n" +
+  '                  </div>' + "`n" +
+  '                </div>' + "`n" +
+  '              </div>' + "`n`n              "
+$doc = $doc.Substring(0, $bs5) + $head + $doc.Substring($be5)
+$css18 = '<style>' +
+  '.tgd-onerow{display:flex;align-items:center;gap:8px}' +
+  '.tgd-title{font-family:var(--font-heading);font-size:19px;flex:none}' +
+  '.tgd-sort{flex:1;min-width:0;display:flex;gap:2px;padding:2px;border-radius:999px;border:1px solid rgba(28,37,54,.11);' +
+  'background-image:linear-gradient(168deg,rgba(28,37,54,.05) 0%,rgba(28,37,54,.016) 55%,rgba(28,37,54,.038) 100%)}' +
+  '.tgd-sortb{flex:1;min-width:0;border:0;cursor:pointer;text-align:center;font-size:11px;padding:5px 2px;border-radius:999px;white-space:nowrap}' +
+  '.tgd-mode{flex:none;display:flex;gap:2px;padding:2px;border-radius:999px;border:1px solid rgba(28,37,54,.11);' +
+  'background-image:linear-gradient(168deg,rgba(28,37,54,.05) 0%,rgba(28,37,54,.016) 55%,rgba(28,37,54,.038) 100%)}' +
+  '.tgd-modeb{width:30px;height:26px;border:0;border-radius:999px;cursor:pointer;display:grid;place-items:center;padding:0}' +
+  '.tgd-root .tgd-hero-img{aspect-ratio:3/4.55}' +
+  '</style>'
+$hs22 = $doc.IndexOf('</helmet>')
+$doc = $doc.Substring(0, $hs22) + $css18 + $doc.Substring($hs22)
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }
