@@ -1,0 +1,53 @@
+    // ——— someone who liked you: their profile, their note, and what you do about it ———
+    const likes = st.likes || [];
+    const likeP = Component.PEOPLE.find(p => p.name.toLowerCase() === (st.likeOpen || '')) || null;
+    const likeRec = likes.find(l => l.key === (st.likeOpen || '')) || null;
+    const lv = (() => {
+      const pal0 = { v: '#E4485B', d: '#1C2536', l: '#EFEDE6' };
+      if (!likeP) return { pal: pal0, hero: {}, blocks: [], tiles: [], heroThumbs: [], stripShow: 'none', stackCls: '', stackDown: () => {}, noteShow: 'none' };
+      const halt = e => { if (e && e.stopPropagation) e.stopPropagation(); };
+      const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+      const pal = Component.PALETTE[likeP.name.toLowerCase()] || pal0;
+      const back = () => this.likeBack();
+      const built = this.buildBlocks(this.personItems(likeP), {
+        moreLabel: '', hint: '', detailsLabel: '', tags: this.aboutTags(Component.ABOUT_PEOPLE[likeP.name.toLowerCase()], he),
+        playing: st.playing, open: () => {}, likePhoto: back, likePrompt: back, likeMedia: back
+      });
+      const media = this.personItems(likeP).filter(i => i.kind === 'photo' || i.kind === 'video');
+      const hi = Math.min(st.lvIdx || 0, media.length - 1), cur = media[hi], isVid = cur.kind === 'video';
+      const set = k => this.setState({ lvIdx: k, playing: null });
+      return {
+        pal, blocks: built.blocks, tiles: built.tiles.filter(x => !x.isPhoto && !x.isVideo),
+        heroThumbs: media.map((m, k) => ({
+          bg: built.shotOf(m.src), k, p: (k - hi + media.length) % media.length, z: media.length - (k - hi + media.length) % media.length,
+          cls: (k === hi ? 'on' : '') + (m.kind === 'video' ? ' vid' : '')
+        })),
+        stripShow: media.length > 1 ? 'flex' : 'none', stackN: String(media.length),
+        stackCls: st.stackOpen ? 'open' : '', stackDown: e => this.stackDown(e, set),
+        hero: {
+          bg: built.shotOf(cur.src), bg0: built.shotOf(built.photos[0].src),
+          open: e => this.sideTap(e, media.length, hi, set, () => { if (isVid) this.playMedia(cur); else if (media.length > 1) set((hi + 1) % media.length); }),
+          like: e => { halt(e); back(); },
+          playCls: isVid && st.playing === cur.id ? 'is-playing' : '', playShow: isVid ? 'flex' : 'none',
+          dur: isVid ? cur.dur : '', secs: isVid ? (cur.secs || 10) + 's' : '0s',
+          name: likeP.name + ', ' + likeP.age, verified: !!likeP.v, city: likeP.dist + (he ? ' ק״מ ממך' : ' km away'),
+          home: likeP.city, job: likeP.tags[1] || likeP.tags[0], intent: cap(likeP.intent), dist: likeP.tags[0], count: ''
+        },
+        title: he ? 'עשו לך לייק' : 'Liked you',
+        what: likeRec ? likeRec.what : '', note: likeRec ? (likeRec.note || '') : '',
+        noteShow: likeRec && likeRec.note ? 'flex' : 'none',
+        kicker: likeP.name + (he ? ' כתבו לך' : ' wrote'),
+        backLabel: he ? 'לייק בחזרה' : 'Like back', dropLabel: he ? 'לא בשבילי' : 'Not for me',
+        likeBack: () => this.likeBack(), drop: () => this.dropLike(), close: () => this.nav('likes', { tab: 'likes' })
+      };
+    })();
+    const likeRows = likes.map(l => {
+      const p = Component.PEOPLE.find(x => x.name.toLowerCase() === l.key);
+      return {
+        name: p ? p.name + ', ' + p.age : l.key, what: l.note ? '“' + l.note + '”' : l.what,
+        bg: p ? 'center/cover no-repeat url(' + p.pics[0] + ')' : 'none',
+        ring: l.ring ? '' : 'none', cls: l.ring ? 'lk-ring' : '',
+        go: () => this.setState({ screen: 'likeprofile', likeOpen: l.key, lvIdx: 0, stackOpen: false, overlay: null })
+      };
+    });
+

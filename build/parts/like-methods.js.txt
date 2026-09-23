@@ -1,0 +1,22 @@
+  // ——— what you do with someone who liked you ———
+  likeBack() {
+    const key = this.state.likeOpen;
+    if (!key) return;
+    const p = Component.PEOPLE.find(x => x.name.toLowerCase() === key);
+    if (!p) return;
+    if ((this.state.conns || []).length >= this.slotCount()) {
+      if (this.isPrem()) this.toast('All three slots are taken');
+      else this.setState({ overlay: 'upgrade', upgradeCtx: 'slots' });
+      return;
+    }
+    // liking back is the match: the three questions start straight away
+    this.setState({ likes: (this.state.likes || []).filter(l => l.key !== key), screen: 'likes', tab: 'likes', likeOpen: null });
+    this.matchWith(p.name);
+  }
+  dropLike() {
+    const key = this.state.likeOpen;
+    if (!key) return;
+    this.setState({ likes: (this.state.likes || []).filter(l => l.key !== key), screen: 'likes', tab: 'likes', likeOpen: null, overlay: null });
+    this.toast(this.lang() ? 'הוסר מהרשימה' : 'Taken off your list');
+  }
+

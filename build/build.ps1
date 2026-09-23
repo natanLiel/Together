@@ -1247,6 +1247,84 @@ foreach ($p in $plum) {
   if (-not $doc.Contains($p)) { throw "plum text not found: $p" }
   $doc = $doc.Replace($p, $p.Replace('color:#1C2536', 'color:var(--tg-deep-ink)'))
 }
+# ── 5ao. the people who liked you ────────────────────────────────────────────
+#  With Premium, a like opens that person's whole profile, with whatever they
+#  wrote alongside it. Liking back is the match, so the three questions start.
+#  Not for me takes them off the list for good.
+Once8 '  passPerson() {' ([System.IO.File]::ReadAllText("$discScratch\like-methods.js.txt", [System.Text.Encoding]::UTF8).TrimEnd() + "`n`n  passPerson() {") 'like methods'
+$oldRows = "    const likeRows = [`n" +
+  "      { name: 'Maya, 28', what: 'Liked your prompt', bg: 'center/cover no-repeat url(assets/people/maya-1.jpg)' },`n" +
+  "      { name: 'Shira, 26', what: 'Liked your first photo', bg: 'center/cover no-repeat url(assets/people/shira-1.jpg)' },`n" +
+  "      { name: 'Noa, 31', what: 'Liked your Saturday answer', bg: 'center/cover no-repeat url(assets/people/noa-1.jpg)' }`n" +
+  "    ];`n"
+if (-not $doc.Contains($oldRows)) { throw "old like rows not found" }
+$doc = $doc.Replace($oldRows, '')
+Once8 '    // ——— about you: the tag picker ———' ([System.IO.File]::ReadAllText("$discScratch\like-vals.js.txt", [System.Text.Encoding]::UTF8).TrimEnd() + "`n`n    // ——— about you: the tag picker ———") 'like values'
+Once8 "'settings','help','subscription'].forEach" "'settings','help','subscription','likeprofile'].forEach" 'the screen exists'
+Once8 'noPerson: !person, feed, dv, ab, vit, mate, tg, cb, csw, chatBack,' 'noPerson: !person, feed, dv, ab, vit, mate, tg, cb, csw, chatBack, lv,' 'like bindings'
+Once8 'likeCount: prem ? 23 : 3, likeRows,' 'likeCount: prem ? likes.length : 3, likeRows,' 'how many liked you'
+Once8 "notif: { likes: true," "likes: [{ key: 'maya', what: 'Liked your prompt', note: 'Your Saturday answer made me laugh on the bus.', ring: true }, { key: 'shira', what: 'Liked your first photo', note: '' }, { key: 'noa', what: 'Liked your karaoke note', note: 'Which song? I need to know before I like you back.' }], likeOpen: null, lvIdx: 0,`n    notif: { likes: true," 'who liked you'
+
+# the Likes list: rows open the profile, and the hard-coded ring row goes
+$lk = $doc.IndexOf('<sc-if value="{{ at.likes }}">')
+$pr = $doc.IndexOf('<sc-if value="{{ isPremium }}">', $lk)
+$je = $doc.IndexOf('<sc-for list="{{ likeRows }}" as="row"', $pr)
+if ($lk -lt 0 -or $pr -lt 0 -or $je -lt 0) { throw "likes list not found" }
+$open = $doc.IndexOf('<div style="display:flex;flex-direction:column;gap:var(--space-2)">', $pr)
+$doc = $doc.Substring(0, $open + '<div style="display:flex;flex-direction:column;gap:var(--space-2)">'.Length) + "`n                  " + $doc.Substring($je)
+$rowNew = '<sc-for list="{{ likeRows }}" as="row" hint-placeholder-count="3">' + "`n                    " +
+  '<button type="button" class="card elev-sm tg-tap tg-row lk-row {{ row.cls }}" style="flex-direction:row;align-items:center;gap:var(--space-3);padding:var(--space-2) var(--space-3);width:100%;text-align:start;font:inherit;color:inherit;cursor:pointer" sc-camel-on-click="{{ row.go }}">' +
+  '<span class="washed" style="width:56px;height:56px;border-radius:999px;flex:none;background:{{ row.bg }}"></span>' +
+  '<span style="flex:1;min-width:0"><span style="display:block;font-family:var(--font-heading);font-size:17px">{{ row.name }}</span><span style="display:block;font-size:13px;color:var(--color-accent-800);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ row.what }}</span></span>' +
+  '<span class="tag tag-accent lk-ringtag" style="display:{{ row.ring }}">Ring</span>' +
+  '<svg width="18" height="18" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;opacity:.4"><path d="M9 6l6 6-6 6"></path></svg>' +
+  '</button>' + "`n                  " + '</sc-for>'
+$lk2 = $doc.IndexOf('<sc-if value="{{ at.likes }}">'); $pr2 = $doc.IndexOf('<sc-if value="{{ isPremium }}">', $lk2)
+$je = $doc.IndexOf('<sc-for list="{{ likeRows }}" as="row"', $pr2)
+if ($je -lt 0) { throw "premium like loop not found" }
+$fe2 = $doc.IndexOf('</sc-for>', $je)
+if ($fe2 -lt 0) { throw "like row loop end not found" }
+$doc = $doc.Substring(0, $je) + $rowNew + $doc.Substring($fe2 + '</sc-for>'.Length)
+
+# their profile, built from the Discover one so the two always match
+$hs20 = $doc.IndexOf('<div class="tgd-hero {{ dv.hero.playCls }}">')
+$he20 = $doc.IndexOf('<div style="text-align:center;padding:var(--space-4) 0 0;', $hs20)
+if ($hs20 -lt 0 -or $he20 -lt $hs20) { throw "discover profile bounds not found" }
+$region = $doc.Substring($hs20, $he20 - $hs20)
+$region = [regex]::Replace($region, '<span class="tgs-likecue"(?:(?!</span>).)*</span>', '')
+$region = $region.Replace('dv.', 'lv.')
+$lvScreen = '<sc-if value="{{ at.likeprofile }}">' + "`n" +
+  '            <div class="tgd-root lv" style="--pv:{{ lv.pal.v }};--pd:{{ lv.pal.d }};--pl:{{ lv.pal.l }};animation:tg-in .3s ease">' + "`n" +
+  '              <div class="tgd-backdrop" aria-hidden="true"><div class="tgd-backdrop-img" style="background:{{ lv.hero.bg0 }}"></div></div>' + "`n" +
+  '              <div class="ep-bar"><button class="btn btn-icon tg-tap" sc-camel-on-click="{{ lv.close }}" aria-label="Back"><svg width="19" height="19" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></button><span class="ep-title">{{ lv.title }}</span><span style="width:38px"></span></div>' + "`n" +
+  '              <div class="lv-note" style="display:{{ lv.noteShow }}"><b>{{ lv.kicker }}</b><p>{{ lv.note }}</p></div>' + "`n" +
+  '              ' + $region + "`n" +
+  '              <div class="lv-acts">' +
+  '<button type="button" class="lv-drop tg-tap" sc-camel-on-click="{{ lv.drop }}">{{ lv.dropLabel }}</button>' +
+  '<button type="button" class="lv-back tg-tap" sc-camel-on-click="{{ lv.likeBack }}"><svg width="17" height="17" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 5.6a5.2 5.2 0 0 0-7.4 0L12 7l-1.4-1.4a5.2 5.2 0 1 0-7.4 7.4L12 21.5l8.8-8.5a5.2 5.2 0 0 0 0-7.4z"></path></svg>{{ lv.backLabel }}</button>' +
+  '</div>' + "`n" +
+  '            </div>' + "`n          </sc-if>" + "`n`n          "
+$lkEnd = $doc.IndexOf('<sc-if value="{{ at.together }}">')
+if ($lkEnd -lt 0) { throw "together screen not found" }
+$doc = $doc.Substring(0, $lkEnd) + $lvScreen + $doc.Substring($lkEnd)
+
+$css17 = '<style>' +
+  '.lv{padding-bottom:96px}' +
+  '.lv-note{margin:0 16px 12px;padding:12px 14px;border-radius:16px;flex-direction:column;gap:5px;position:relative;z-index:2;' +
+  'background:color-mix(in srgb,var(--pv) 30%,color-mix(in srgb,#FBFAF6 70%,transparent));-webkit-backdrop-filter:blur(16px) saturate(1.3);backdrop-filter:blur(16px) saturate(1.3);' +
+  'border:1px solid rgba(255,255,255,.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 10px 22px -14px rgba(0,0,0,.45)}' +
+  '.lv-note b{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:400;color:var(--color-accent-800)}' +
+  '.lv-note p{margin:0;font-size:15px;line-height:1.45;color:#1C2536;text-wrap:pretty}' +
+  '.lv-acts{position:sticky;bottom:0;z-index:5;display:flex;gap:10px;padding:12px 16px calc(12px + env(safe-area-inset-bottom));margin-top:14px;' +
+  'background:linear-gradient(180deg,color-mix(in srgb,#FBFAF6 0%,transparent),color-mix(in srgb,#FFFCF8 88%,transparent) 42%)}' +
+  '.lv-drop,.lv-back{flex:1;height:50px;border-radius:999px;font:inherit;font-size:15px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px}' +
+  '.lv-drop{border:1px solid rgba(28,37,54,.16);background:rgba(251,250,246,.8);color:#1C2536}' +
+  '.lv-back{border:0;background:#E4485B;color:#FBFAF6;box-shadow:0 12px 24px -12px rgba(228,72,91,.9)}' +
+  '.lk-row .lk-ringtag{margin-inline-start:auto}' +
+  '.lk-row.lk-ring{border:1.5px solid var(--color-accent-400)}' +
+  '</style>'
+$hs21 = $doc.IndexOf('</helmet>')
+$doc = $doc.Substring(0, $hs21) + $css17 + $doc.Substring($hs21)
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }
