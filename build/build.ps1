@@ -1540,6 +1540,14 @@ $tiles = '<div class="tgb-gender">' + "`n" +
   '                </sc-for>' + "`n" +
   '              </div>'
 $doc = $doc.Substring(0, $ps0) + $tiles + $doc.Substring($pe0)
+# ── 5av. Preferences drops the Kids filter ───────────────────────────────────
+#  Kids is a tag people choose on their own profile; filtering Discover by it
+#  is not wanted.
+$k0 = $doc.IndexOf('<div class="tgp-label">Kids</div>', $doc.IndexOf('<sc-if value="{{ at.prefs }}">'))
+if ($k0 -lt 0) { throw "Kids block not found" }
+$k1 = $doc.IndexOf('<div class="tgp-label">', $k0 + 10)
+if ($k1 -lt $k0) { throw "Kids block end not found" }
+$doc = $doc.Substring(0, $k0) + $doc.Substring($k1)
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }

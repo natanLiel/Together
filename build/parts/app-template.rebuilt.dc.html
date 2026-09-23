@@ -1905,13 +1905,6 @@ label{color:var(--tg-sub);font-style:italic;font-weight:400 !important}
                 </sc-for>
               </div>
 
-              <div class="tgp-label">Kids</div>
-              <div class="tgp-chips">
-                <sc-for list="{{ kidsOpts }}" as="k" hint-placeholder-count="4">
-                  <button class="tg-tap" style="background:{{ k.bg }};color:{{ k.fg }};border-color:{{ k.bd }}" sc-camel-on-click="{{ k.pick }}">{{ k.label }}</button>
-                </sc-for>
-              </div>
-
               <div class="tgp-label">Trust</div>
               <div class="tgp-card">
                 <button class="tgp-row tgp-switchrow" sc-camel-on-click="{{ set.verifiedOnly }}" role="switch" aria-checked="{{ prefs.verifiedOnly }}">
