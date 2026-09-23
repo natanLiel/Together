@@ -1221,7 +1221,7 @@ $css16 = '<style>' +
   '.tgc-empty .tgc-txt b{font-size:16px;color:rgba(28,37,54,.7)}' +
   '.tgc-plus{display:grid;place-items:center;background:rgba(28,37,54,.05);box-shadow:none;color:rgba(28,37,54,.45)}' +
   '.tgc-upsell{margin-top:14px;border:0;background:none;color:#E4485B;font:inherit;font-size:13.5px;cursor:pointer;width:100%;justify-content:center}' +
-  '.tgc-banner{display:flex;align-items:center;gap:12px;width:calc(100% - 32px);margin:0 16px 12px;padding:10px 10px 10px 12px;border-radius:16px;border:1px solid rgba(255,255,255,.55);background:color-mix(in srgb,var(--pv) 30%,color-mix(in srgb,#FBFAF6 70%,transparent));-webkit-backdrop-filter:blur(16px) saturate(1.3);backdrop-filter:blur(16px) saturate(1.3);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 10px 22px -14px rgba(0,0,0,.45);font:inherit;color:#1C2536;text-align:start;cursor:pointer;position:relative;z-index:2}' +
+  '.tgc-banner{position:absolute;top:8px;inset-inline:16px;display:flex;align-items:center;gap:12px;width:calc(100% - 32px);margin:0;padding:10px 10px 10px 12px;border-radius:16px;border:1px solid rgba(255,255,255,.55);background:color-mix(in srgb,var(--pv) 30%,color-mix(in srgb,#FBFAF6 70%,transparent));-webkit-backdrop-filter:blur(16px) saturate(1.3);backdrop-filter:blur(16px) saturate(1.3);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 10px 22px -14px rgba(0,0,0,.45);font:inherit;color:#1C2536;text-align:start;cursor:pointer}' +
   '.tgc-faces{display:flex;flex:none}.tgc-faces i{width:38px;height:38px;border-radius:50%;box-shadow:0 0 0 2px #FBFAF6}.tgc-faces i + i{margin-inline-start:-14px}' +
   '.tgc-banner .tgc-txt b{font-size:15.5px}.tgc-banner .tgc-txt small{font-size:12px}' +
   '.tgc-open{flex:none;height:32px;padding:0 13px;border-radius:999px;background:#1C2536;color:#FBFAF6;font-size:12.5px;display:inline-flex;align-items:center}' +
@@ -1438,6 +1438,75 @@ if ($qc0 -lt 0 -or $qcEnd -lt $qc0) { throw "category row not found" }
 $doc = $doc.Substring(0, $qcEnd) + "`n              " + '<p class="qcat-sub">{{ qCatSub }}</p>' + $doc.Substring($qcEnd)
 $hs24 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs24) + '<style>.qcat-sub{margin:-6px 2px 12px;font-size:12.5px;line-height:1.4;color:color-mix(in srgb,var(--color-text) 58%,transparent)}</style>' + $doc.Substring($hs24)
+# ── 5at. moving between the rounds, and a banner that floats ─────────────────
+#  The round chips stay at the top while the questions scroll, the chosen one
+#  slides into view, and a sideways swipe on the list moves a round along.
+#  On Discover the connection banner lies over the photo instead of pushing it.
+Once8 'qCatSub: (cats[st.qCat] || cats[0]).sub, qCats: cats.map((c, i) => ({ icon: c.icon,' "qCatSub: (cats[st.qCat] || cats[0]).sub, qCatStep: d => this.qStep(d), qCats: cats.map((c, i) => ({ icon: c.icon, cls: i === st.qCat ? 'on' : ''," 'round moves'
+Once8 '<button class="tag tg-tap" style="flex:none;border:0;cursor:pointer;white-space:nowrap;background:{{ c.bg }};color:{{ c.fg }}"' '<button class="tag tg-tap qcat {{ c.cls }}" style="flex:none;border:0;cursor:pointer;white-space:nowrap;background:{{ c.bg }};color:{{ c.fg }}"' 'mark the chosen round'
+Once8 '  passPerson() {' (@"
+  // the rounds: keep the chosen chip in view, and let a sideways drag move along
+  qStep(d) {
+    const n = Component.QCATS.length;
+    this.setState({ qCat: ((this.state.qCat || 0) + d + n) % n });
+  }
+  qSync() {
+    if (this.state.screen !== 'pickq') return;
+    const on = document.querySelector('.qcat.on');
+    if (!on || on === this._qLast) return;
+    this._qLast = on;
+    try { on.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' }); } catch (_) { }
+  }
+  qDown(e) {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    this._q = { x: e.clientX, y: e.clientY, dir: null };
+    if (!this._qMove) { this._qMove = ev => this.qMove(ev); this._qUp = () => this.qUp(); }
+    window.addEventListener('pointermove', this._qMove);
+    window.addEventListener('pointerup', this._qUp);
+    window.addEventListener('pointercancel', this._qUp);
+  }
+  qMove(ev) {
+    const d = this._q;
+    if (!d) return;
+    const dx = ev.clientX - d.x, dy = ev.clientY - d.y;
+    if (d.dir === null) {
+      if (Math.abs(dx) < 14 && Math.abs(dy) < 14) return;
+      d.dir = Math.abs(dx) > Math.abs(dy) * 1.4 ? 'x' : 'y';
+    }
+    if (d.dir !== 'x' || d.done) return;
+    if (ev.cancelable) ev.preventDefault();
+    if (Math.abs(dx) > 60) { d.done = true; this.qStep(dx < 0 ? 1 : -1); }
+  }
+  qUp() {
+    window.removeEventListener('pointermove', this._qMove);
+    window.removeEventListener('pointerup', this._qUp);
+    window.removeEventListener('pointercancel', this._qUp);
+    this._q = null;
+  }
+
+  passPerson() {
+"@) 'round navigation'
+Once8 '  componentDidUpdate() { this.applyLang(); this.applyAccent(); this.applyWheels(); }' '  componentDidUpdate() { this.applyLang(); this.applyAccent(); this.applyWheels(); this.qSync(); }' 'keep the chip in view'
+$qrow = $doc.IndexOf('<div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:var(--space-3)">')
+if ($qrow -lt 0) { throw "round row not found" }
+$doc = $doc.Substring(0, $qrow) + '<div class="qcat-row" style="display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:var(--space-3)">' + $doc.Substring($qrow + '<div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:var(--space-3)">'.Length)
+$qlist = $doc.IndexOf('<sc-for list="{{ qOptions }}" as="q"')
+$qlistOpen = $doc.LastIndexOf('<div style="display:flex;flex-direction:column;gap:8px">', $qlist)
+if ($qlistOpen -lt 0) { throw "question list not found" }
+$doc = $doc.Substring(0, $qlistOpen) + '<div class="qcat-list" style="display:flex;flex-direction:column;gap:8px" sc-camel-on-pointer-down="{{ qDown }}">' + $doc.Substring($qlistOpen + '<div style="display:flex;flex-direction:column;gap:8px">'.Length)
+Once8 'noPerson: !person, feed, dv, ab, vit, mate, tg, cb, csw, chatBack, lv,' 'noPerson: !person, feed, dv, ab, vit, mate, tg, cb, csw, chatBack, lv, qDown: e => this.qDown(e),' 'the drag binding'
+# the banner floats over the photo
+$css19 = '<style>' +
+  '.tgd-root{position:relative}' +
+  '.tgc-banner{position:absolute !important;top:8px !important;inset-inline:16px !important;margin:0 !important;z-index:6 !important}' +
+  '.qcat-row{position:sticky;top:0;z-index:4;scroll-snap-type:x proximity;scrollbar-width:none;padding-top:6px;background:linear-gradient(180deg,var(--color-bg) 68%,transparent)}' +
+  '.qcat-row::-webkit-scrollbar{display:none}' +
+  '.qcat{scroll-snap-align:center;transition:transform .2s ease}' +
+  '.qcat.on{transform:translateY(-1px)}' +
+  '.qcat-list{touch-action:pan-y}' +
+  '</style>'
+$hs25 = $doc.IndexOf('</helmet>')
+$doc = $doc.Substring(0, $hs25) + $css19 + $doc.Substring($hs25)
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }
