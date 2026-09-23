@@ -1310,9 +1310,11 @@ $doc = $doc.Substring(0, $lkEnd) + $lvScreen + $doc.Substring($lkEnd)
 
 $css17 = '<style>' +
   '.lv{padding-bottom:96px}' +
-  '.lv-note{position:absolute;top:16px;inset-inline:18px;z-index:3;margin:0;padding:0;background:none;border:0;box-shadow:none;pointer-events:none}' +
-  '.lv-note p{color:#FBFAF6 !important;text-shadow:0 1px 2px rgba(0,0,0,.55),0 6px 20px rgba(0,0,0,.5)}' +
-  '.lv-note p{margin:0;font-family:var(--font-heading);font-size:17px;line-height:1.35;text-wrap:pretty;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}' +
+  '.lv-note{position:absolute;top:14px;inset-inline:14px;z-index:3;margin:0;padding:11px 15px;border-radius:18px;pointer-events:none;' +
+  'background:color-mix(in srgb,var(--pv) 30%,color-mix(in srgb,#FBFAF6 70%,transparent));-webkit-backdrop-filter:blur(16px) saturate(1.3);backdrop-filter:blur(16px) saturate(1.3);' +
+  'border:1px solid rgba(255,255,255,.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 14px 30px -14px rgba(0,0,0,.6)}' +
+  '.lv-note p{color:#1C2536 !important}' +
+  '.lv-note p{margin:0;font-family:var(--font-heading);font-size:16px;line-height:1.35;text-wrap:pretty;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}' +
   '.lv .ep-bar{padding:14px 12px 14px !important}' +
   '.lv-acts{position:sticky;bottom:0;z-index:5;display:flex;gap:10px;padding:12px 16px calc(12px + env(safe-area-inset-bottom));margin-top:14px;' +
   'background:linear-gradient(180deg,color-mix(in srgb,#FBFAF6 0%,transparent),color-mix(in srgb,#FFFCF8 88%,transparent) 42%)}' +
