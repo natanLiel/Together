@@ -1233,6 +1233,20 @@ $css16 = '<style>' +
   '</style>'
 $hs16 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs16) + $css16 + $doc.Substring($hs16)
+# ── 5an. text on the plum panels reads ───────────────────────────────────────
+#  The headers on the plum cards and the upgrade sheet were set in the dark
+#  ink, which all but disappeared. They take the panel's own cream instead.
+$plum = @(
+  '<h3 style="font-size:24px;margin:0;color:#1C2536">Three slots instead of one</h3>',
+  '<h3 style="font-size:26px;margin:0;color:#1C2536">Premium, 88 NIS a month</h3>',
+  '<h3 style="font-size:24px;margin:0;color:#1C2536">{{ priceMonthly }}</h3>',
+  '<h3 style="font-size:28px;margin:0 0 8px;color:#1C2536">{{ upTitle }}</h3>',
+  '<button class="btn btn-icon tg-tap" style="width:54px;height:54px;background:var(--tg-deep);color:#1C2536"'
+)
+foreach ($p in $plum) {
+  if (-not $doc.Contains($p)) { throw "plum text not found: $p" }
+  $doc = $doc.Replace($p, $p.Replace('color:#1C2536', 'color:var(--tg-deep-ink)'))
+}
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }

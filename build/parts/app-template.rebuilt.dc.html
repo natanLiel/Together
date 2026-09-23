@@ -1880,7 +1880,7 @@ label{color:var(--tg-sub);font-style:italic;font-weight:400 !important}
               <sc-if value="{{ notPremium }}">
                 <div class="card elev-md" style="background:var(--tg-deep);color:var(--tg-deep-ink);gap:var(--space-3);margin-bottom:var(--space-4);border:0">
                   <span style="font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--tg-deep-sub)">Premium</span>
-                  <h3 style="font-size:24px;margin:0;color:#1C2536">Three slots instead of one</h3>
+                  <h3 style="font-size:24px;margin:0;color:var(--tg-deep-ink)">Three slots instead of one</h3>
                   <p style="font-size:13.5px;margin:0;opacity:.85;text-wrap:pretty">See who liked you, a ring a day, video dates included, and undo an ending for free.</p>
                   <button class="btn tg-tap" style="background:var(--tg-deep-ink);color:var(--tg-deep);height:46px;margin-top:6px" sc-camel-on-click="{{ openUpgrade.generic }}">{{ priceMonthly }}</button>
                   <div style="display:flex;flex-direction:column;gap:8px;margin-top:2px">
@@ -2240,7 +2240,7 @@ label{color:var(--tg-sub);font-style:italic;font-weight:400 !important}
                 <sc-if value="{{ isPremium }}">
                   <div class="card elev-md" style="background:var(--tg-deep);color:var(--tg-deep-ink);border:0;gap:var(--space-2)">
                     <span style="font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--tg-deep-sub)">Current plan</span>
-                    <h3 style="font-size:26px;margin:0;color:#1C2536">Premium, 88 NIS a month</h3>
+                    <h3 style="font-size:26px;margin:0;color:var(--tg-deep-ink)">Premium, 88 NIS a month</h3>
                     <p style="font-size:13.5px;margin:0;opacity:.85">Renews 19 August 2026 · Apple Pay ending 41</p>
                   </div>
                   <div class="card elev-sm" style="gap:10px">
@@ -2263,7 +2263,7 @@ label{color:var(--tg-sub);font-style:italic;font-weight:400 !important}
                   </div>
                   <div class="card elev-md" style="background:var(--tg-deep);color:var(--tg-deep-ink);border:0;gap:var(--space-3)">
                     <span style="font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--tg-deep-sub)">Premium</span>
-                    <h3 style="font-size:24px;margin:0;color:#1C2536">{{ priceMonthly }}</h3>
+                    <h3 style="font-size:24px;margin:0;color:var(--tg-deep-ink)">{{ priceMonthly }}</h3>
                     <p style="font-size:13.5px;margin:0;opacity:.85;text-wrap:pretty">Three slots, faces in Likes, a free undo and video dates included.</p>
                     <button class="btn tg-tap" style="background:var(--tg-deep-ink);color:var(--tg-deep);height:46px" sc-camel-on-click="{{ openUpgrade.generic }}">See the plan</button>
                     <div style="display:flex;flex-direction:column;gap:8px;margin-top:2px">
@@ -2445,7 +2445,7 @@ label{color:var(--tg-sub);font-style:italic;font-weight:400 !important}
                 <button class="btn btn-icon tg-tap" style="width:54px;height:54px;background:rgba(28,37,54,.14);color:#1C2536" aria-label="Mute">
                   <svg width="22" height="22" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg>
                 </button>
-                <button class="btn btn-icon tg-tap" style="width:54px;height:54px;background:var(--tg-deep);color:#1C2536" sc-camel-on-click="{{ endCall }}" aria-label="End the call">
+                <button class="btn btn-icon tg-tap" style="width:54px;height:54px;background:var(--tg-deep);color:var(--tg-deep-ink)" sc-camel-on-click="{{ endCall }}" aria-label="End the call">
                   <svg width="22" height="22" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10c6-4 12-4 18 0l-2 4-4-1v-2c-3-1-5-1-8 0v2l-4 1-2-4z"/></svg>
                 </button>
               </div>
@@ -2844,7 +2844,7 @@ label{color:var(--tg-sub);font-style:italic;font-weight:400 !important}
         <sc-if value="{{ overlay.upgrade }}">
           <div style="position:absolute;inset:0;z-index:9;background:color-mix(in srgb,var(--color-neutral-900) 50%,transparent);display:flex;flex-direction:column;justify-content:flex-end;animation:tg-in .22s ease" sc-camel-on-click="{{ closeOverlay }}">
             <div style="background:var(--tg-deep);color:var(--tg-deep-ink);border-start-start-radius:3px;border-start-end-radius:3px;padding:var(--space-6) var(--space-4);animation:tg-up .28s ease" sc-camel-on-click="{{ stop }}">
-              <h3 style="font-size:28px;margin:0 0 8px;color:#1C2536">{{ upTitle }}</h3>
+              <h3 style="font-size:28px;margin:0 0 8px;color:var(--tg-deep-ink)">{{ upTitle }}</h3>
               <p style="font-size:14.5px;margin:0 0 var(--space-4);opacity:.85;text-wrap:pretty">{{ upBody }}</p>
               <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:var(--space-6)">
                 <sc-for list="{{ upBenefits }}" as="b" hint-placeholder-count="4">
