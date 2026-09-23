@@ -1331,7 +1331,7 @@ $bs5 = $doc.IndexOf('<div class="tgd-bar tgd-slim"')
 $be5 = $doc.IndexOf('<button type="button" class="tgc-banner', $bs5)
 if ($bs5 -lt 0 -or $be5 -lt $bs5) { throw "discover header bounds not found" }
 $sortBtn = { param($v, $s, $c, $set, $label) '<button class="tgd-sortb tg-tap tg-cased" style="background:{{ ' + $v + ' }};box-shadow:{{ ' + $s + ' }};color:{{ ' + $c + ' }}" sc-camel-on-click="{{ ' + $set + ' }}">' + $label + '</button>' }
-$head = '<div class="tgd-bar tgd-slim tgd-one" style="position:sticky;top:0;z-index:2;background:color-mix(in srgb,var(--color-bg) 88%,transparent);backdrop-filter:blur(10px);padding:8px var(--space-4) 6px">' + "`n" +
+$head = '<div class="tgd-bar tgd-one" style="position:sticky;top:0;z-index:2;background:color-mix(in srgb,var(--color-bg) 88%,transparent);backdrop-filter:blur(10px);padding:8px var(--space-4) 6px">' + "`n" +
   '                <div class="tgd-onerow">' + "`n" +
   '                  <span class="tgd-title">Discover</span>' + "`n" +
   '                  <div class="tgd-sort">' + "`n                    " +
@@ -1347,12 +1347,14 @@ $head = '<div class="tgd-bar tgd-slim tgd-one" style="position:sticky;top:0;z-in
   '              </div>' + "`n`n              "
 $doc = $doc.Substring(0, $bs5) + $head + $doc.Substring($be5)
 $css18 = '<style>' +
-  '.tgd-onerow{display:flex;align-items:center;gap:8px}' +
+  '.tgd-one .tgd-onerow{position:relative;display:flex;align-items:center;gap:10px;padding:0 !important;padding-inline-end:56px !important;margin:0 !important}' +
   '.tgd-title{font-family:var(--font-heading);font-size:19px;flex:none}' +
-  '.tgd-sort{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:2px}' +
-  '.tgd-sortb{flex:0 1 auto;min-width:0;border:0;cursor:pointer;text-align:center;font-size:11.5px;line-height:1;height:26px;padding:0 10px;border-radius:999px;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center}' +
-  '.tgd-mode{flex:none;display:flex;align-items:center;gap:2px}' +
-  '.tgd-modeb{width:30px;height:26px;border:0;border-radius:999px;cursor:pointer;display:grid;place-items:center;padding:0;box-shadow:none !important}' +
+  '.tgd-sort{flex:1;min-width:0;display:flex;align-items:center;justify-content:flex-end;gap:0}' +
+  '.tgd-sortb{position:relative;flex:0 1 auto;min-width:0;border:0;cursor:pointer;text-align:center;font-size:11.5px;line-height:1;height:26px;padding:0 11px;border-radius:999px;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center}' +
+  '.tgd-sortb + .tgd-sortb::before{content:"";position:absolute;inset-inline-start:0;top:7px;bottom:7px;width:1px;background:rgba(28,37,54,.16)}' +
+  '.tgd-mode{position:absolute;top:-3px;inset-inline-end:0;flex:none;display:flex;align-items:center;gap:1px}' +
+  '.tgd-modeb{width:25px;height:22px;border:0;border-radius:999px;cursor:pointer;display:grid;place-items:center;padding:0;box-shadow:none !important}' +
+  '.tgd-modeb svg{width:14px;height:14px}' +
   '.tgd-root .tgd-hero-img{aspect-ratio:3/4.8}' +
   '</style>'
 $hs22 = $doc.IndexOf('</helmet>')
