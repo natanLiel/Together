@@ -1683,12 +1683,16 @@ $css23 = '<style>' +
   'box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 -20px 40px -22px #000 !important}' +
   '.tgTab svg,.tgTab span{color:rgba(246,238,234,.72) !important}' +
   '.tgTab.on svg,.tgTab.on span,.tgTab.hot svg,.tgTab.hot span{color:#F0566E !important}' +
-  '#tgBar #tgHub,#tgBar:not(.open) #tgHub,#tgBar.open #tgHub,#tgBar.open #tgHub.on{' +
-  'background:radial-gradient(44% 24% at 34% 16%,rgba(255,255,255,.35),rgba(255,255,255,0) 74%),' +
-  'radial-gradient(90% 90% at 50% 40%,rgba(52,34,48,.86),rgba(30,19,28,.86)) !important;' +
-  'box-shadow:inset 0 0 0 1px rgba(255,255,255,.22),inset 0 2px 1px rgba(255,255,255,.3),inset 0 -6px 10px rgba(0,0,0,.5),0 16px 28px -10px #000 !important}' +
-  '#tgHub::before{background:radial-gradient(90% 90% at 50% 68%,rgba(255,255,255,.12),rgba(255,255,255,0) 75%) !important;' +
-  'box-shadow:inset 0 3px 5px rgba(0,0,0,.45),inset 0 -2px 2px rgba(255,255,255,.18) !important}' +
+  '#tgBar #tgHub,#tgBar:not(.open) #tgHub,#tgBar.open #tgHub,#tgBar.open #tgHub.on,#tgHub.hot,#tgHub.conn{' +
+  'background:linear-gradient(170deg,rgba(255,255,255,.14),rgba(255,255,255,0) 46%),rgba(255,255,255,.05) !important;' +
+  '-webkit-backdrop-filter:blur(10px) saturate(1.25);backdrop-filter:blur(10px) saturate(1.25);' +
+  'box-shadow:inset 0 0 0 1.4px rgba(240,86,110,.95),inset 0 1.6px 0 rgba(255,255,255,.4),' +
+  'inset 0 -8px 12px -8px rgba(0,0,0,.45),0 0 18px -3px rgba(240,86,110,.6),0 14px 26px -14px #000 !important}' +
+  '#tgHub::before,#tgHub::after{content:none !important}' +
+  '#tgHub svg circle:first-child{stroke:#F6EEEA !important}' +
+  '#tgHub svg circle:last-child,#tgHub svg .ring2{stroke:#F0566E !important}' +
+  '#tgHub.conn{box-shadow:inset 0 0 0 1.4px rgba(240,86,110,.95),inset 0 1.6px 0 rgba(255,255,255,.4),' +
+  'inset 0 -8px 12px -8px rgba(0,0,0,.45),0 0 22px -2px rgba(240,86,110,.8),0 0 0 4px rgba(240,86,110,.14),0 14px 26px -14px #000 !important}' +
   '.tgd-root .tgt-card,.tgd-root .tgt-tone .tgt-card,.tgd-root .tgt-voice{' +
   'background:color-mix(in srgb,var(--pv) 26%,rgba(18,12,18,.55)) !important;color:#F2EAE6 !important}' +
   '.tgd-root .tgt-q{color:rgba(242,234,230,.62) !important}' +
