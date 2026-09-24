@@ -2017,7 +2017,13 @@ $css31 = '<style>' +
   '62%{transform:translateX(-7px) scale(.88);animation-timing-function:cubic-bezier(.3,1.42,.5,1)}' +
   '100%{opacity:1;transform:translateX(0) scale(1)}}' +
   '@keyframes tgs-cut{0%,52%{stroke-width:0}70%,100%{stroke-width:12.3}}' +
-  '@keyframes tgs-bloom{0%,44%{opacity:0}64%{opacity:1}100%{opacity:0}}' +
+  '@keyframes tgs-halo{0%{opacity:0}26%{opacity:.9}52%{opacity:.9}70%,100%{opacity:0}}' +
+  '@keyframes tgs-merge{0%,38%{opacity:0;transform:scale(.9)}' +
+  '47%{opacity:1;transform:scale(1.04)}' +
+  '100%{opacity:0;transform:scale(1.3)}}' +
+  '@keyframes tgs-glint{0%{opacity:0;transform:scale(.25) rotate(-20deg)}' +
+  '26%{opacity:.85;transform:scale(1) rotate(0deg)}' +
+  '100%{opacity:0;transform:scale(1.7) rotate(12deg)}}' +
   '@keyframes tgs-fall{0%{transform:translateY(-13px)}62%{transform:translateY(3px)}100%{transform:translateY(0)}}' +
   '@keyframes tgs-word{0%{opacity:0;transform:translateY(13px);letter-spacing:.05em}' +
   '100%{opacity:1;transform:translateY(0);letter-spacing:-.012em}}' +
@@ -2025,12 +2031,16 @@ $css31 = '<style>' +
   '.tgs-rose{transform-origin:62px 47px;animation:tgs-l 1.36s both}' +
   '.tgs-blue{transform-origin:98px 53px;animation:tgs-r 1.36s both}' +
   '.tgs-cut{animation:tgs-cut 1.36s linear both}' +
-  '.tgs-bloom{opacity:0;animation:tgs-bloom 1.3s .1s ease-out both;mix-blend-mode:screen}' +
+  '.tgs-halo-a,.tgs-halo-b,.tgs-merge,.tgs-glint{transform-box:view-box;mix-blend-mode:screen;opacity:0}' +
+  '.tgs-halo-a{transform-origin:62px 47px;animation:tgs-l 1.36s both,tgs-halo 1.36s both}' +
+  '.tgs-halo-b{transform-origin:98px 53px;animation:tgs-r 1.36s both,tgs-halo 1.36s both}' +
+  '.tgs-merge{transform-origin:80px 50px;animation:tgs-merge 2.1s cubic-bezier(.25,.6,.3,1) both}' +
+  '.tgs-glint{transform-origin:80px 50px;animation:tgs-glint .95s .66s cubic-bezier(.2,.7,.3,1) both}' +
   '.tgs-fall{animation:tgs-fall .56s .8s cubic-bezier(.34,1.28,.5,1) both}' +
   '.tgs-word{animation:tgs-word .54s 1.3s cubic-bezier(.2,.85,.25,1) both}' +
   '@media (prefers-reduced-motion:reduce){' +
   '.tgs-rose,.tgs-blue,.tgs-cut,.tgs-fall,.tgs-word,[data-tgs-rise]{animation:none !important}' +
-  '.tgs-bloom{opacity:0}}' +
+  '.tgs-halo-a,.tgs-halo-b,.tgs-merge,.tgs-glint{animation:none !important;opacity:0}}' +
   '</style>'
 $hs37 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs37) + $css31 + $doc.Substring($hs37)
