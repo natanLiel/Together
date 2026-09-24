@@ -1907,6 +1907,27 @@ $css27 = '<style>' +
   '</style>'
 $hs33 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs33) + $css27 + $doc.Substring($hs33)
+# ── 5be. Discover keeps its dark ground when the deck runs out ──────────────
+#  Each profile tints the page, but the tint was mixed from the person's
+#  light colour — fine on cream, a grey slab on dark. It becomes a soft
+#  wash of their colour over the ground, and the end-of-deck card becomes
+#  the same glass as every other panel.
+$emptyOld = '<div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:var(--space-8) var(--space-4);border-radius:3px;background:var(--color-surface);border:1px solid var(--color-divider)">'
+Once8 $emptyOld ($emptyOld.Replace('<div style=', '<div data-empty="1" style=')) 'end of deck card'
+$css28 = '<style>' +
+  '.tgd-root{background:linear-gradient(180deg,color-mix(in srgb,var(--pv) 15%,transparent) 0,' +
+  'color-mix(in srgb,var(--pv) 6%,transparent) 540px,transparent 1100px) !important}' +
+  '.tgd-root .tgd-bar{background:rgba(18,11,18,.45) !important}' +
+  '[data-empty]{border-radius:26px !important;margin-top:12vh !important;' +
+  'background:linear-gradient(180deg,rgba(46,29,42,.72),rgba(20,13,20,.82)) !important;' +
+  '-webkit-backdrop-filter:blur(22px) saturate(1.2);backdrop-filter:blur(22px) saturate(1.2);' +
+  'border:1px solid rgba(255,255,255,.12) !important;' +
+  'box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 30px 60px -30px #000 !important}' +
+  '[data-empty] h3{color:#F6EEEA !important}' +
+  '[data-empty] p{color:rgba(242,234,230,.66) !important}' +
+  '</style>'
+$hs34 = $doc.IndexOf('</helmet>')
+$doc = $doc.Substring(0, $hs34) + $css28 + $doc.Substring($hs34)
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }
