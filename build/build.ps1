@@ -1944,8 +1944,9 @@ $css29 = '<style>' +
   '.tgd-hero-shade{background:linear-gradient(to top,rgba(12,8,18,.94) 0%,rgba(13,9,19,.82) 10%,' +
   'rgba(15,10,21,.55) 20%,rgba(17,11,23,.26) 27%,rgba(17,11,23,0) 34%),' +
   'linear-gradient(to bottom,rgba(12,8,14,.22) 0%,rgba(12,8,14,0) 14%) !important}' +
-  '.tgd-backdrop-img{filter:blur(15px) saturate(.95) brightness(.4) !important;transform:scale(1.08) !important}' +
-  '.tgd-backdrop::after{background:linear-gradient(180deg,rgba(16,10,18,.44) 0%,rgba(16,10,18,.58) 38%,rgba(12,8,14,.86) 100%) !important}' +
+  '.tgd-backdrop{opacity:.16 !important}' +
+  '.tgd-backdrop-img{filter:blur(24px) saturate(1.05) brightness(.6) !important;transform:scale(1.1) !important}' +
+  '.tgd-backdrop::after{background:linear-gradient(180deg,rgba(16,10,18,.14) 0%,rgba(12,8,14,.4) 100%) !important}' +
   '.tgd-root .tgt-dtl > span,.ep-view .tgt-dtl > span,.tgd-root .tg-tag,.ep-view .tg-tag{' +
   'background:color-mix(in srgb,#5F4AB5 24%,rgba(18,12,24,.58)) !important;color:#F2EAE6 !important;' +
   'border:1px solid rgba(255,255,255,.14) !important;' +
