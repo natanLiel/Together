@@ -2006,6 +2006,46 @@ $tileUri = 'data:image/svg+xml;charset=utf-8,' + [uri]::EscapeDataString($tileSv
 Once8 '<link rel="icon" href="5e4e6cde-b171-4cbe-9396-9a3ea5aa01bf">' ('<link rel="icon" href="' + $markUri + '">') 'tab icon'
 Once8 '<link rel="apple-touch-icon" sizes="512x512" href="038efd10-3e68-448e-a078-c43845432b18">' ('<link rel="apple-touch-icon" sizes="512x512" href="' + $tileUri + '">') 'home screen tile'
 
+# the splash: two rings arrive, meet, trade size and settle
+$css31 = '<style>' +
+  '@keyframes tgs-l{0%{opacity:0;transform:translateX(-58px) scale(.46);animation-timing-function:cubic-bezier(.45,.02,.35,1)}' +
+  '20%{opacity:1}' +
+  '62%{transform:translateX(7px) scale(1.14);animation-timing-function:cubic-bezier(.3,1.42,.5,1)}' +
+  '100%{opacity:1;transform:translateX(0) scale(1)}}' +
+  '@keyframes tgs-r{0%{opacity:0;transform:translateX(58px) scale(.46);animation-timing-function:cubic-bezier(.45,.02,.35,1)}' +
+  '20%{opacity:1}' +
+  '62%{transform:translateX(-7px) scale(.88);animation-timing-function:cubic-bezier(.3,1.42,.5,1)}' +
+  '100%{opacity:1;transform:translateX(0) scale(1)}}' +
+  '@keyframes tgs-cut{0%,52%{stroke-width:0}70%,100%{stroke-width:12.3}}' +
+  '@keyframes tgs-bloom{0%,44%{opacity:0}64%{opacity:1}100%{opacity:0}}' +
+  '@keyframes tgs-fall{0%{transform:translateY(-13px)}62%{transform:translateY(3px)}100%{transform:translateY(0)}}' +
+  '@keyframes tgs-word{0%{opacity:0;transform:translateY(13px);letter-spacing:.05em}' +
+  '100%{opacity:1;transform:translateY(0);letter-spacing:-.012em}}' +
+  '.tgs-rose,.tgs-blue{transform-box:view-box}' +
+  '.tgs-rose{transform-origin:62px 47px;animation:tgs-l 1.36s both}' +
+  '.tgs-blue{transform-origin:98px 53px;animation:tgs-r 1.36s both}' +
+  '.tgs-cut{animation:tgs-cut 1.36s linear both}' +
+  '.tgs-bloom{opacity:0;animation:tgs-bloom 1.3s .1s ease-out both;mix-blend-mode:screen}' +
+  '.tgs-fall{animation:tgs-fall .56s .8s cubic-bezier(.34,1.28,.5,1) both}' +
+  '.tgs-word{animation:tgs-word .54s 1.3s cubic-bezier(.2,.85,.25,1) both}' +
+  '@media (prefers-reduced-motion:reduce){' +
+  '.tgs-rose,.tgs-blue,.tgs-cut,.tgs-fall,.tgs-word,[data-tgs-rise]{animation:none !important}' +
+  '.tgs-bloom{opacity:0}}' +
+  '</style>'
+$hs37 = $doc.IndexOf('</helmet>')
+$doc = $doc.Substring(0, $hs37) + $css31 + $doc.Substring($hs37)
+
+# the line, the sentence and the button follow the mark in
+$doc = $doc.Replace(
+  '<p style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;margin:6px 0 0;color:var(--color-accent-800)">',
+  '<p data-tgs-rise="1" style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;margin:6px 0 0;color:var(--color-accent-800);animation:tg-rise .7s 1.64s ease both">')
+$doc = $doc.Replace(
+  '<p style="font-size:18px;line-height:1.5;margin:26px 0 0;color:var(--color-accent-800);max-width:300px;text-wrap:pretty">',
+  '<p data-tgs-rise="1" style="font-size:18px;line-height:1.5;margin:26px 0 0;color:var(--color-accent-800);max-width:300px;text-wrap:pretty;animation:tg-rise .7s 1.78s ease both">')
+$doc = $doc.Replace(
+  '<div style="position:relative;display:flex;flex-direction:column;gap:10px;width:100%;max-width:302px;flex:none">',
+  '<div data-tgs-rise="1" style="position:relative;display:flex;flex-direction:column;gap:10px;width:100%;max-width:302px;flex:none;animation:tg-rise .7s 1.94s cubic-bezier(.2,.8,.2,1) both">')
+if ($doc -notmatch 'tgs-rise') { throw 'splash copy not sequenced' }
 $css30 = '<style>' +
   '#tgHub svg circle.tgm-a{stroke:url(#tgh-a) !important}' +
   '#tgHub svg circle.tgm-b{stroke:url(#tgh-b) !important}' +

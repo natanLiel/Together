@@ -1,12 +1,14 @@
-<div style="width:min(50vw,168px)">
+<div class="tgs-fall" style="width:min(50vw,168px)">
                   <svg sc-camel-view-box="0 0 160 100" style="display:block;width:100%;height:auto;overflow:visible" aria-hidden="true">
                     <defs>
                       <linearGradient id="tgs-a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF7488"></stop><stop offset="1" stop-color="#E4485B"></stop></linearGradient>
                       <linearGradient id="tgs-b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C7D4F2"></stop><stop offset="1" stop-color="#7B93DC"></stop></linearGradient>
-                      <mask id="tgs-m"><rect x="0" y="0" width="160" height="100" fill="#fff"></rect><circle cx="98" cy="53" r="31" fill="none" stroke="#000" stroke-width="12.3"></circle></mask>
+                      <radialGradient id="tgs-g"><stop offset="0" stop-color="#FF7488" stop-opacity=".6"></stop><stop offset="1" stop-color="#FF7488" stop-opacity="0"></stop></radialGradient>
+                      <mask id="tgs-m"><rect x="0" y="0" width="160" height="100" fill="#fff"></rect><circle class="tgs-cut" cx="98" cy="53" r="31" fill="none" stroke="#000" stroke-width="12.3"></circle></mask>
                     </defs>
-                    <circle cx="62" cy="47" r="27" fill="none" stroke="url(#tgs-a)" stroke-width="7.5" mask="url(#tgs-m)"></circle>
-                    <circle cx="98" cy="53" r="31" fill="none" stroke="url(#tgs-b)" stroke-width="7.5"></circle>
+                    <ellipse class="tgs-bloom" cx="80" cy="50" rx="58" ry="42" fill="url(#tgs-g)"></ellipse>
+                    <circle class="tgs-rose" cx="62" cy="47" r="27" fill="none" stroke="url(#tgs-a)" stroke-width="7.5" mask="url(#tgs-m)"></circle>
+                    <circle class="tgs-blue" cx="98" cy="53" r="31" fill="none" stroke="url(#tgs-b)" stroke-width="7.5"></circle>
                   </svg>
                 </div>
-                <div role="img" aria-label="Together" style="margin-top:16px;font-family:var(--font-heading);font-weight:500;font-size:clamp(38px,12.5vw,50px);line-height:1;letter-spacing:-.012em;color:var(--color-text)">Together</div>
+                <div class="tgs-word" role="img" aria-label="Together" style="margin-top:16px;font-family:var(--font-heading);font-weight:500;font-size:clamp(38px,12.5vw,50px);line-height:1;letter-spacing:-.012em;color:var(--color-text)">Together</div>
