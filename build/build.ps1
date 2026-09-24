@@ -1605,6 +1605,21 @@ $css21 = '<style>' +
   '</style>'
 $hs27 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs27) + $css21 + $doc.Substring($hs27)
+# ── 5ay. the photo melts into the page ───────────────────────────────────────
+#  No rounded corners at the foot of the main photo, and its last stretch
+#  fades out so the scroll from photo to cards is soft rather than a cut.
+$css22 = '<style>' +
+  '.tgd-hero{border-radius:0 !important;overflow:visible !important}' +
+  '.tgd-hero-img,.tgd-hero-shade{-webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 54px),rgba(0,0,0,.55) calc(100% - 22px),rgba(0,0,0,0) 100%);' +
+  'mask-image:linear-gradient(180deg,#000 calc(100% - 54px),rgba(0,0,0,.55) calc(100% - 22px),rgba(0,0,0,0) 100%)}' +
+  '.tgd-hero-img{border-radius:0}' +
+  '.tgd-hero::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:56px;z-index:1;pointer-events:none;' +
+  '-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);' +
+  '-webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,0),#000 70%);mask-image:linear-gradient(180deg,rgba(0,0,0,0),#000 70%)}' +
+  '.tgd-hero-info,.tgs-strip,.tgd-heart,.ep-mainedit{z-index:3}' +
+  '</style>'
+$hs28 = $doc.IndexOf('</helmet>')
+$doc = $doc.Substring(0, $hs28) + $css22 + $doc.Substring($hs28)
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }
