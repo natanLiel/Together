@@ -1640,6 +1640,13 @@ $doc = [regex]::Replace($doc, 'color:color-mix\(in srgb,var\(--color-text\)\s*(\
   $p = [int]$m.Groups[1].Value
   if ($p -lt 58) { 'color:color-mix(in srgb,var(--color-text) 66%' } else { $m.Value }
 })
+$nPrem = 0
+$doc = [regex]::Replace($doc, '<div([^>]*?)style="([^"]*?)background:var\(--tg-deep\)', {
+  param($m)
+  $script:nPrem++
+  '<div data-prem="1"' + $m.Groups[1].Value + 'style="' + $m.Groups[2].Value + 'background:var(--tg-deep)'
+})
+Write-Output ("dark: {0} premium panels" -f $nPrem)
 $css23 = '<style>' +
   '[data-tg-phone]{' +
   '--color-bg:#140D14;--color-surface:#1C141C;--color-text:#F2EAE6;--color-divider:rgba(255,255,255,.12);' +
@@ -1700,9 +1707,19 @@ $css23 = '<style>' +
   '.tgd-root .tgd-heart button,.tgd-root .tgt-heart,.tgs-likecue{background:color-mix(in srgb,var(--pv) 26%,rgba(18,12,18,.5)) !important}' +
   '.tag,.tag-neutral{background:rgba(255,255,255,.07) !important;color:rgba(242,234,230,.8) !important;border-color:rgba(255,255,255,.14) !important}' +
   '.tag-accent{background:rgba(240,86,110,.2) !important;color:#FFC2CC !important;border-color:rgba(240,86,110,.5) !important}' +
-  '.card[style*="tg-deep"] *,.tgp-card[style*="tg-deep"] *{color:var(--tg-deep-ink) !important}' +
-  '.card[style*="tg-deep"] .btn,.card[style*="tg-deep"] .btn *,.tgp-card[style*="tg-deep"] .btn,.tgp-card[style*="tg-deep"] .btn *{color:var(--tg-deep) !important}' +
-  '.tgd-vdur,.tgt-dur,.tgd-dur{color:#F2EAE6 !important}' +
+  '[data-prem]{background:linear-gradient(158deg,rgba(240,86,110,.22) 0%,rgba(87,48,79,.38) 44%,rgba(26,16,24,.76) 100%) !important;' +
+  '-webkit-backdrop-filter:blur(18px) saturate(1.3);backdrop-filter:blur(18px) saturate(1.3);' +
+  'border:1px solid rgba(255,255,255,.14) !important;' +
+  'box-shadow:inset 0 1px 0 rgba(255,255,255,.2),inset 0 0 40px -14px rgba(240,86,110,.5),' +
+  '0 0 0 1px rgba(240,86,110,.14),0 26px 50px -30px #000 !important}' +
+  '[data-prem] *{color:#F6EEEA !important;background-color:transparent !important;border-color:transparent !important;box-shadow:none !important}' +
+  '[data-prem] span[style*="uppercase"]{color:#FFB6C3 !important;letter-spacing:.14em !important}' +
+  '[data-prem] svg{color:#FFB6C3 !important;stroke:#FFB6C3 !important}' +
+  '[data-prem] .btn:not(.btn-ghost){background:linear-gradient(168deg,#FF7488,#E4485B) !important;border:0 !important;' +
+  'box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 14px 28px -14px rgba(240,86,110,.95) !important}' +
+  '[data-prem] .btn:not(.btn-ghost),[data-prem] .btn:not(.btn-ghost) *{color:#1A1018 !important;font-weight:500}' +
+  '[data-prem] .btn-ghost,[data-prem] .btn-ghost *{color:rgba(246,238,234,.62) !important}' +
+  '[data-prem] [style*="underline"]{color:#FFD4DC !important}' +  '.tgd-vdur,.tgt-dur,.tgd-dur{color:#F2EAE6 !important}' +
   'html,body{background:#120C12 !important}' +
   '[style*="100dvh"]{background:#120C12 !important;color:rgba(242,234,230,.7) !important}' +
   '[data-tg-caption]{color:rgba(242,234,230,.45) !important}' +
