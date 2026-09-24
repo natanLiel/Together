@@ -1883,6 +1883,30 @@ $css26 = '<style>' +
   '</style>'
 $hs32 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs32) + $css26 + $doc.Substring($hs32)
+# the round the chips point at is the round in view, even after a re-render
+$qsI = $doc.IndexOf('  qSync() {')
+$qsJ = $doc.IndexOf('  qDown(e) {', $qsI)
+if ($qsI -lt 0 -or $qsJ -lt 0) { throw 'qSync not found' }
+$doc = $doc.Substring(0, $qsI) + ([System.IO.File]::ReadAllText("$scratch\qsync.js.txt", [System.Text.Encoding]::UTF8).TrimEnd()) + [Environment]::NewLine + $doc.Substring($qsJ)
+# ── 5bd. the question categories sit on the page, not on a black slab ───────
+#  The sticky row had a near-black band behind it with hard edges. It now
+#  bleeds to both edges as blurred glass that fades out downwards, and the
+#  category you are in reads as rose again — the dark tag rule had flattened it.
+$css27 = '<style>' +
+  '.qcat-row{margin-inline:calc(var(--space-4) * -1) !important;' +
+  'padding:8px var(--space-4) 16px !important;margin-bottom:var(--space-2) !important;' +
+  'background:linear-gradient(180deg,rgba(20,13,20,.5),rgba(20,13,20,.16) 74%,rgba(20,13,20,0)) !important;' +
+  '-webkit-backdrop-filter:blur(14px) saturate(1.15);backdrop-filter:blur(14px) saturate(1.15);' +
+  '-webkit-mask-image:linear-gradient(180deg,#000 0,#000 78%,transparent 100%);' +
+  'mask-image:linear-gradient(180deg,#000 0,#000 78%,transparent 100%)}' +
+  '.qcat{border-radius:999px !important}' +
+  '.qcat.on,.qcat.on:hover{background:linear-gradient(168deg,#FF7488,#E4485B) !important;' +
+  'color:#1A1018 !important;border-color:transparent !important;' +
+  'box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 20px -10px rgba(240,86,110,.9) !important}' +
+  '.qcat-sub{margin-top:0 !important}' +
+  '</style>'
+$hs33 = $doc.IndexOf('</helmet>')
+$doc = $doc.Substring(0, $hs33) + $css27 + $doc.Substring($hs33)
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }

@@ -1,0 +1,18 @@
+  qSync() {
+    if (this.state.screen !== 'pickq') return;
+    const k = this.state.qCat || 0;
+    if (k === this._qLast) return;
+    this._qLast = k;
+    const go = () => {
+      const row = document.querySelector('.qcat-row');
+      const on = document.querySelector('.qcat.on');
+      if (!row || !on) return;
+      const to = Math.max(0, on.offsetLeft - (row.clientWidth - on.offsetWidth) / 2);
+      try { row.scrollTo({ left: to, behavior: 'smooth' }); }
+      catch (_) { row.scrollLeft = to; }
+      // if frames are not running — a hidden tab — the smooth scroll never
+      // starts, so land it anyway
+      setTimeout(() => { if (Math.abs(row.scrollLeft - to) > 2) row.scrollLeft = to; }, 360);
+    };
+    setTimeout(go, 16);
+  }
