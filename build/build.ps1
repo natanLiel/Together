@@ -1782,12 +1782,113 @@ $css25 = '<style>' +
   '</style>'
 $hs31 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs31) + $css25 + $doc.Substring($hs31)
+# ── 5bc. everything after a like, in the dark system ────────────────────────
+#  The dialogs become the same dark glass as the like sheet, the match
+#  screen moves onto the dark ground, fields stop being white paper, and
+#  the simulate shortcuts stay deliberately just below sight.
+$toastOld = '<span style="background:#FBFAF6;color:#F2EAE6;border:1px solid rgba(28,37,54,.08);border-radius:3px;padding:9px 14px;font-size:13.5px;line-height:1.35;text-align:center;box-shadow:0 6px 20px rgba(28,37,54,.14);max-width:320px"'
+$toastNew = '<span data-toast="1" style="background:rgba(30,19,28,.86);color:#F2EAE6;border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:10px 16px;font-size:13.5px;line-height:1.35;text-align:center;box-shadow:0 18px 38px -18px #000;max-width:320px"'
+Once8 $toastOld $toastNew 'toast'
+
+$nBord = ([regex]::Matches($doc, [regex]::Escape('solid rgba(28,37,54,'))).Count
+$doc = $doc.Replace('solid rgba(28,37,54,', 'solid rgba(242,234,230,')
+Write-Output ("dark: lifted {0} ink borders" -f $nBord)
+
+$nDlg = 0
+$doc = [regex]::Replace($doc, '<div style="background:var\(--color-surface\);border-radius:3px;padding:var\(--space-6\)', {
+  param($m)
+  $script:nDlg++
+  '<div data-dlg="1" style="background:var(--color-surface);border-radius:3px;padding:var(--space-6)'
+})
+if ($nDlg -lt 7) { throw "dialog panels not marked" }
+
+$nSh = 0
+$doc = [regex]::Replace($doc, '<div style="background:var\(--color-surface\);border-start-start-radius:3px', {
+  param($m)
+  $script:nSh++
+  '<div data-sheet="1" style="background:var(--color-surface);border-start-start-radius:3px'
+})
+
+$nScrim = 0
+$doc = [regex]::Replace($doc, '<div style="position:absolute;inset:0;z-index:(9|10);background:color-mix\(in srgb,var\(--color-neutral-900\)', {
+  param($m)
+  $script:nScrim++
+  '<div data-scrim="1" style="position:absolute;inset:0;z-index:' + $m.Groups[1].Value + ';background:color-mix(in srgb,var(--color-neutral-900)'
+})
+Write-Output ("dark: {0} dialogs, {1} sheets, {2} scrims" -f $nDlg, $nSh, $nScrim)
+
+$nIcon = 0
+$doc = [regex]::Replace($doc, '<div style="width:(64|60)px;height:(?:64|60)px;border-radius:999px;background:', {
+  param($m)
+  $script:nIcon++
+  '<div data-dlgicon="1" style="width:' + $m.Groups[1].Value + 'px;height:' + $m.Groups[1].Value + 'px;border-radius:999px;background:'
+})
+if ($nIcon -lt 2) { throw "dialog icons not marked" }
+
+$nSim = 0
+$doc = [regex]::Replace($doc, '<button class="btn btn-ghost tg-tap"([^>]*?)sc-camel-on-click="\{\{ (simulateMatch|simulateCheckin|waitSim) \}\}"', {
+  param($m)
+  $script:nSim++
+  '<button data-sim="1" class="btn btn-ghost tg-tap"' + $m.Groups[1].Value + 'sc-camel-on-click="{{ ' + $m.Groups[2].Value + ' }}"'
+})
+if ($nSim -lt 2) { throw "simulate shortcuts not marked" }
+
+$mOld = '<div style="position:absolute;inset:0;z-index:9;background:#F9F1E9;background-image:radial-gradient(62% 34% at 50% 22%,rgba(235,182,190,.34),transparent 70%),radial-gradient(70% 40% at 50% 104%,rgba(87,48,79,.40),transparent 72%)'
+$mNew = '<div data-match="1" style="position:absolute;inset:0;z-index:9;background:rgba(13,8,13,.84);background-image:radial-gradient(64% 38% at 50% 18%,rgba(240,86,110,.34),transparent 70%),radial-gradient(80% 46% at 50% 106%,rgba(87,48,79,.62),transparent 74%);-webkit-backdrop-filter:blur(26px) saturate(1.2);backdrop-filter:blur(26px) saturate(1.2)'
+Once8 $mOld $mNew 'match screen'
+
+Once8 'background:var(--color-accent-2-200);animation:tg-breathe' 'background:radial-gradient(circle at 50% 50%,rgba(240,86,110,.5),rgba(240,86,110,0) 70%);animation:tg-breathe' 'waiting halo'
+Once8 'color:#D6B0EC' 'color:#FFAEBD' 'chat kicker'
+
+$css26 = '<style>' +
+  '[data-tg-phone]{--tg-sub:rgba(242,234,230,.66);--tg-mute:rgba(242,234,230,.44);--tg-glass-line:rgba(255,255,255,.16);' +
+  '--color-accent-700:#FF8FA1;--color-accent-2-700:rgba(242,234,230,.62);' +
+  '--color-accent-2-800:rgba(242,234,230,.62);--color-accent-2-900:#F2EAE6}' +
+  '[data-scrim]{background:rgba(10,6,11,.58) !important;-webkit-backdrop-filter:blur(10px) saturate(1.1);backdrop-filter:blur(10px) saturate(1.1)}' +
+  '[data-dlg]{background:linear-gradient(180deg,rgba(46,29,42,.92),rgba(20,13,20,.96)) !important;' +
+  '-webkit-backdrop-filter:blur(26px) saturate(1.25);backdrop-filter:blur(26px) saturate(1.25);' +
+  'border-radius:26px !important;border:1px solid rgba(255,255,255,.13) !important;' +
+  'box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 0 0 1px rgba(240,86,110,.1),0 34px 70px -28px #000 !important}' +
+  '[data-dlg] h3{color:#F6EEEA !important}' +
+  '[data-dlg] p{color:rgba(242,234,230,.66) !important}' +
+  '[data-dlgicon]{background:linear-gradient(168deg,#FF7488,#E4485B) !important;' +
+  'box-shadow:inset 0 1.4px 0 rgba(255,255,255,.5),0 18px 34px -16px rgba(240,86,110,.9) !important}' +
+  '[data-dlgicon] svg{stroke:#1A1018 !important}' +
+  '[data-dlg] .btn-primary,[data-match] .btn{border-radius:999px !important;' +
+  'background:linear-gradient(168deg,#FF7488,#E4485B) !important;border:0 !important;' +
+  'box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 16px 30px -16px rgba(240,86,110,.95) !important}' +
+  '[data-dlg] .btn-primary,[data-dlg] .btn-primary *,[data-match] .btn,[data-match] .btn *{color:#1A1018 !important}' +
+  '[data-dlg] .btn-secondary,[data-sheet] .btn-secondary{border-radius:999px !important;' +
+  'background:rgba(255,255,255,.055) !important;color:#F2EAE6 !important;' +
+  'border:1px solid rgba(255,255,255,.16) !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.1) !important}' +
+  '[data-dlg] .btn[style*="transparent"]{border-radius:999px !important;border-color:rgba(240,86,110,.6) !important;color:#FF9AAB !important}' +
+  '[data-match] h2{color:#F6EEEA !important;text-shadow:0 10px 34px rgba(0,0,0,.55)}' +
+  '[data-match] p{color:rgba(242,234,230,.74) !important}' +
+  '[data-match] img{filter:drop-shadow(0 18px 44px rgba(240,86,110,.45))}' +
+  '[data-toast]{-webkit-backdrop-filter:blur(16px) saturate(1.2);backdrop-filter:blur(16px) saturate(1.2)}' +
+  '.card-kicker{color:#FFAEBD !important}' +
+  '.input,select.input,textarea.input{background:rgba(255,255,255,.055) !important;color:#F2EAE6 !important;' +
+  'border:1px solid rgba(255,255,255,.14) !important}' +
+  '.input::placeholder,textarea.input::placeholder{color:rgba(242,234,230,.4) !important}' +
+  '.input:focus,textarea.input:focus{outline:none;border-color:rgba(240,86,110,.6) !important;' +
+  'background:rgba(255,255,255,.08) !important}' +
+  '[data-sim],[data-sim]:hover{color:rgba(242,234,230,.06) !important;text-shadow:none !important}' +
+  '.btn-primary,.btn-primary *{color:#1A1018 !important}' +
+  '.btn-primary{border-radius:999px !important;background:linear-gradient(168deg,#FF7488,#E4485B) !important;' +
+  'background-image:linear-gradient(168deg,#FF7488,#E4485B) !important;border:0 !important;' +
+  'box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 16px 30px -16px rgba(240,86,110,.95) !important}' +
+  '.btn-primary[disabled],.btn-primary:disabled{background:rgba(255,255,255,.06) !important;' +
+  'background-image:none !important;box-shadow:none !important}' +
+  '.btn-primary[disabled],.btn-primary:disabled,.btn-primary[disabled] *{color:rgba(242,234,230,.5) !important}' +
+  '</style>'
+$hs32 = $doc.IndexOf('</helmet>')
+$doc = $doc.Substring(0, $hs32) + $css26 + $doc.Substring($hs32)
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }
 
 $doc = [regex]::Replace($doc, '(>End this connection</button>)',
-    '${1}' + "`n                <button class=""btn btn-ghost tg-tap"" style=""font-size:12.5px;margin-top:2px"" sc-camel-on-click=""{{ simulateCheckin }}"">Simulate: three days of silence</button>")
+    '${1}' + "`n                <button data-sim=""1"" class=""btn btn-ghost tg-tap"" style=""font-size:12.5px;margin-top:2px"" sc-camel-on-click=""{{ simulateCheckin }}"">Simulate: three days of silence</button>")
 if ($doc -notmatch 'simulateCheckin') { throw "check-in trigger not added" }
 $simMatch = "simulateMatch: () => this.setState({ overlay: 'match', matched: true }),"
 if ($doc.Contains($simMatch)) {
