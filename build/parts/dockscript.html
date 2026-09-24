@@ -273,10 +273,16 @@ function build(){
   hub.id = "tgHub"; hub.type = "button";
   hub.setAttribute("aria-label", "together — tap to open the menu");
   hub.innerHTML =
-    '<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke-width="1.9">' +
-      '<circle cx="8.9" cy="12" r="5.7" stroke="currentColor"/>' +
-      '<circle class="ring2" cx="15.1" cy="12" r="5.7" stroke="#E4485B"/>' +
-    '</svg><span class="lbl">together</span><i class="hbdg" style="display:none"></i>';
+    '<svg viewBox="0 0 160 100" width="34" height="21" fill="none" style="overflow:visible">' +
+      '<defs>' +
+        '<linearGradient id="tgh-a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF7488"/><stop offset="1" stop-color="#E4485B"/></linearGradient>' +
+        '<linearGradient id="tgh-b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C7D4F2"/><stop offset="1" stop-color="#7B93DC"/></linearGradient>' +
+        '<mask id="tgh-m"><rect x="0" y="0" width="160" height="100" fill="#fff"/>' +
+          '<circle cx="98" cy="53" r="31" fill="none" stroke="#000" stroke-width="12.3"/></mask>' +
+      '</defs>' +
+      '<circle class="tgm-a" cx="62" cy="47" r="27" stroke="url(#tgh-a)" stroke-width="7.5" mask="url(#tgh-m)"/>' +
+      '<circle class="tgm-b" cx="98" cy="53" r="31" stroke="url(#tgh-b)" stroke-width="7.5"/>' +
+    '</svg><span class="lbl">Together</span><i class="hbdg" style="display:none"></i>';
   /* Hold the mark and the menu opens under your thumb; slide onto a
      destination and let go to open it. Sliding straight up picks Together
      itself, which is the one your thumb is already sitting on. A plain tap

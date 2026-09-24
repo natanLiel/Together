@@ -1962,6 +1962,57 @@ $css29 = '<style>' +
   '</style>'
 $hs35 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs35) + $css29 + $doc.Substring($hs35)
+# ── 5bg. the new mark, everywhere ───────────────────────────────────────────
+#  The pair, right in front, colours flipped: a rose ring at left, a larger
+#  blue ring at right passing over it with a clean gap cut in the one behind.
+#  One drawing, used for the splash, every screen, the bar and the tab icon.
+$markInner = '<defs>' +
+  '<linearGradient id="{P}a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF7488"/><stop offset="1" stop-color="#E4485B"/></linearGradient>' +
+  '<linearGradient id="{P}b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C7D4F2"/><stop offset="1" stop-color="#7B93DC"/></linearGradient>' +
+  '<mask id="{P}m"><rect x="0" y="0" width="160" height="100" fill="#fff"/>' +
+  '<circle cx="98" cy="53" r="31" fill="none" stroke="#000" stroke-width="12.3"/></mask></defs>' +
+  '<circle cx="62" cy="47" r="27" fill="none" stroke="url(#{P}a)" stroke-width="7.5" mask="url(#{P}m)"/>' +
+  '<circle cx="98" cy="53" r="31" fill="none" stroke="url(#{P}b)" stroke-width="7.5"/>'
+$markFile = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 100" width="160" height="100">' +
+  $markInner.Replace('{P}', 'k') + '</svg>'
+$markUri = 'data:image/svg+xml;charset=utf-8,' + [uri]::EscapeDataString($markFile)
+
+$oldUri = [regex]::Match($doc, 'data:image/svg\+xml;charset=utf-8,%3Csvg%20xmlns[^"]*').Value
+if (-not $oldUri) { throw "old mark not found" }
+$nMark = ([regex]::Matches($doc, [regex]::Escape($oldUri))).Count
+$doc = $doc.Replace($oldUri, $markUri)
+Write-Output ("mark: replaced {0} drawings" -f $nMark)
+
+# the splash holds still until we build the new one
+$spStart = $doc.IndexOf('<div style="width:min(58vw,188px);animation:tg-lift')
+if ($spStart -lt 0) { throw "splash mark not found" }
+$spEnd = $doc.IndexOf('<p style="font-size:14px;letter-spacing:.2em;', $spStart)
+if ($spEnd -lt 0) { throw "splash copy not found" }
+$static = [System.IO.File]::ReadAllText("$scratch\splash-static.html", [System.Text.Encoding]::UTF8).TrimEnd() + "`n                "
+$doc = $doc.Substring(0, $spStart) + $static + $doc.Substring($spEnd)
+$doc = $doc.Replace(';animation:tg-rise .9s 1.8s ease both', '')
+$doc = $doc.Replace(';animation:tg-rise .9s 1.95s ease both', '')
+$doc = $doc.Replace(';animation:tg-rise .9s 2.15s cubic-bezier(.2,.8,.2,1) both', '')
+if ($doc -match 'tg-wordrise \.58s') { throw "old wordmark still present" }
+# the static splash sits a little higher so the button is never cut off
+Once8 'flex:0 1 132px' 'flex:0 1 40px' 'splash top spacer'
+Once8 'flex:0 1 64px' 'flex:0 1 36px' 'splash bottom spacer'
+
+# the tab icon and the home-screen tile carry the mark too
+$tileSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">' +
+  '<rect width="512" height="512" rx="118" fill="#171018"/>' +
+  '<g transform="translate(256 256) scale(2.4) translate(-80 -50)">' + $markInner.Replace('{P}', 'i') + '</g></svg>'
+$tileUri = 'data:image/svg+xml;charset=utf-8,' + [uri]::EscapeDataString($tileSvg)
+Once8 '<link rel="icon" href="5e4e6cde-b171-4cbe-9396-9a3ea5aa01bf">' ('<link rel="icon" href="' + $markUri + '">') 'tab icon'
+Once8 '<link rel="apple-touch-icon" sizes="512x512" href="038efd10-3e68-448e-a078-c43845432b18">' ('<link rel="apple-touch-icon" sizes="512x512" href="' + $tileUri + '">') 'home screen tile'
+
+$css30 = '<style>' +
+  '#tgHub svg circle.tgm-a{stroke:url(#tgh-a) !important}' +
+  '#tgHub svg circle.tgm-b{stroke:url(#tgh-b) !important}' +
+  '#tgHub.conn svg circle.tgm-b{stroke:url(#tgh-b) !important}' +
+  '</style>'
+$hs36 = $doc.IndexOf('</helmet>')
+$doc = $doc.Substring(0, $hs36) + $css30 + $doc.Substring($hs36)
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }
