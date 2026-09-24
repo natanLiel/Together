@@ -3,20 +3,16 @@
                     <defs>
                       <linearGradient id="tgs-a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF7488"></stop><stop offset="1" stop-color="#E4485B"></stop></linearGradient>
                       <linearGradient id="tgs-b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C7D4F2"></stop><stop offset="1" stop-color="#7B93DC"></stop></linearGradient>
-                      <radialGradient id="tgs-ha"><stop offset="0" stop-color="#FF7488" stop-opacity=".16"></stop><stop offset=".68" stop-color="#FF7488" stop-opacity=".7"></stop><stop offset="1" stop-color="#FF7488" stop-opacity="0"></stop></radialGradient>
-                      <radialGradient id="tgs-hb"><stop offset="0" stop-color="#9FB4F5" stop-opacity=".14"></stop><stop offset=".72" stop-color="#9FB4F5" stop-opacity=".66"></stop><stop offset="1" stop-color="#9FB4F5" stop-opacity="0"></stop></radialGradient>
-                      <filter id="tgs-soft" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="6.5"></feGaussianBlur></filter>
-                      <filter id="tgs-star" x="-120%" y="-120%" width="340%" height="340%"><feGaussianBlur stdDeviation="1.4"></feGaussianBlur></filter>
+                      <radialGradient id="tgs-ha"><stop offset=".45" stop-color="#FF7488" stop-opacity="0"></stop><stop offset=".78" stop-color="#FF7488" stop-opacity=".34"></stop><stop offset="1" stop-color="#FF7488" stop-opacity="0"></stop></radialGradient>
+                      <radialGradient id="tgs-hb"><stop offset=".48" stop-color="#9FB4F5" stop-opacity="0"></stop><stop offset=".8" stop-color="#9FB4F5" stop-opacity=".3"></stop><stop offset="1" stop-color="#9FB4F5" stop-opacity="0"></stop></radialGradient>
+                      <filter id="tgs-soft" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="4.6"></feGaussianBlur></filter>
                       <mask id="tgs-m"><rect x="0" y="0" width="160" height="100" fill="#fff"></rect><circle class="tgs-cut" cx="98" cy="53" r="31" fill="none" stroke="#000" stroke-width="12.3"></circle></mask>
                     </defs>
-                    <ellipse class="tgs-halo-a" cx="62" cy="47" rx="38" ry="34" fill="url(#tgs-ha)"></ellipse>
-                    <ellipse class="tgs-halo-b" cx="98" cy="53" rx="42" ry="38" fill="url(#tgs-hb)"></ellipse>
+                    <ellipse class="tgs-halo-a" cx="62" cy="47" rx="35" ry="33" fill="url(#tgs-ha)"></ellipse>
+                    <ellipse class="tgs-halo-b" cx="98" cy="53" rx="39" ry="37" fill="url(#tgs-hb)"></ellipse>
                     <g class="tgs-merge" filter="url(#tgs-soft)">
-                      <circle cx="62" cy="47" r="27" fill="none" stroke="#C98AE0" stroke-width="15"></circle>
-                      <circle cx="98" cy="53" r="31" fill="none" stroke="#C98AE0" stroke-width="15"></circle>
-                    </g>
-                    <g class="tgs-glint" filter="url(#tgs-star)">
-                      <path d="M80 30 L82.6 47.4 L100 50 L82.6 52.6 L80 70 L77.4 52.6 L60 50 L77.4 47.4 Z" fill="#FFE7F2"></path>
+                      <circle cx="62" cy="47" r="27" fill="none" stroke="#B98FD8" stroke-width="9"></circle>
+                      <circle cx="98" cy="53" r="31" fill="none" stroke="#B98FD8" stroke-width="9"></circle>
                     </g>
                     <circle class="tgs-rose" cx="62" cy="47" r="27" fill="none" stroke="url(#tgs-a)" stroke-width="7.5" mask="url(#tgs-m)"></circle>
                     <circle class="tgs-blue" cx="98" cy="53" r="31" fill="none" stroke="url(#tgs-b)" stroke-width="7.5"></circle>
