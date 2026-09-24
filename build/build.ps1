@@ -1624,6 +1624,22 @@ $doc = $doc.Substring(0, $hs28) + $css22 + $doc.Substring($hs28)
 #  The whole app moves onto a deep plum ground, so Discover and everything
 #  else read as one system. The pink still wanders over it, now lighting the
 #  ground rather than tinting it. Panels become dark glass with a lit edge.
+$nInk = ([regex]::Matches($doc, [regex]::Escape('color:rgba(28,37,54,'))).Count + ([regex]::Matches($doc, [regex]::Escape('color:#1C2536'))).Count
+$doc = $doc.Replace('color:rgba(28,37,54,', 'color:rgba(242,234,230,').Replace('color:#1C2536', 'color:#F2EAE6')
+Write-Output ("dark: lifted {0} hard-coded ink colours" -f $nInk)
+$doc = $doc.Replace("'#1C2536' : 'rgba(28,37,54,.65)'", "'#F2EAE6' : 'rgba(242,234,230,.62)'")
+$doc = $doc.Replace("'#1C2536' : 'rgba(28,37,54,.62)'", "'#F2EAE6' : 'rgba(242,234,230,.62)'")
+$doc = $doc.Replace("'rgba(28,37,54,", "'rgba(242,234,230,")
+$doc = [regex]::Replace($doc, 'color:rgba\(242,234,230,\s*\.(\d+)\)', {
+  param($m)
+  $v = [double]("0." + $m.Groups[1].Value)
+  if ($v -lt 0.58) { 'color:rgba(242,234,230,.66)' } else { $m.Value }
+})
+$doc = [regex]::Replace($doc, 'color:color-mix\(in srgb,var\(--color-text\)\s*(\d+)%', {
+  param($m)
+  $p = [int]$m.Groups[1].Value
+  if ($p -lt 58) { 'color:color-mix(in srgb,var(--color-text) 66%' } else { $m.Value }
+})
 $css23 = '<style>' +
   '[data-tg-phone]{' +
   '--color-bg:#140D14;--color-surface:#1C141C;--color-text:#F2EAE6;--color-divider:rgba(255,255,255,.12);' +
@@ -1678,6 +1694,11 @@ $css23 = '<style>' +
   '.tgd-root .tgt-q{color:rgba(242,234,230,.62) !important}' +
   '.tgd-root .tgt-a,.tgd-root .tgt-dtl > span{color:#F2EAE6 !important}' +
   '.tgd-root .tgd-heart button,.tgd-root .tgt-heart,.tgs-likecue{background:color-mix(in srgb,var(--pv) 26%,rgba(18,12,18,.5)) !important}' +
+  '.tag,.tag-neutral{background:rgba(255,255,255,.07) !important;color:rgba(242,234,230,.8) !important;border-color:rgba(255,255,255,.14) !important}' +
+  '.tag-accent{background:rgba(240,86,110,.2) !important;color:#FFC2CC !important;border-color:rgba(240,86,110,.5) !important}' +
+  '.card[style*="tg-deep"] *,.tgp-card[style*="tg-deep"] *{color:var(--tg-deep-ink) !important}' +
+  '.card[style*="tg-deep"] .btn,.card[style*="tg-deep"] .btn *,.tgp-card[style*="tg-deep"] .btn,.tgp-card[style*="tg-deep"] .btn *{color:var(--tg-deep) !important}' +
+  '.tgd-vdur,.tgt-dur,.tgd-dur{color:#F2EAE6 !important}' +
   'html,body{background:#120C12 !important}' +
   '[style*="100dvh"]{background:#120C12 !important;color:rgba(242,234,230,.7) !important}' +
   '[data-tg-caption]{color:rgba(242,234,230,.45) !important}' +
