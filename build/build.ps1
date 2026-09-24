@@ -1588,7 +1588,7 @@ $css20 = '<style>' +
   '.tgp-card > *,.tgb-card > *{background:transparent !important}.tgp-tile{background-image:none !important}' +
   '.card[style*="tg-deep"],.tgp-card[style*="tg-deep"]{background-color:var(--tg-deep) !important;-webkit-backdrop-filter:none !important;backdrop-filter:none !important;border-color:transparent !important;box-shadow:0 18px 40px -24px rgba(28,37,54,.7) !important}' +
   '.ep-bar,.ep-tabs,.lk-head{background:rgba(255,252,248,.4) !important;-webkit-backdrop-filter:blur(18px) saturate(1.3);backdrop-filter:blur(18px) saturate(1.3)}' +
-  '[data-tg-phone] .tg-scroll [style*="#F9F1E9"]{background-color:transparent !important}' +
+  '[data-tg-phone] .tg-scroll [style*="#F9F1E9"],[data-tg-phone] .tg-scroll [style*="--color-bg"]{background-color:transparent !important}' +
   '</style>'
 $hs26 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs26) + $css20 + $doc.Substring($hs26)
@@ -1620,6 +1620,70 @@ $css22 = '<style>' +
   '</style>'
 $hs28 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs28) + $css22 + $doc.Substring($hs28)
+# ── 5az. dark ───────────────────────────────────────────────────────────────
+#  The whole app moves onto a deep plum ground, so Discover and everything
+#  else read as one system. The pink still wanders over it, now lighting the
+#  ground rather than tinting it. Panels become dark glass with a lit edge.
+$css23 = '<style>' +
+  '[data-tg-phone]{' +
+  '--color-bg:#140D14;--color-surface:#1C141C;--color-text:#F2EAE6;--color-divider:rgba(255,255,255,.12);' +
+  '--color-accent-800:rgba(242,234,230,.62);--color-accent-900:#F2EAE6;' +
+  '--color-accent-100:#33202B;--color-accent-200:#472A38;--color-accent-300:#6B3B4B;' +
+  '--color-neutral-100:#1C141C;--color-neutral-200:#241A24;--color-neutral-300:#332633;' +
+  '--color-neutral-400:rgba(242,234,230,.62);--color-neutral-500:rgba(242,234,230,.7);' +
+  '--tg-glow:#F0566E;--tg-ink:#F2EAE6;' +
+  'background:radial-gradient(120% 52% at 50% -12%,#32192C 0%,rgba(50,25,44,0) 62%),' +
+  'radial-gradient(90% 40% at 100% 104%,#3A1C2A 0%,rgba(58,28,42,0) 70%),' +
+  'linear-gradient(180deg,#1A1018 0%,#140D14 55%,#100A10 100%) !important;color:#F2EAE6}' +
+  '.tgglow i{background:radial-gradient(circle at 50% 50%,rgba(240,86,110,.72),rgba(240,86,110,0) 66%) !important;mix-blend-mode:screen;filter:blur(48px)}' +
+  '.tgglow i.t1{opacity:.4}.tgglow i.t2{opacity:.24}.tgglow i.t3{opacity:.12}' +
+  '.tgglass{background:linear-gradient(180deg,rgba(16,10,16,.3),rgba(16,10,16,.38)) !important;' +
+  '-webkit-backdrop-filter:blur(28px) saturate(1.15);backdrop-filter:blur(28px) saturate(1.15);box-shadow:inset 0 1px 0 rgba(255,255,255,.06) !important}' +
+  '.tgp-card,.tgb-card,.card,.tgp-tile,.tga,.tga-folded,.tgp-seg,.tgb-wheelcard,.eps-card,.tgc-card,' +
+  '.tgb-field input.tg-vinput,.tgb-tag,.tga-own,.tga-opt,.tgp-chips > button,.tgc-sw{' +
+  'background-color:rgba(255,255,255,.055) !important;border-color:rgba(255,255,255,.12) !important;' +
+  'box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 18px 36px -26px #000 !important;color:#F2EAE6 !important}' +
+  '.tgp-card > *,.tgb-card > *{background:transparent !important}' +
+  '.tgp-row,.tgp-linkrow,.tga-cat,.tgv-hrow{border-color:rgba(255,255,255,.08) !important}' +
+  '.tgp-tile.on,.tga-opt.on{background-color:rgba(240,86,110,.18) !important;border-color:#F0566E !important;box-shadow:inset 0 0 0 1px #F0566E !important}' +
+  '.tgp-sw{background:rgba(255,255,255,.14) !important}' +
+  '.tga-preview{border-color:rgba(255,255,255,.16) !important;background:rgba(255,255,255,.035) !important}' +
+  '.tga-ptags .tg-tag{color:#F2EAE6 !important;background:rgba(255,255,255,.06) !important;border-color:rgba(255,255,255,.14) !important}' +
+  '.tgc-empty{background:transparent !important;border-color:rgba(255,255,255,.16) !important;box-shadow:none !important}' +
+  '.tgc-txt b{color:#F2EAE6}.tgc-txt small{color:rgba(242,234,230,.62)}' +
+  '.tgc-plus{background:rgba(255,255,255,.07) !important;color:rgba(242,234,230,.6) !important}' +
+  '.tgc-open{background:#F0566E !important;color:#160F16 !important}' +
+  '.tga-add{background:#F0566E !important;color:#160F16 !important}' +
+  '.tgv-height b{color:rgba(242,234,230,.5)}.tgv-height b.on{color:#F2EAE6}' +
+  '.tgv-step{background:rgba(255,255,255,.06) !important;border-color:rgba(255,255,255,.14) !important;color:#F2EAE6 !important}' +
+  '.lv-note p{color:#F2EAE6 !important}' +
+  '.ep-mainedit{color:#F2EAE6 !important}' +
+  '.tgd-bar,.ep-bar,.ep-tabs,.lk-head,.tgd-bar.tgd-one{background:rgba(18,11,18,.45) !important;' +
+  '-webkit-backdrop-filter:blur(20px) saturate(1.2);backdrop-filter:blur(20px) saturate(1.2)}' +
+  '.qcat-row{background:linear-gradient(180deg,rgba(18,11,18,.85) 68%,transparent) !important}' +
+  '[data-tg-phone] circle[stroke="#2A3F6E"],[data-tg-phone] path[stroke="#2A3F6E"]{stroke:#93A9E0}' +
+  '[data-tg-phone] [fill="#2A3F6E"]{fill:#93A9E0}' +
+  '#tgSurf{background:linear-gradient(180deg,rgba(24,15,24,.62),rgba(20,12,20,.78)) !important;border-top-color:rgba(255,255,255,.1) !important;' +
+  'box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 -20px 40px -22px #000 !important}' +
+  '.tgTab svg,.tgTab span{color:rgba(246,238,234,.72) !important}' +
+  '.tgTab.on svg,.tgTab.on span,.tgTab.hot svg,.tgTab.hot span{color:#F0566E !important}' +
+  '#tgBar #tgHub,#tgBar:not(.open) #tgHub,#tgBar.open #tgHub,#tgBar.open #tgHub.on{' +
+  'background:radial-gradient(44% 24% at 34% 16%,rgba(255,255,255,.35),rgba(255,255,255,0) 74%),' +
+  'radial-gradient(90% 90% at 50% 40%,rgba(52,34,48,.86),rgba(30,19,28,.86)) !important;' +
+  'box-shadow:inset 0 0 0 1px rgba(255,255,255,.22),inset 0 2px 1px rgba(255,255,255,.3),inset 0 -6px 10px rgba(0,0,0,.5),0 16px 28px -10px #000 !important}' +
+  '#tgHub::before{background:radial-gradient(90% 90% at 50% 68%,rgba(255,255,255,.12),rgba(255,255,255,0) 75%) !important;' +
+  'box-shadow:inset 0 3px 5px rgba(0,0,0,.45),inset 0 -2px 2px rgba(255,255,255,.18) !important}' +
+  '.tgd-root .tgt-card,.tgd-root .tgt-tone .tgt-card,.tgd-root .tgt-voice{' +
+  'background:color-mix(in srgb,var(--pv) 26%,rgba(18,12,18,.55)) !important;color:#F2EAE6 !important}' +
+  '.tgd-root .tgt-q{color:rgba(242,234,230,.62) !important}' +
+  '.tgd-root .tgt-a,.tgd-root .tgt-dtl > span{color:#F2EAE6 !important}' +
+  '.tgd-root .tgd-heart button,.tgd-root .tgt-heart,.tgs-likecue{background:color-mix(in srgb,var(--pv) 26%,rgba(18,12,18,.5)) !important}' +
+  'html,body{background:#120C12 !important}' +
+  '[style*="100dvh"]{background:#120C12 !important;color:rgba(242,234,230,.7) !important}' +
+  '[data-tg-caption]{color:rgba(242,234,230,.45) !important}' +
+  '</style>'
+$hs29 = $doc.IndexOf('</helmet>')
+$doc = $doc.Substring(0, $hs29) + $css23 + $doc.Substring($hs29)
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }
