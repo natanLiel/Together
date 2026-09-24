@@ -1709,6 +1709,47 @@ $css23 = '<style>' +
   '</style>'
 $hs29 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs29) + $css23 + $doc.Substring($hs29)
+# ── 5ba. the prototype sits in a phone, and every screen opens at the top ────
+#  The frame becomes a device: a bezel, a status bar with the time, the
+#  island and the home bar. And changing screen always returns to the top.
+Once8 '  componentDidUpdate() { this.applyLang(); this.applyAccent(); this.applyWheels(); this.qSync(); }' ("  componentDidUpdate() { this.applyLang(); this.applyAccent(); this.applyWheels(); this.qSync(); this.toTop(); }`n" +
+  "  // a new screen always starts at its top`n" +
+  "  toTop() {`n" +
+  "    const k = this.state.screen + '|' + (this.state.tab || '');`n" +
+  "    if (this._lastScreen === k) return;`n" +
+  "    this._lastScreen = k;`n" +
+  "    const sc = document.querySelector('.tg-scroll');`n" +
+  "    if (sc) sc.scrollTop = 0;`n" +
+  "  }") 'back to the top'
+$fr = $doc.IndexOf('<div data-tg-frame="1"')
+$frEnd = $doc.IndexOf('>', $fr) + 1
+if ($fr -lt 0) { throw "frame not found" }
+$chrome = "`n      " + '<div class="tgf-status" aria-hidden="true"><span class="tgf-time">9:41</span><span class="tgf-icons">' +
+  '<svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1" opacity=".4"/></svg>' +
+  '<svg width="16" height="11" viewBox="0 0 16 11" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M1 3.6a10 10 0 0 1 14 0"/><path d="M3.6 6.4a6.4 6.4 0 0 1 8.8 0"/><path d="M6.2 9a2.8 2.8 0 0 1 3.6 0"/></svg>' +
+  '<svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x=".7" y=".7" width="20" height="10.6" rx="3" stroke="currentColor" stroke-opacity=".5"/><rect x="2.4" y="2.4" width="15" height="7.2" rx="1.6" fill="currentColor"/><path d="M22.4 4.2v3.6a2 2 0 0 0 0-3.6z" fill="currentColor" fill-opacity=".5"/></svg>' +
+  '</span></div>' + "`n      " + '<div class="tgf-island" aria-hidden="true"></div>'
+$doc = $doc.Substring(0, $frEnd) + $chrome + $doc.Substring($frEnd)
+$hb = $doc.IndexOf('</div>', $doc.IndexOf('data-tg-caption'))
+$fe = $doc.IndexOf('<p data-tg-caption')
+if ($fe -lt 0) { throw "caption not found" }
+$css24 = '<style>' +
+  '[data-tg-frame]{background:linear-gradient(160deg,#2A222C,#0B080C 40%,#141016) !important;padding:38px 12px 24px !important;' +
+  'border-radius:58px !important;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.14),inset 0 2px 0 rgba(255,255,255,.22),' +
+  '0 2px 3px rgba(0,0,0,.6),0 40px 80px -30px #000,0 0 0 1px rgba(0,0,0,.6) !important}' +
+  '[data-tg-frame] [data-tg-phone]{border-radius:44px !important;overflow:hidden}' +
+  '.tgf-status{position:absolute;top:12px;left:34px;right:34px;height:20px;z-index:40;display:flex;align-items:center;' +
+  'justify-content:space-between;color:#F2EAE6;font:600 13.5px/1 Barlow,system-ui,sans-serif;pointer-events:none;letter-spacing:.01em}' +
+  '.tgf-icons{display:flex;align-items:center;gap:6px}' +
+  '.tgf-island{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:104px;height:26px;border-radius:999px;' +
+  'background:#000;z-index:41;pointer-events:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}' +
+  '[data-tg-frame]::after{content:"";position:absolute;bottom:9px;left:50%;transform:translateX(-50%);width:126px;height:5px;' +
+  'border-radius:999px;background:rgba(242,234,230,.5);z-index:41;pointer-events:none}' +
+  '@media (max-width:520px){[data-tg-frame]{padding:34px 8px 20px !important;border-radius:46px !important}' +
+  '.tgf-status{left:26px;right:26px}[data-tg-frame] [data-tg-phone]{border-radius:38px !important}}' +
+  '</style>'
+$hs30 = $doc.IndexOf('</helmet>')
+$doc = $doc.Substring(0, $hs30) + $css24 + $doc.Substring($hs30)
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }
