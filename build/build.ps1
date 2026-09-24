@@ -1745,6 +1745,43 @@ $css24 = '<style>' +
   '</style>'
 $hs30 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs30) + $css24 + $doc.Substring($hs30)
+# ── 5bb. the like sheet, in the dark system ──────────────────────────────────
+#  The sheet becomes dark glass with rounded shoulders, the note field reads,
+#  the photo is rounded, and the ring button is glass with a rose edge.
+$lk = $doc.IndexOf('<sc-if value="{{ overlay.like }}">')
+if ($lk -lt 0) { throw "like sheet not found" }
+$sheet = '<div style="background:var(--color-surface);border-start-start-radius:3px;border-start-end-radius:3px;padding:var(--space-4) var(--space-4) var(--space-6);animation:tg-up .28s ease"'
+$at = $doc.IndexOf($sheet, $lk)
+if ($at -lt 0) { throw "like sheet panel not found" }
+$doc = $doc.Substring(0, $at) + $sheet.Replace('<div style=', '<div data-sheet="1" style=') + $doc.Substring($at + $sheet.Length)
+$css25 = '<style>' +
+  '[data-sheet]{background:linear-gradient(180deg,rgba(46,29,42,.9),rgba(22,14,22,.96)) !important;' +
+  '-webkit-backdrop-filter:blur(24px) saturate(1.25);backdrop-filter:blur(24px) saturate(1.25);' +
+  'border-start-start-radius:26px !important;border-start-end-radius:26px !important;' +
+  'border-top:1px solid rgba(255,255,255,.14);box-shadow:0 -26px 60px -30px #000,inset 0 1px 0 rgba(255,255,255,.18) !important;' +
+  'padding-bottom:calc(var(--space-6) + env(safe-area-inset-bottom)) !important}' +
+  '[data-sheet] .lk-head{background:transparent !important;-webkit-backdrop-filter:none !important;backdrop-filter:none !important;' +
+  'box-shadow:none !important;border:0 !important;margin:2px -4px 10px !important;min-height:34px !important}' +
+  '[data-sheet] .lk-grab{top:-2px !important;background:rgba(255,255,255,.22) !important}' +
+  '[data-sheet] .lk-x{background:rgba(255,255,255,.08) !important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18) !important}' +
+  '[data-sheet] .lk-x svg{stroke:#F2EAE6 !important}' +
+  '[data-sheet] > div[style*="height:190px"],[data-sheet] > div[style*="height: 190px"]{border-radius:18px !important;' +
+  'box-shadow:0 20px 44px -20px #000,inset 0 0 0 1px rgba(255,255,255,.12) !important}' +
+  '[data-sheet] .input,[data-sheet] textarea{background:rgba(255,255,255,.055) !important;color:#F2EAE6 !important;' +
+  'border:1px solid rgba(255,255,255,.14) !important;border-radius:16px !important}' +
+  '[data-sheet] textarea::placeholder{color:rgba(242,234,230,.4) !important}' +
+  '[data-sheet] textarea:focus{outline:none;border-color:rgba(240,86,110,.6) !important;background:rgba(255,255,255,.08) !important}' +
+  '[data-sheet] .btn[style*="#E4485B"],[data-sheet] .btn[style*="228, 72, 91"]{border-radius:999px !important;background:linear-gradient(168deg,#FF7488,#E4485B) !important;' +
+  'color:#1A1018 !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 16px 30px -16px rgba(240,86,110,.95) !important}' +
+  '[data-sheet] .btn[style*="tg-clay"]{border-radius:999px !important;background:rgba(255,255,255,.05) !important;' +
+  'color:#FF9AAB !important;border:1.4px solid rgba(240,86,110,.7) !important;' +
+  '-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:inset 0 1px 0 rgba(255,255,255,.16) !important}' +
+  '[data-sheet] .btn[style*="tg-clay"] svg{stroke:#FF9AAB !important}' +
+  '[data-sheet] div[style*="rgba(87, 48, 79"]{background:rgba(240,86,110,.1) !important;border-color:rgba(240,86,110,.26) !important;border-radius:18px !important}' +
+  '[data-sheet] span[style*="rgb(87, 48, 79"],[data-sheet] div[style*="rgba(87, 48, 79"] span{color:#FFB0BF !important}' +
+  '</style>'
+$hs31 = $doc.IndexOf('</helmet>')
+$doc = $doc.Substring(0, $hs31) + $css25 + $doc.Substring($hs31)
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }
