@@ -1928,6 +1928,36 @@ $css28 = '<style>' +
   '</style>'
 $hs34 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs34) + $css28 + $doc.Substring($hs34)
+# ── 5bf. one identity for every profile ────────────────────────────────────
+#  Each person used to colour their own page from their photo's palette, so
+#  a bright photo made a bright page and the app fell into two designs. The
+#  profile now wears one dark set of tokens — the deep violet that already
+#  made Shira read as part of the app — while the photo behind still carries
+#  that person's vibe, only much darker.
+$css29 = '<style>' +
+  '.tgd-root,.ep-view,.tgv{--pv:#5F4AB5 !important;--pd:#20193E !important;--pl:#DFDBF0 !important}' +
+  '[data-tg-phone] .tg-scroll .tgd-bar,[data-tg-phone] .tg-scroll .tgd-bar.tgd-one,' +
+  '[data-tg-phone] .tg-scroll .ep-bar,[data-tg-phone] .tg-scroll .ep-tabs{' +
+  'background:linear-gradient(180deg,rgba(14,9,15,.86),rgba(14,9,15,.6)) !important;' +
+  '-webkit-backdrop-filter:blur(20px) saturate(1.15) !important;backdrop-filter:blur(20px) saturate(1.15) !important;' +
+  'box-shadow:inset 0 -1px 0 rgba(255,255,255,.06) !important}' +
+  '.tgd-backdrop-img{filter:blur(15px) saturate(.95) brightness(.4) !important;transform:scale(1.08) !important}' +
+  '.tgd-backdrop::after{background:linear-gradient(180deg,rgba(16,10,18,.44) 0%,rgba(16,10,18,.58) 38%,rgba(12,8,14,.86) 100%) !important}' +
+  '.tgd-root .tgt-dtl > span,.ep-view .tgt-dtl > span,.tgd-root .tg-tag,.ep-view .tg-tag{' +
+  'background:color-mix(in srgb,#5F4AB5 24%,rgba(18,12,24,.58)) !important;color:#F2EAE6 !important;' +
+  'border:1px solid rgba(255,255,255,.14) !important;' +
+  'box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 8px 18px -12px #000 !important}' +
+  '.ep-counters > span{background:rgba(255,255,255,.055) !important;border-color:rgba(255,255,255,.12) !important;' +
+  'color:rgba(242,234,230,.62) !important;border-radius:16px !important;' +
+  'box-shadow:inset 0 1px 0 rgba(255,255,255,.08) !important}' +
+  '.ep-counters b{color:#F2EAE6 !important}' +
+  '.ep-mainedit,.ep-badge,.tgt-voice.ep-tile .ep-badge{' +
+  'background:color-mix(in srgb,#5F4AB5 24%,rgba(14,9,16,.66)) !important;color:#F2EAE6 !important;' +
+  'border:1px solid rgba(255,255,255,.16) !important;' +
+  'box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 10px 22px -12px #000 !important}' +
+  '</style>'
+$hs35 = $doc.IndexOf('</helmet>')
+$doc = $doc.Substring(0, $hs35) + $css29 + $doc.Substring($hs35)
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }
