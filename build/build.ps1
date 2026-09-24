@@ -2013,6 +2013,17 @@ $css30 = '<style>' +
   '</style>'
 $hs36 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs36) + $css30 + $doc.Substring($hs36)
+# ── 5bh. the first two screens breathe evenly ───────────────────────────────
+#  The splash and Start here both piled their content against the top and
+#  left the slack at the bottom. The splash now shares the space above and
+#  below the lockup, and Start here fills the frame so its own spacers can
+#  do the work they were written to do.
+Once8 'flex:0 1 40px;min-height:0' 'flex:1 1 0;min-height:0' 'splash top spacer'
+Once8 'flex:1 1 44px;min-height:0' 'flex:1 1 0;min-height:0' 'splash middle spacer'
+Once8 'flex:0 1 36px;min-height:0' 'flex:0 0 18px;min-height:0' 'splash bottom spacer'
+Once8 '<div style="min-height:730px;overflow-y:auto;display:flex;flex-direction:column;padding:46px var(--space-6) var(--space-6);padding-block-end:70px;animation:tg-in .3s ease">' `
+  '<div style="min-height:100%;overflow-y:auto;display:flex;flex-direction:column;padding:34px var(--space-6) var(--space-6);padding-block-end:28px;animation:tg-in .3s ease">' `
+  'start here frame'
 # ── 6. give the tab bar the hook the new bar layer needs, and make check-in reachable ──
 $doc = [regex]::Replace($doc, '(<sc-if value="\{\{ showTabs \}\}">\s*<div )style=', '${1}data-tg-tabs="1" style=')
 if ($doc -notmatch 'data-tg-tabs') { throw "tab bar hook not applied" }

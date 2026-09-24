@@ -1099,7 +1099,7 @@ label{color:var(--tg-sub);font-style:italic;font-weight:400 !important}
           <sc-if value="{{ at.splash }}" hint-placeholder-val="{{ true }}">
             <div style="height:100%;min-height:480px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:var(--space-8) var(--space-6);text-align:center;position:relative;overflow:hidden;background:var(--color-bg)">
               <div style="position:absolute;left:-25%;right:-25%;bottom:-30%;height:74%;background:radial-gradient(50% 50% at 50% 74%,color-mix(in srgb,var(--tg-glow) 26%,transparent) 0%,transparent 70%);animation:tg-halo 6s ease-in-out infinite;pointer-events:none"></div>
-              <div style="flex:0 1 40px;min-height:0"></div>
+              <div style="flex:1 1 0;min-height:0"></div>
               <div style="position:relative;display:flex;flex-direction:column;align-items:center;width:100%;flex:none">
                 <div style="width:min(50vw,168px)">
                   <svg sc-camel-view-box="0 0 160 100" style="display:block;width:100%;height:auto;overflow:visible" aria-hidden="true">
@@ -1116,16 +1116,16 @@ label{color:var(--tg-sub);font-style:italic;font-weight:400 !important}
                 <p style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;margin:6px 0 0;color:var(--color-accent-800)">It's all about the effort</p>
                 <p style="font-size:18px;line-height:1.5;margin:26px 0 0;color:var(--color-accent-800);max-width:300px;text-wrap:pretty">Built to help you find someone worth leaving the app for.</p>
               </div>
-              <div style="flex:1 1 44px;min-height:0"></div>
+              <div style="flex:1 1 0;min-height:0"></div>
               <div style="position:relative;display:flex;flex-direction:column;gap:10px;width:100%;max-width:302px;flex:none">
                 <button class="btn btn-primary tg-tap tg-cased" style="height:56px;font-family:var(--font-body);font-size:15px" sc-camel-on-click="{{ go.auth }}">Open app</button>
               </div>
-              <div style="flex:0 1 36px;min-height:0"></div>
+              <div style="flex:0 0 18px;min-height:0"></div>
             </div>
           </sc-if>
 
           <sc-if value="{{ at.auth }}">
-            <div style="min-height:730px;overflow-y:auto;display:flex;flex-direction:column;padding:46px var(--space-6) var(--space-6);padding-block-end:70px;animation:tg-in .3s ease">
+            <div style="min-height:100%;overflow-y:auto;display:flex;flex-direction:column;padding:34px var(--space-6) var(--space-6);padding-block-end:28px;animation:tg-in .3s ease">
               <div style="display:flex;align-items:center;gap:10px;margin-bottom:24px">
                 <img src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20160%20100%22%20width%3D%22160%22%20height%3D%22100%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22ka%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23FF7488%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23E4485B%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22kb%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23C7D4F2%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%237B93DC%22%2F%3E%3C%2FlinearGradient%3E%3Cmask%20id%3D%22km%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%22160%22%20height%3D%22100%22%20fill%3D%22%23fff%22%2F%3E%3Ccircle%20cx%3D%2298%22%20cy%3D%2253%22%20r%3D%2231%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%2212.3%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Ccircle%20cx%3D%2262%22%20cy%3D%2247%22%20r%3D%2227%22%20fill%3D%22none%22%20stroke%3D%22url(%23ka)%22%20stroke-width%3D%227.5%22%20mask%3D%22url(%23km)%22%2F%3E%3Ccircle%20cx%3D%2298%22%20cy%3D%2253%22%20r%3D%2231%22%20fill%3D%22none%22%20stroke%3D%22url(%23kb)%22%20stroke-width%3D%227.5%22%2F%3E%3C%2Fsvg%3E" alt="" style="display:block;width:36px;height:auto">
                 <span class="tg-cased-up" style="font-family:var(--font-meta);font-weight:600;font-size:10px;letter-spacing:.2em;color:rgba(242,234,230,.66)">Together · getting started</span>
