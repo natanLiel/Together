@@ -2025,15 +2025,15 @@ $css31 = '<style>' +
   '@keyframes tgs-word{0%{opacity:0;transform:translateY(13px);letter-spacing:.05em}' +
   '100%{opacity:1;transform:translateY(0);letter-spacing:-.012em}}' +
   '.tgs-rose,.tgs-blue{transform-box:view-box}' +
-  '.tgs-rose{transform-origin:62px 47px;animation:tgs-l 1.36s both}' +
-  '.tgs-blue{transform-origin:98px 53px;animation:tgs-r 1.36s both}' +
-  '.tgs-cut{animation:tgs-cut 1.36s linear both}' +
+  '.tgs-rose{transform-origin:62px 47px;animation:tgs-l 1.77s both}' +
+  '.tgs-blue{transform-origin:98px 53px;animation:tgs-r 1.77s both}' +
+  '.tgs-cut{animation:tgs-cut 1.77s linear both}' +
   '.tgs-halo-a,.tgs-halo-b,.tgs-merge{transform-box:view-box;mix-blend-mode:screen;opacity:0}' +
-  '.tgs-halo-a{transform-origin:62px 47px;animation:tgs-l 1.36s both,tgs-halo 1.36s both}' +
-  '.tgs-halo-b{transform-origin:98px 53px;animation:tgs-r 1.36s both,tgs-halo 1.36s both}' +
-  '.tgs-merge{transform-origin:80px 50px;animation:tgs-merge 2.1s cubic-bezier(.25,.6,.3,1) both}' +
-  '.tgs-fall{animation:tgs-fall .56s .8s cubic-bezier(.34,1.28,.5,1) both}' +
-  '.tgs-word{animation:tgs-word .54s 1.3s cubic-bezier(.2,.85,.25,1) both}' +
+  '.tgs-halo-a{transform-origin:62px 47px;animation:tgs-l 1.77s both,tgs-halo 1.77s both}' +
+  '.tgs-halo-b{transform-origin:98px 53px;animation:tgs-r 1.77s both,tgs-halo 1.77s both}' +
+  '.tgs-merge{transform-origin:80px 50px;animation:tgs-merge 2.73s cubic-bezier(.25,.6,.3,1) both}' +
+  '.tgs-fall{animation:tgs-fall .73s 1.04s cubic-bezier(.34,1.28,.5,1) both}' +
+  '.tgs-word{animation:tgs-word .7s 1.69s cubic-bezier(.2,.85,.25,1) both}' +
   '@media (prefers-reduced-motion:reduce){' +
   '.tgs-rose,.tgs-blue,.tgs-cut,.tgs-fall,.tgs-word,[data-tgs-rise]{animation:none !important}' +
   '.tgs-halo-a,.tgs-halo-b,.tgs-merge{animation:none !important;opacity:0}}' +
@@ -2044,13 +2044,13 @@ $doc = $doc.Substring(0, $hs37) + $css31 + $doc.Substring($hs37)
 # the line, the sentence and the button follow the mark in
 $doc = $doc.Replace(
   '<p style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;margin:6px 0 0;color:var(--color-accent-800)">',
-  '<p data-tgs-rise="1" style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;margin:6px 0 0;color:var(--color-accent-800);animation:tg-rise .7s 1.64s ease both">')
+  '<p data-tgs-rise="1" style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;margin:6px 0 0;color:var(--color-accent-800);animation:tg-rise .91s 2.13s ease both">')
 $doc = $doc.Replace(
   '<p style="font-size:18px;line-height:1.5;margin:26px 0 0;color:var(--color-accent-800);max-width:300px;text-wrap:pretty">',
-  '<p data-tgs-rise="1" style="font-size:18px;line-height:1.5;margin:26px 0 0;color:var(--color-accent-800);max-width:300px;text-wrap:pretty;animation:tg-rise .7s 1.78s ease both">')
+  '<p data-tgs-rise="1" style="font-size:18px;line-height:1.5;margin:26px 0 0;color:var(--color-accent-800);max-width:300px;text-wrap:pretty;animation:tg-rise .91s 2.31s ease both">')
 $doc = $doc.Replace(
   '<div style="position:relative;display:flex;flex-direction:column;gap:10px;width:100%;max-width:302px;flex:none">',
-  '<div data-tgs-rise="1" style="position:relative;display:flex;flex-direction:column;gap:10px;width:100%;max-width:302px;flex:none;animation:tg-rise .7s 1.94s cubic-bezier(.2,.8,.2,1) both">')
+  '<div data-tgs-rise="1" style="position:relative;display:flex;flex-direction:column;gap:10px;width:100%;max-width:302px;flex:none;animation:tg-rise .91s 2.52s cubic-bezier(.2,.8,.2,1) both">')
 if ($doc -notmatch 'tgs-rise') { throw 'splash copy not sequenced' }
 $css30 = '<style>' +
   '#tgHub svg circle.tgm-a{stroke:url(#tgh-a) !important}' +
