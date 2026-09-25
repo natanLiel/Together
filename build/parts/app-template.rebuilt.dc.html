@@ -1126,9 +1126,11 @@ label{color:var(--tg-sub);font-style:italic;font-weight:400 !important}
                 <p data-tgs-rise="1" style="font-size:18px;line-height:1.5;margin:26px 0 0;color:var(--color-accent-800);max-width:300px;text-wrap:pretty;animation:tg-rise .91s 2.31s ease both">Built to help you find someone worth leaving the app for.</p>
               </div>
               <div style="flex:1 1 0;min-height:0"></div>
+              <sc-if value="{{ splashManual }}">
               <div data-tgs-rise="1" style="position:relative;display:flex;flex-direction:column;gap:10px;width:100%;max-width:302px;flex:none;animation:tg-rise .91s 2.52s cubic-bezier(.2,.8,.2,1) both">
                 <button class="btn btn-primary tg-tap tg-cased" style="height:56px;font-family:var(--font-body);font-size:15px" sc-camel-on-click="{{ go.auth }}">Open app</button>
               </div>
+              </sc-if>
               <div style="flex:0 0 18px;min-height:0"></div>
             </div>
           </sc-if>
@@ -3025,6 +3027,7 @@ class Component extends DCLogic {
   lit = (f, hasValue) => (this.state.focus[f] || hasValue) ? 'tg-lit-on' : 'tg-lit-off';
   state = {
     screen: 'splash', tab: 'discover', overlay: null,
+    returning: (() => { try { return localStorage.getItem('tg-signed-in') === '1'; } catch (e) { return false; } })(),
     premium: null, lang: null, theme: null, ccOpen: false, openField: '', focus: {},
     form: { name: '', last: '', handle: '', age: '31', bd: 15, bm: 5, by: 1995, gender: '', seeking: '', intent: '', about: '', email: '', pw: '', phone: '', otp: '', cc: '+972' },
     likes: [{ key: 'maya', what: 'Liked your prompt', note: 'Your Saturday answer made me laugh on the bus.', ring: true }, { key: 'shira', what: 'Liked your first photo', note: '' }, { key: 'noa', what: 'Liked your karaoke note', note: 'Which song? I need to know before I like you back.' }], likeOpen: null, lvIdx: 0,
@@ -3676,8 +3679,24 @@ static PEOPLE_AWAITING_PHOTOS = [
   // ——— lifecycle ———
   componentDidMount() {
     this.tick = setInterval(() => this.onTick(), 1000); this.applyLang(); this.applyAccent(); this.applyWheels();
+    // someone already signed in watches the splash play, then lands in Discover
+    if (this.state.returning) this._autoOpen = setTimeout(() => {
+      if (this.state.screen === 'splash') this.nav('discover', { tab: 'discover', returning: false });
+      else this.setState({ returning: false });
+    }, 3300);
   }
-  componentDidUpdate() { this.applyLang(); this.applyAccent(); this.applyWheels(); this.qSync(); this.toTop(); }
+  componentDidUpdate() { this.applyLang(); this.applyAccent(); this.applyWheels(); this.qSync(); this.toTop(); this.rememberSignIn(); }
+  // reaching the app itself counts as signed in, until log out or delete
+  rememberSignIn() {
+    if (this._signedIn || ['discover', 'likes', 'together', 'prefs', 'profile', 'chat'].indexOf(this.state.screen) < 0) return;
+    this._signedIn = true;
+    try { localStorage.setItem('tg-signed-in', '1'); } catch (e) {}
+  }
+  signOut() {
+    clearTimeout(this._autoOpen); this._signedIn = false;
+    try { localStorage.removeItem('tg-signed-in'); } catch (e) {}
+    this.nav('splash', { returning: false });
+  }
   // a new screen always starts at its top
   toTop() {
     const k = this.state.screen + '|' + (this.state.tab || '');
@@ -3686,7 +3705,7 @@ static PEOPLE_AWAITING_PHOTOS = [
     const sc = document.querySelector('.tg-scroll');
     if (sc) sc.scrollTop = 0;
   }
-  componentWillUnmount() { clearInterval(this.tick); }
+  componentWillUnmount() { clearInterval(this.tick); clearTimeout(this._autoOpen); }
 
   onTick() {
     const p = {};
@@ -4370,6 +4389,7 @@ static PEOPLE_AWAITING_PHOTOS = [
         this.toast(pct ? code + ' applied. ' + pct + '% off.' : 'That code is not recognised.');
       },
       stillGround: ['splash', 'auth', 'login', 'otp'].indexOf(screen) >= 0 ? 'on' : '',
+      splashManual: !st.returning,
       showTabs: tabScreens.indexOf(screen) >= 0,
       tabs,
       loginError: st.loginError,
@@ -4642,7 +4662,7 @@ static PEOPLE_AWAITING_PHOTOS = [
         { label: 'Subscription', meta: prem ? 'Premium' : 'Free', onClick: () => this.nav('subscription') },
         { label: 'Settings', meta: '', onClick: () => this.nav('settings') },
         { label: 'Help and support', meta: '', onClick: () => this.nav('help') },
-        { label: 'Log out', meta: '', onClick: () => this.nav('splash') }
+        { label: 'Log out', meta: '', onClick: () => this.signOut() }
       ],
       showSkip: ['auth','login','otp','basics','photos','verify','welcome'].indexOf(screen) >= 0,
       skipSetup: () => { this.nav('discover', { tab: 'discover' }); },
@@ -4678,7 +4698,7 @@ static PEOPLE_AWAITING_PHOTOS = [
       })),
 
       pauseAccount: () => this.toast('Account paused. Nobody new sees you.'),
-      deleteAccount: () => { this.toast('Account deleted. Signed out.'); this.nav('splash'); },
+      deleteAccount: () => { this.toast('Account deleted. Signed out.'); this.signOut(); },
       messageSupport: () => this.toast('Support thread opened. Someone replies within a day.'),
       cancelPlan: () => { this.setState({ premium: false }); this.toast('Premium ends 19 August. One slot after that.'); },
       openCoupleMsg: () => this.toast('Couple messaging is in the next pass'),
