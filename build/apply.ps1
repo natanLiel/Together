@@ -9,11 +9,16 @@ $json = ConvertTo-Json -InputObject $tpl -Compress
 if ($json -match '</script>') { throw "re-encoded template contains a literal </script>" }
 
 $idx = [System.IO.File]::ReadAllLines("$repo\index.html", [System.Text.Encoding]::UTF8)
-$head382 = $idx[381].Substring(0, [Math]::Min(70, $idx[381].Length))
-if (-not ($idx[381].StartsWith('"') -and $head382 -match 'DOCTYPE html')) {
-    throw "line 382 is not the bundler template string: $head382"
+# find the bundler template by what it is, not by which line it landed on:
+# a head edit anywhere above it shifts the number, and it has done so before.
+$line = -1
+for ($i = 0; $i -lt $idx.Length; $i++) {
+    if ($idx[$i].Length -gt 1000 -and $idx[$i].StartsWith('"') -and
+        $idx[$i].Substring(0, 70) -match 'DOCTYPE html') { $line = $i; break }
 }
-$idx[381] = $json
+if ($line -lt 0) { throw "no bundler template line found in index.html" }
+Write-Output ("template on line {0}" -f ($line + 1))
+$idx[$line] = $json
 $doc = $idx -join "`n"
 
 # the unpacking thumbnail shows the new mark on the stock ground
