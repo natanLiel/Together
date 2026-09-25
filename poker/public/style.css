@@ -22,7 +22,7 @@ html, body { margin: 0; }
 body {
   background: radial-gradient(120% 60% at 50% 0%, #174632 0%, var(--bg) 60%) fixed, var(--bg);
   color: var(--ink);
-  font: 16px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font: 16px/1.45 "Rubik", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   -webkit-tap-highlight-color: transparent;
   min-height: 100vh;
 }
@@ -34,7 +34,7 @@ body {
 h1, h2, h3 { margin: 0 0 8px; line-height: 1.2; }
 h1 { font-size: 26px; }
 h2 { font-size: 18px; }
-h3 { font-size: 15px; color: var(--ink-2); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
+h3 { font-size: 15px; color: var(--ink-2); font-weight: 600; letter-spacing: .01em; }
 p { margin: 0 0 8px; }
 a { color: var(--gold); }
 .muted { color: var(--ink-3); }
@@ -139,7 +139,7 @@ a.item { color: inherit; text-decoration: none; display: flex; align-items: cent
 
 .standings .player { padding: 12px 0; border-top: 1px solid var(--line); }
 .standings .player:first-child { border-top: 0; }
-.standings .net { font-weight: 800; font-size: 18px; text-align: right; }
+.standings .net { font-weight: 800; font-size: 18px; text-align: end; white-space: nowrap; }
 .standings .sub { font-size: 13px; color: var(--ink-3); }
 .player-detail { margin-top: 10px; padding: 12px; background: var(--felt); border-radius: 12px; }
 
@@ -226,17 +226,17 @@ dialog::backdrop { background: rgba(0,0,0,.6); }
 .timer-blinds { font-size: 34px; font-weight: 800; text-align: center; color: var(--gold); }
 
 details > summary { cursor: pointer; font-weight: 600; color: var(--ink-2); list-style: none; }
-details > summary::before { content: "▸ "; }
+details > summary::before { content: "◂ "; }
 details[open] > summary::before { content: "▾ "; }
 .log li { font-size: 13px; color: var(--ink-2); padding: 6px 0; }
 
 .splash { min-height: 70vh; display: grid; place-items: center; text-align: center; }
 .logo { font-size: 56px; }
 table.lb { width: 100%; border-collapse: collapse; font-size: 14px; }
-table.lb th { text-align: left; font-size: 12px; color: var(--ink-3); font-weight: 600; padding: 6px 4px; }
+table.lb th { text-align: start; font-size: 12px; color: var(--ink-3); font-weight: 600; padding: 6px 4px; }
 table.lb td { padding: 10px 4px; border-top: 1px solid var(--line); }
-table.lb .r { text-align: right; white-space: nowrap; }
-table.lb .small { white-space: nowrap; }
+table.lb .r { text-align: end; white-space: nowrap; }
+table.lb td, table.lb th { padding-inline: 3px; }
 table.lb tr[data-href] { cursor: pointer; }
 
 @media (max-width: 380px) {
@@ -244,3 +244,9 @@ table.lb tr[data-href] { cursor: pointer; }
   .timer-clock { font-size: 60px; }
   .deck button { font-size: 11px; }
 }
+
+/* Right-to-left: cards, the card picker and the chart keep their left-to-right order. */
+.deck, .slots, .chart, .pcard { direction: ltr; }
+.slots { justify-content: flex-end; }
+input[type="number"], input.pin, input[type="date"] { direction: ltr; text-align: end; }
+input.pin { text-align: center; }

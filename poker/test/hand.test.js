@@ -8,20 +8,20 @@ const name = (s) => PH.describe(PH.evaluate(cards(s)));
 const score = (s) => PH.evaluate(cards(s)).score;
 
 test('names every hand category', () => {
-  assert.equal(name('As Ks Qs Js Ts 2d 3c'), 'Royal Flush');
-  assert.equal(name('9h 8h 7h 6h 5h Ad Ac'), 'Straight Flush, Nine high');
-  assert.equal(name('9c 9d 9h 9s 2c'), 'Four of a Kind, Nines');
-  assert.equal(name('Kc Kd Kh 7s 7c'), 'Full House, Kings full of Sevens');
-  assert.equal(name('Ah 9h 7h 4h 2h Kd'), 'Flush, Ace high');
-  assert.equal(name('Ts 9d 8c 7h 6s'), 'Straight, Ten high');
-  assert.equal(name('Qc Qd Qh 5s 2c'), 'Three of a Kind, Queens');
-  assert.equal(name('Jc Jd 4h 4s Ac'), 'Two Pair, Jacks and Fours');
-  assert.equal(name('Ac Ad 7h 4s 2c'), 'Pair of Aces');
-  assert.equal(name('Ac Td 7h 4s 2c'), 'High Card, Ace');
+  assert.equal(name('As Ks Qs Js Ts 2d 3c'), 'רויאל פלאש');
+  assert.equal(name('9h 8h 7h 6h 5h Ad Ac'), 'סטרייט פלאש עד 9');
+  assert.equal(name('9c 9d 9h 9s 2c'), 'רביעייה של 9');
+  assert.equal(name('Kc Kd Kh 7s 7c'), 'פול האוס: מלכים על 7');
+  assert.equal(name('Ah 9h 7h 4h 2h Kd'), 'פלאש עד אס');
+  assert.equal(name('Ts 9d 8c 7h 6s'), 'סטרייט עד 10');
+  assert.equal(name('Qc Qd Qh 5s 2c'), 'שלישייה של מלכות');
+  assert.equal(name('Jc Jd 4h 4s Ac'), 'שני זוגות: נסיכים ו־4');
+  assert.equal(name('Ac Ad 7h 4s 2c'), 'זוג אסים');
+  assert.equal(name('Ac Td 7h 4s 2c'), 'קלף גבוה: אס');
 });
 
 test('wheel is a five-high straight and loses to six-high', () => {
-  assert.equal(name('As 2d 3c 4h 5s'), 'Straight, Five high');
+  assert.equal(name('As 2d 3c 4h 5s'), 'סטרייט עד 5');
   assert.ok(score('6s 2d 3c 4h 5s') > score('As 2d 3c 4h 5s'));
 });
 
@@ -30,9 +30,9 @@ test('kickers and best-five selection', () => {
   // Three pairs: only the best two plus the best kicker count.
   assert.equal(score('Kc Kd 9h 9s 5c 5d 2h'), score('Kc Kd 9h 9s 5c 5d 3h'));
   // Two sets make a full house with the higher set on top.
-  assert.equal(name('8c 8d 8h 3s 3c 3d Ad'), 'Full House, Eights full of Threes');
+  assert.equal(name('8c 8d 8h 3s 3c 3d Ad'), 'פול האוס: 8 על 3');
   // Flush beats a straight present in the same seven cards.
-  assert.equal(name('2h 3h 4h 5d 6h 9h Ks'), 'Flush, Nine high');
+  assert.equal(name('2h 3h 4h 5d 6h 9h Ks'), 'פלאש עד 9');
 });
 
 test('equity: aces are big favourites against a random hand, and known matchups are sane', () => {
@@ -54,8 +54,8 @@ test('outs on a flush draw', () => {
 });
 
 test('pre-flop tiers', () => {
-  assert.equal(PH.preflopTier(cards('As Ad')).tier, 'Premium');
-  assert.equal(PH.preflopTier(cards('7s 2d')).tier, 'Weak');
+  assert.equal(PH.preflopTier(cards('As Ad')).tier, 'פרימיום');
+  assert.equal(PH.preflopTier(cards('7s 2d')).tier, 'חלשה');
   assert.equal(PH.handLabel(cards('Kd As')), 'AKo');
 });
 

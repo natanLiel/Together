@@ -1,25 +1,27 @@
 <!doctype html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Poker Night</title>
-  <meta name="description" content="Track friendly poker nights: buy-ins, standings, settle-up and stats.">
+  <title>ערב פוקר</title>
+  <meta name="description" content="מעקב אחרי ערבי פוקר עם חברים: כניסות, טבלה, התחשבנות וסטטיסטיקה.">
   <meta name="theme-color" content="#0f2a1f">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&display=swap">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main id="app" aria-live="polite"></main>
   <nav id="tabs" hidden>
-    <a href="#/" data-tab="home"><span>🏠</span>Home</a>
-    <a href="#/stats" data-tab="stats"><span>📊</span>Stats</a>
-    <a href="#/hands" data-tab="hands"><span>🃏</span>Hands</a>
-    <a href="#/timer" data-tab="timer"><span>⏱️</span>Blinds</a>
+    <a href="#/" data-tab="home"><span>🏠</span>בית</a>
+    <a href="#/stats" data-tab="stats"><span>📊</span>סטטיסטיקה</a>
+    <a href="#/hands" data-tab="hands"><span>🃏</span>ידיים</a>
+    <a href="#/timer" data-tab="timer"><span>⏱️</span>בליינדים</a>
   </nav>
   <div id="toast" role="status"></div>
   <dialog id="dialog"></dialog>

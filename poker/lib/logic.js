@@ -132,12 +132,12 @@ function statsFor(userId, games) {
 function badges(summary) {
   if (!summary || !summary.games) return [];
   const b = [];
-  if (summary.games >= 10) b.push({ icon: '🎖️', label: 'Regular', hint: '10+ nights played' });
-  if (summary.streak >= 3) b.push({ icon: '🔥', label: `On fire ×${summary.streak}`, hint: 'Winning streak' });
-  if (summary.streak <= -3) b.push({ icon: '🧊', label: `Cold ×${-summary.streak}`, hint: 'Losing streak' });
-  if (summary.games >= 5 && summary.winRate >= 0.6) b.push({ icon: '🦈', label: 'Shark', hint: 'Wins 60%+ of nights' });
-  if (summary.games >= 5 && summary.winRate <= 0.25) b.push({ icon: '🐟', label: 'Generous', hint: 'Funds the table' });
-  if (summary.roi >= 0.3 && summary.games >= 3) b.push({ icon: '📈', label: 'Big ROI', hint: '30%+ return on buy-ins' });
+  if (summary.games >= 10) b.push({ icon: '🎖️', label: 'מהקבועים', hint: '10 ערבים ומעלה' });
+  if (summary.streak >= 3) b.push({ icon: '🔥', label: `בוער ×${summary.streak}`, hint: 'רצף ניצחונות' });
+  if (summary.streak <= -3) b.push({ icon: '🧊', label: `קר ×${-summary.streak}`, hint: 'רצף הפסדים' });
+  if (summary.games >= 5 && summary.winRate >= 0.6) b.push({ icon: '🦈', label: 'כריש', hint: 'ניצחון ב־60% מהערבים ומעלה' });
+  if (summary.games >= 5 && summary.winRate <= 0.25) b.push({ icon: '🐟', label: 'ספונסר השולחן', hint: 'רוב הערבים בהפסד' });
+  if (summary.roi >= 0.3 && summary.games >= 3) b.push({ icon: '📈', label: 'תשואה גבוהה', hint: 'תשואה של 30%+ על הכניסות' });
   return b;
 }
 

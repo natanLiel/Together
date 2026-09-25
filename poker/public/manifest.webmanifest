@@ -1,7 +1,9 @@
 {
-  "name": "Poker Night",
-  "short_name": "Poker Night",
-  "description": "Track friendly poker nights: buy-ins, standings, settle-up and stats.",
+  "name": "ערב פוקר",
+  "short_name": "ערב פוקר",
+  "description": "מעקב אחרי ערבי פוקר עם חברים: כניסות, טבלה, התחשבנות וסטטיסטיקה.",
+  "lang": "he",
+  "dir": "rtl",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",

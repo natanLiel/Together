@@ -9,9 +9,10 @@
   const RANKS = '23456789TJQKA';
   const SUITS = 'shdc';
   const SUIT_SYMBOL = { s: '♠', h: '♥', d: '♦', c: '♣' };
-  const RANK_NAME = ['Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Jack', 'Queen', 'King', 'Ace'];
-  const RANK_PLURAL = ['Twos', 'Threes', 'Fours', 'Fives', 'Sixes', 'Sevens', 'Eights', 'Nines', 'Tens', 'Jacks', 'Queens', 'Kings', 'Aces'];
-  const CATEGORIES = ['High Card', 'Pair', 'Two Pair', 'Three of a Kind', 'Straight', 'Flush', 'Full House', 'Four of a Kind', 'Straight Flush'];
+  // Hebrew card names as Israeli home games say them; number cards stay as digits.
+  const RANK_NAME = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'נסיך', 'מלכה', 'מלך', 'אס'];
+  const RANK_PLURAL = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'נסיכים', 'מלכות', 'מלכים', 'אסים'];
+  const CATEGORIES = ['קלף גבוה', 'זוג', 'שני זוגות', 'שלישייה', 'סטרייט', 'פלאש', 'פול האוס', 'רביעייה', 'סטרייט פלאש'];
 
   // A card is an int 0..51: rank * 4 + suit.
   function parseCard(str) {
@@ -116,15 +117,15 @@
   function describe(result) {
     const k = result.kickers;
     switch (result.category) {
-      case 8: return k[0] === 12 ? 'Royal Flush' : `Straight Flush, ${RANK_NAME[k[0]]} high`;
-      case 7: return `Four of a Kind, ${RANK_PLURAL[k[0]]}`;
-      case 6: return `Full House, ${RANK_PLURAL[k[0]]} full of ${RANK_PLURAL[k[1]]}`;
-      case 5: return `Flush, ${RANK_NAME[k[0]]} high`;
-      case 4: return `Straight, ${RANK_NAME[k[0]]} high`;
-      case 3: return `Three of a Kind, ${RANK_PLURAL[k[0]]}`;
-      case 2: return `Two Pair, ${RANK_PLURAL[k[0]]} and ${RANK_PLURAL[k[1]]}`;
-      case 1: return `Pair of ${RANK_PLURAL[k[0]]}`;
-      default: return k.length ? `High Card, ${RANK_NAME[k[0]]}` : 'No cards';
+      case 8: return k[0] === 12 ? 'רויאל פלאש' : `סטרייט פלאש עד ${RANK_NAME[k[0]]}`;
+      case 7: return `רביעייה של ${RANK_PLURAL[k[0]]}`;
+      case 6: return `פול האוס: ${RANK_PLURAL[k[0]]} על ${RANK_PLURAL[k[1]]}`;
+      case 5: return `פלאש עד ${RANK_NAME[k[0]]}`;
+      case 4: return `סטרייט עד ${RANK_NAME[k[0]]}`;
+      case 3: return `שלישייה של ${RANK_PLURAL[k[0]]}`;
+      case 2: return `שני זוגות: ${RANK_PLURAL[k[0]]} ו־${RANK_PLURAL[k[1]]}`;
+      case 1: return `זוג ${RANK_PLURAL[k[0]]}`;
+      default: return k.length ? `קלף גבוה: ${RANK_NAME[k[0]]}` : 'אין קלפים';
     }
   }
 
@@ -149,11 +150,11 @@
 
   function preflopTier(hole) {
     const c = chen(hole);
-    if (c >= 12) return { chen: c, tier: 'Premium', note: 'Raise from any position.' };
-    if (c >= 10) return { chen: c, tier: 'Strong', note: 'Raise from most positions.' };
-    if (c >= 8) return { chen: c, tier: 'Playable', note: 'Good in middle / late position.' };
-    if (c >= 6) return { chen: c, tier: 'Speculative', note: 'Late position or cheap multiway pots.' };
-    return { chen: c, tier: 'Weak', note: 'Usually a fold.' };
+    if (c >= 12) return { chen: c, tier: 'פרימיום', note: 'להעלות מכל עמדה.' };
+    if (c >= 10) return { chen: c, tier: 'חזקה', note: 'להעלות מרוב העמדות.' };
+    if (c >= 8) return { chen: c, tier: 'שחיקה', note: 'טובה בעמדה אמצעית או מאוחרת.' };
+    if (c >= 6) return { chen: c, tier: 'ספקולטיבית', note: 'בעמדה מאוחרת, או בקופה זולה עם הרבה שחקנים.' };
+    return { chen: c, tier: 'חלשה', note: 'בדרך כלל מוותרים.' };
   }
 
   function handLabel(hole) {

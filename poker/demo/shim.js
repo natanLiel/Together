@@ -42,7 +42,7 @@
   window.PN_DEFINE = (name, fn) => { defs[name] = fn; };
   window.PN_BOOT_DEMO = function () {
     const { createApi } = req('./api');
-    const KEY = 'pn.demo.db';
+    const KEY = 'pn.demo.db.he';
     let data = null;
     try { data = JSON.parse(localStorage.getItem(KEY)); } catch { /* storage blocked */ }
     const fresh = !data;
@@ -69,42 +69,42 @@
 
     if (fresh) {
       const P = {};
-      for (const n of ['Natan', 'Dana', 'Avi', 'Yoni', 'Shira']) P[n] = call('POST', '/api/signup', { name: n, pin: '1234' });
+      for (const n of ['נתן', 'דנה', 'אבי', 'יוני', 'שירה']) P[n] = call('POST', '/api/signup', { name: n, pin: '1234' });
       const day = (weeksAgo) => {
         const d = new Date(Date.now() - weeksAgo * 7 * 864e5);
         return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
       };
       // [weeks ago, { player: [[buy-ins], final chips] }] at 1 chip = ₪5. Chips always add up to the pot.
       const nights = [
-        [4, { Natan: [[100], 30], Dana: [[100, 100], 50], Avi: [[100], 0], Yoni: [[100], 40], Shira: [[100], 0] }],
-        [3, { Natan: [[100, 50], 40], Dana: [[100], 10], Avi: [[100], 40], Yoni: [[100], 0] }],
-        [2, { Natan: [[100], 15], Dana: [[100], 25], Avi: [[100, 100], 30], Yoni: [[100], 40], Shira: [[100], 10] }],
-        [1, { Natan: [[200], 20], Dana: [[100], 0], Avi: [[100], 40], Shira: [[100], 40] }],
+        [4, { 'נתן': [[100], 30], 'דנה': [[100, 100], 50], 'אבי': [[100], 0], 'יוני': [[100], 40], 'שירה': [[100], 0] }],
+        [3, { 'נתן': [[100, 50], 40], 'דנה': [[100], 10], 'אבי': [[100], 40], 'יוני': [[100], 0] }],
+        [2, { 'נתן': [[100], 15], 'דנה': [[100], 25], 'אבי': [[100, 100], 30], 'יוני': [[100], 40], 'שירה': [[100], 10] }],
+        [1, { 'נתן': [[200], 20], 'דנה': [[100], 0], 'אבי': [[100], 40], 'שירה': [[100], 40] }],
       ];
       for (const [ago, seats] of nights) {
-        const g = call('POST', '/api/games', { name: 'Poker night', date: day(ago), location: "Natan's place", currency: 'ILS', chipValue: 5, buyIns: [50, 100, 200] }, P.Natan.token);
+        const g = call('POST', '/api/games', { name: 'ערב פוקר', date: day(ago), location: 'אצל נתן', currency: 'ILS', chipValue: 5, buyIns: [50, 100, 200] }, P['נתן'].token);
         for (const [n, [buys, chips]] of Object.entries(seats)) {
-          if (n !== 'Natan') call('POST', `/api/invite/${g.code}/join`, {}, P[n].token);
-          for (const a of buys) call('POST', `/api/games/${g.id}/entries`, { amount: a, userId: P[n].user.id }, P.Natan.token);
-          call('PUT', `/api/games/${g.id}/cashouts/${P[n].user.id}`, { chips }, P.Natan.token);
+          if (n !== 'נתן') call('POST', `/api/invite/${g.code}/join`, {}, P[n].token);
+          for (const a of buys) call('POST', `/api/games/${g.id}/entries`, { amount: a, userId: P[n].user.id }, P['נתן'].token);
+          call('PUT', `/api/games/${g.id}/cashouts/${P[n].user.id}`, { chips }, P['נתן'].token);
         }
-        const ended = call('POST', `/api/games/${g.id}/end`, {}, P.Natan.token);
-        ended.settlements.forEach((t, i) => call('POST', `/api/games/${g.id}/settlements/${i}`, { paid: true }, P.Natan.token));
+        const ended = call('POST', `/api/games/${g.id}/end`, {}, P['נתן'].token);
+        ended.settlements.forEach((t, i) => call('POST', `/api/games/${g.id}/settlements/${i}`, { paid: true }, P['נתן'].token));
       }
-      const g = call('POST', '/api/games', { name: 'Tonight', location: "Natan's place", currency: 'ILS', chipValue: 5, buyIns: [50, 100, 200] }, P.Natan.token);
-      for (const n of ['Dana', 'Avi', 'Yoni']) call('POST', `/api/invite/${g.code}/join`, {}, P[n].token);
-      call('POST', `/api/games/${g.id}/entries`, { amount: 100 }, P.Natan.token);
-      for (const n of ['Dana', 'Avi']) {
+      const g = call('POST', '/api/games', { name: 'הערב', location: 'אצל נתן', currency: 'ILS', chipValue: 5, buyIns: [50, 100, 200] }, P['נתן'].token);
+      for (const n of ['דנה', 'אבי', 'יוני']) call('POST', `/api/invite/${g.code}/join`, {}, P[n].token);
+      call('POST', `/api/games/${g.id}/entries`, { amount: 100 }, P['נתן'].token);
+      for (const n of ['דנה', 'אבי']) {
         const x = call('POST', `/api/games/${g.id}/entries`, { amount: 100 }, P[n].token);
-        call('POST', `/api/games/${g.id}/entries/${x.entries[x.entries.length - 1].id}/approve`, {}, P.Natan.token);
+        call('POST', `/api/games/${g.id}/entries/${x.entries[x.entries.length - 1].id}/approve`, {}, P['נתן'].token);
       }
-      call('POST', `/api/games/${g.id}/entries`, { amount: 100 }, P.Avi.token);
-      call('POST', `/api/games/${g.id}/entries`, { amount: 50 }, P.Yoni.token);
-      window.PN_DEMO_SESSION = P.Natan;
+      call('POST', `/api/games/${g.id}/entries`, { amount: 100 }, P['אבי'].token);
+      call('POST', `/api/games/${g.id}/entries`, { amount: 50 }, P['יוני'].token);
+      window.PN_DEMO_SESSION = P['נתן'];
       try {
         for (const k of Object.keys(localStorage)) if (k.startsWith('pn.') && k !== KEY) localStorage.removeItem(k);
-        localStorage.setItem('pn.token', JSON.stringify(P.Natan.token));
-        localStorage.setItem('pn.user', JSON.stringify(P.Natan.user));
+        localStorage.setItem('pn.token', JSON.stringify(P['נתן'].token));
+        localStorage.setItem('pn.user', JSON.stringify(P['נתן'].user));
       } catch { /* storage blocked */ }
     } else {
       const first = Object.values(data.users)[0];
