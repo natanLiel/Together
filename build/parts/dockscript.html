@@ -331,6 +331,7 @@ function build(){
   hub.addEventListener("pointercancel", function(){ dragging = false; held = false;
     clearTimeout(holdT); bar.classList.remove("holding"); highlight(null); });
   bar.appendChild(hub);
+  bar.style.display = "none";
   document.body.appendChild(bar);
 
   placeRect(); place();
@@ -397,7 +398,8 @@ function sync(){
   placeRect();
   var ph0 = getPhone();
   // the full-screen photo viewer owns the whole phone, the mark included
-  var haveTabs = !!tabBar() && !(ph0 && (ph0.getAttribute("data-tg-viewer") === "true" || ph0.getAttribute("data-tg-ov") === "true"));
+  // nothing shows until the app has drawn its first real frame
+  var haveTabs = document.documentElement.classList.contains("tg-ready") && !!tabBar() && !(ph0 && (ph0.getAttribute("data-tg-viewer") === "true" || ph0.getAttribute("data-tg-ov") === "true"));
   setStyleProp(bar, "display", haveTabs ? "block" : "none");
   var pg = (haveTabs && activeIndex() === 0) ? "discover" : "";
   if((document.documentElement.getAttribute("data-tg-page") || "") !== pg){

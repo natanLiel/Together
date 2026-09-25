@@ -16,7 +16,8 @@ if (-not ($idx[381].StartsWith('"') -and $head382 -match 'DOCTYPE html')) {
 $idx[381] = $json
 $doc = $idx -join "`n"
 
-# the unpacking thumbnail shows the new mark on the stock ground
+# the unpacking screen is the splash's own dark ground with nothing on it,
+# so opening the app goes straight from dark into the splash
 $markSvg = '<defs>' +
   '<linearGradient id="ta" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF7488"/><stop offset="1" stop-color="#E4485B"/></linearGradient>' +
   '<linearGradient id="tb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C7D4F2"/><stop offset="1" stop-color="#7B93DC"/></linearGradient>' +
@@ -33,7 +34,12 @@ $tileSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">' +
   '<g transform="translate(256 256) scale(2.4) translate(-80 -50)">' + $markSvg + '</g></svg>'
 $favUri = 'data:image/svg+xml;charset=utf-8,' + [uri]::EscapeDataString($favSvg)
 $tileUri = 'data:image/svg+xml;charset=utf-8,' + [uri]::EscapeDataString($tileSvg)
-$doc = [regex]::Replace($doc, '<div id="__bundler_thumbnail">.*?</div>', $thumb)
+$doc = [regex]::Replace($doc, '(?s)<div id="__bundler_thumbnail">.*?</div>', '<div id="__bundler_thumbnail"></div>')
+$doc = $doc.Replace('body { background: #F9F1E9;', 'body { background: #120C12;')
+$doc = $doc.Replace('justify-content: center; background: #F9F1E9; z-index: 9999; }', 'justify-content: center; background: #120C12; z-index: 9999; }')
+if (-not $doc.Contains('#__bundler_loading { display: none')) {
+  $doc = $doc.Replace('    #__bundler_placeholder { color: #999; font-size: 14px; }', "    #__bundler_placeholder { color: #999; font-size: 14px; }`n    #__bundler_loading { display: none !important; }")
+}
 $doc = $doc.Replace('background: #faf9f5;', 'background: #120C12;')
 $doc = $doc.Replace('<title>Bundled Page</title>', '<title>Together</title>')
 # drop any icons a previous run left, so this stays repeatable

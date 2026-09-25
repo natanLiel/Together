@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<style>html{background:#120C12}html:not(.tg-ready) body{visibility:hidden}</style>
+<script>setTimeout(function(){document.documentElement.classList.add('tg-ready')},6000)</script>
 <script src="46750274-63fa-47e7-91bc-03bfe95c1972"></script>
 </head>
 <body>
@@ -3679,6 +3681,8 @@ static PEOPLE_AWAITING_PHOTOS = [
   // ——— lifecycle ———
   componentDidMount() {
     this.tick = setInterval(() => this.onTick(), 1000); this.applyLang(); this.applyAccent(); this.applyWheels();
+    // the page stays blank until the first real frame, so the raw template never shows
+    requestAnimationFrame(() => document.documentElement.classList.add('tg-ready'));
     // someone already signed in watches the splash play, then lands in Discover
     if (this.state.returning) this._autoOpen = setTimeout(() => {
       if (this.state.screen === 'splash') this.nav('discover', { tab: 'discover', returning: false });
