@@ -1020,7 +1020,7 @@ $css11 = '<style>' +
   '.tga-opt{height:32px;padding:0 13px;border-radius:999px;border:1px solid rgba(28,37,54,.13);background:#FBFAF6;color:#1C2536;font-size:13px;cursor:pointer;transition:background .2s ease,border-color .2s ease,box-shadow .2s ease}' +
   '.tga-opt.on{background:#FBF1F0;border-color:#E4485B;box-shadow:inset 0 0 0 1px #E4485B}' +
   '.tga-own{display:block;width:100%;box-sizing:border-box;height:34px;border-radius:999px;border:1px solid rgba(28,37,54,.11);background:rgba(251,250,246,.7);padding:0 13px;font:inherit;font-size:13px;color:#1C2536;margin-bottom:6px}' +
-  '.tga-own::placeholder{color:rgba(28,37,54,.38)}.tga-own:focus{outline:none;border-color:rgba(228,72,91,.55);background:#FBFAF6}' +
+  '.tga-own::placeholder{color:rgba(28,37,54,.38)}.tga-own:focus{outline:none;border-color:rgba(240,86,110,.6);background:rgba(255,255,255,.08)}' +
   '</style>'
 $hs12 = $doc.IndexOf('</helmet>')
 $doc = $doc.Substring(0, $hs12) + $css11 + $doc.Substring($hs12)
