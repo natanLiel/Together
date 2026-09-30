@@ -2053,6 +2053,7 @@ $doc = $doc.Replace(
   '<div data-tgs-rise="1" style="position:relative;display:flex;flex-direction:column;gap:10px;width:100%;max-width:302px;flex:none;animation:tg-rise .7s 1.94s cubic-bezier(.2,.8,.2,1) both">')
 if ($doc -notmatch 'tgs-rise') { throw 'splash copy not sequenced' }
 $css30 = '<style>' +
+  '.btn-secondary{border-radius:999px !important}' +
   '#tgHub svg circle.tgm-a{stroke:url(#tgh-a) !important}' +
   '#tgHub svg circle.tgm-b{stroke:url(#tgh-b) !important}' +
   '#tgHub.conn svg circle.tgm-b{stroke:url(#tgh-b) !important}' +
