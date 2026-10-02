@@ -49,9 +49,16 @@ $doc = $doc.Replace('background: #faf9f5;', 'background: #120C12;')
 $doc = $doc.Replace('<title>Bundled Page</title>', '<title>Together</title>')
 # drop any icons a previous run left, so this stays repeatable
 $doc = [regex]::Replace($doc, '<link rel="(?:icon|apple-touch-icon)"[^>]*?data:image/svg\+xml[^>]*?>', '')
+$doc = $doc.Replace('<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">', '')
+# installable: phones open it full screen from the home screen (removed first so reruns don't stack)
+$install = '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#120C12"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Together"><link rel="manifest" href="manifest.json">'
+$doc = $doc.Replace($install, '')
+$ci = $doc.IndexOf('<meta charset="utf-8">')
+if ($ci -lt 0) { throw "no charset meta in the loader head" }
+$doc = $doc.Substring(0, $ci + 22) + $install + $doc.Substring($ci + 22)
 $doc = $doc.Replace('<title>Together</title>', '<title>Together</title>' +
   '<link rel="icon" href="' + $favUri + '">' +
-  '<link rel="apple-touch-icon" sizes="512x512" href="' + $tileUri + '">')
+  '<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">')
 $doc = $doc.Replace('background: #E3E1D8;', 'background: #120C12;')
 
 # re-attach the bar layer (replacing any previous copy)
