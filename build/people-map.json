@@ -1,0 +1,8 @@
+[
+  { "oldKey": "maya",    "oldName": "Maya",    "oldHe": "מאיה",   "newKey": "eden",   "newName": "Eden",   "newHe": "עדן",   "count": 6, "posters": ["eden-3.jpg"] },
+  { "oldKey": "avigail", "oldName": "Avigail", "oldHe": "אביגיל", "newKey": "shoval", "newName": "Shoval", "newHe": "שובל",  "count": 5, "posters": ["shoval-2.jpg", "shoval-4.jpg"] },
+  { "oldKey": "shira",   "oldName": "Shira",   "oldHe": "שירה",   "newKey": "maayan", "newName": "Maayan", "newHe": "מעיין", "count": 4, "posters": [] },
+  { "oldKey": "noa",     "oldName": "Noa",     "oldHe": "נועה",   "newKey": "shirin", "newName": "Shirin", "newHe": "שירין", "count": 4, "posters": ["shirin-2.jpg", "shirin-3.jpg"] },
+  { "oldKey": "tamar",   "oldName": "Tamar",   "oldHe": "תמר",    "newKey": "shaked", "newName": "Shaked", "newHe": "שקד",   "count": 3, "posters": ["shaked-2.jpg"] },
+  { "oldKey": "roni",    "oldName": "Roni",    "oldHe": "רוני",   "newKey": "yuval",  "newName": "Yuval",  "newHe": "יובל",  "count": 4, "posters": ["yuval-2.jpg"] }
+]
